@@ -1,5 +1,5 @@
 import express from "express"
-import conference from "./conference/conference"
+import conference from "./conference/conference.route"
 
 const router = express.Router()
 

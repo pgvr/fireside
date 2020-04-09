@@ -23,16 +23,17 @@ app.use("/", routes)
 app.use((req, res, next) => next(new NotFoundError()))
 
 // Middleware Error Handler
+// next: NextFunction is needed, otherwise it doesnt work
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof ApiError) {
-        ApiError.handle(err, res)
-    } else {
-        if (environment === "development") {
-            Logger.error(err)
-            return res.status(500).send(err.message)
-        }
-        ApiError.handle(new InternalError(), res)
+        return ApiError.handle(err, res)
     }
+    if (environment === "development") {
+        Logger.error(err)
+        return res.status(500).send(err.message)
+    }
+    return ApiError.handle(new InternalError(), res)
 })
 
 export default app
