@@ -3,6 +3,8 @@ import twilio from "twilio"
 import { SuccessResponse } from "../../core/ApiResponse"
 import asyncHandler from "../../helpers/asyncHandler"
 import { buildConference } from "../../helpers/conference.helper"
+import validator, { ValidationSource } from "../../helpers/validator"
+import schema, { User } from "./conference.schema"
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
@@ -12,14 +14,15 @@ const router = express.Router()
 
 router.post(
     "/",
+    validator(schema.user, ValidationSource.BODY),
     asyncHandler(async (req, res) => {
-        const { user } = req.body // as User
+        const { phone } = req.body as User
 
         const match = { number: "+123456" } // findMatch()
 
-        const conferenceXml = buildConference("Welcome", "New Conference Name")
+        const conferenceXml = buildConference("Welcome", "New Conference Name") // TODO: Should probably be something unique
 
-        const numbers = [user.number, match.number]
+        const numbers = [phone, match.number]
 
         await Promise.all(
             numbers.map((number) => {
