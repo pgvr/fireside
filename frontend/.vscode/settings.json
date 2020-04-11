@@ -1,16 +1,23 @@
 {
-  "eslint.validate": ["vue", "javascript", "typescript"],
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
-  "[vue]": {
-    "editor.formatOnSave": false
-  },
-  "[typescript]": {
-    "editor.formatOnSave": false
-  },
-  "[javascript]": {
-    "editor.formatOnSave": false
-  }
+    "eslint.validate": ["vue", "javascript", "typescript"],
+    "vetur.format.defaultFormatter.html": "prettier",
+    "editor.formatOnSave": true,
+    "[vue]": {
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    },
+    "[typescript]": {
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    },
+    "[javascript]": {
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    }
 }
