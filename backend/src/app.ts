@@ -1,9 +1,10 @@
-import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
-import Logger from "./core/Logger"
+import express, { NextFunction, Request, Response } from "express"
 import { corsUrl, environment } from "./config"
-import { NotFoundError, ApiError, InternalError } from "./core/ApiError"
+import { ApiError, InternalError, NotFoundError } from "./core/ApiError"
+import Logger from "./core/Logger"
+import "./database"
 import routes from "./routes"
 
 process.on("uncaughtException", (e) => {

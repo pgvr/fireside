@@ -1,11 +1,10 @@
 import Joi from "@hapi/joi"
-
-export interface User {
-    phone: string
-}
+import Participant from "../../database/model/participant.model"
 
 export default {
-    user: Joi.object<User>().keys({
+    participant: Joi.object<Participant>().keys({
         phone: Joi.string().required(),
+        city: Joi.string().required(),
+        interests: Joi.array().required().items(Joi.string()),
     }),
 }
