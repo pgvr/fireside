@@ -1,7 +1,8 @@
 <template>
     <v-container>
         <v-layout column>
-            <v-form ref="startForm" @submit.prevent="meet()">
+            <h1 class="display-1">Start</h1>
+            <v-form @submit.prevent="meet()">
                 <v-text-field
                     prepend-icon="mdi-phone"
                     v-model="phone"
@@ -27,7 +28,6 @@
                     :items="hobbySuggestions"
                     chips
                     clearable
-                    @input="$v.hobbies.$touch()"
                     @blur="$v.hobbies.$touch()"
                     :error-messages="hobbyErrors()"
                     label="Your favorite hobbies"
