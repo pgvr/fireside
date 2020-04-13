@@ -1,8 +1,8 @@
 import express from "express"
 import twilio from "twilio"
 import { SuccessResponse } from "../../core/ApiResponse"
-import Participant from "../../database/model/participant.model"
-import ParticipantRepo from "../../database/repository/participant.repo"
+import User from "../../database/model/user.model"
+import UserRepo from "../../database/repository/user.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import { buildConference } from "../../helpers/conference.helper"
 import validator, { ValidationSource } from "../../helpers/validator"
@@ -18,10 +18,10 @@ router.post(
     "/",
     validator(schema.participant, ValidationSource.BODY),
     asyncHandler(async (req, res) => {
-        const incomingParticipant = req.body as Participant
+        const incomingParticipant = req.body as User
 
         // search db for match
-        const foundMatch = await ParticipantRepo.findMatchingParticipant(incomingParticipant)
+        const foundMatch = await UserRepo.findMatchingParticipant(incomingParticipant)
 
         if (foundMatch) {
             // connect with match
@@ -46,7 +46,8 @@ router.post(
             return new SuccessResponse("Successful", foundMatch).send(res)
         }
         // put number in db and wait to be found
-        await ParticipantRepo.createParticipant(incomingParticipant)
+        // TODO: implement queue collection
+        // await UserRepo.createUser(incomingParticipant)
         return new SuccessResponse("No match found. Putting in db.", incomingParticipant).send(res)
     }),
 )

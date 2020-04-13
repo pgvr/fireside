@@ -1,17 +1,9 @@
-import path from "path"
 import { readFile } from "fs"
+import { sign, verify } from "jsonwebtoken"
+import path from "path"
 import { promisify } from "util"
-import { sign, verify, decode } from "jsonwebtoken"
-import { InternalError, BadTokenError, TokenExpiredError } from "./ApiError"
+import { BadTokenError, InternalError, TokenExpiredError } from "./ApiError"
 import Logger from "./Logger"
-
-/*
- * issuer 		— Software organization who issues the token.
- * subject 		— Intended user of the token.
- * audience 	— Basically identity of the intended recipient of the token.
- * expiresIn	— Expiration time after which the token will be invalid.
- * algorithm 	— Encryption algorithm to be used to protect the token.
- */
 
 export default class JWT {
     private static readPublicKey(): Promise<string> {
@@ -32,55 +24,31 @@ export default class JWT {
     /**
      * This method checks the token and returns the decoded data when token is valid in all respect
      */
-    public static async validate(token: string, validations: ValidationParams): Promise<JwtPayload> {
+    public static async validate(token: string): Promise<JwtPayload> {
         const cert = await this.readPublicKey()
         try {
             // @ts-ignore
-            return <JwtPayload>await promisify(verify)(token, cert, validations)
+            return <JwtPayload>await promisify(verify)(token, cert)
         } catch (e) {
             Logger.debug(e)
             if (e && e.name === "TokenExpiredError") throw new TokenExpiredError()
+            // throws error if the token has not been encrypted by the private key
             throw new BadTokenError()
         }
     }
 
     /**
-     * This method checks the token and returns the decoded data even when the token is expired
+     * Returns the decoded payload if the signature is valid even if it is expired
      */
-    public static async decode(token: string, validations: ValidationParams): Promise<JwtPayload> {
+    public static async decode(token: string): Promise<JwtPayload> {
         const cert = await this.readPublicKey()
         try {
-            // token is verified if it was encrypted by the private key
-            // and if is still not expired then get the payload
             // @ts-ignore
-            return <JwtPayload>await promisify(verify)(token, cert, validations)
+            return <JwtPayload>await promisify(verify)(token, cert, { ignoreExpiration: true })
         } catch (e) {
             Logger.debug(e)
-            if (e && e.name === "TokenExpiredError") {
-                // if the token has expired but was encryped by the private key
-                // then decode it to get the payload
-                // @ts-ignore
-                return <JwtPayload>decode(token)
-            }
-
-            // throws error if the token has not been encrypted by the private key
-            // or has not been issued for the user
             throw new BadTokenError()
         }
-    }
-}
-
-export class ValidationParams {
-    issuer: string
-
-    audience: string
-
-    subject: string
-
-    constructor(issuer: string, audience: string, subject: string) {
-        this.issuer = issuer
-        this.audience = audience
-        this.subject = subject
     }
 }
 

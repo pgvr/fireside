@@ -23,6 +23,13 @@ export const JoiUrlEndpoint = () =>
         return value
     }, "Url Endpoint Validation")
 
+export const JoiAuthBearer = () =>
+    Joi.string().custom((value: string, helpers) => {
+        if (!value.startsWith("Bearer ")) return helpers.error("any.invalid")
+        if (!value.split(" ")[1]) return helpers.error("any.invalid")
+        return value
+    }, "Authorization Header Validation")
+
 export default (schema: Joi.ObjectSchema, source: ValidationSource = ValidationSource.BODY) => (
     req: Request,
     res: Response,

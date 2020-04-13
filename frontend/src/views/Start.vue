@@ -73,6 +73,11 @@
 
                 <v-btn large type="submit" color="primary">Meet Now</v-btn>
             </v-form>
+            <v-layout>
+                
+                <v-btn large to="/login" color="secondary">Login</v-btn>
+                <v-btn large to="/register" color="secondary">Register</v-btn>
+            </v-layout>
         </v-layout>
     </v-container>
 </template>
