@@ -5,6 +5,7 @@ import Start from "../views/Start.vue"
 import Login from "../views/Login.vue"
 import Register from "../views/Register.vue"
 import About from "../views/About.vue"
+import VerifyAnonymous from "../views/VerifyAnonymous.vue"
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes: Array<RouteConfig> = [
         path: "/start",
         name: "Start",
         component: Start,
+    },
+    {
+        path: "/verifyAnonymous",
+        name: "Verify Anonymous",
+        component: VerifyAnonymous,
     },
     {
         path: "/login",

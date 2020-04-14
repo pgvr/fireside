@@ -48,11 +48,11 @@
                 </v-combobox>
                 <v-text-field
                     prepend-icon="mdi-briefcase"
-                    v-model="occupation"
+                    v-model="job"
                     label="Occupation"
-                    @input="$v.occupation.$touch()"
-                    @blur="$v.occupation.$touch()"
-                    :error-messages="occupationErrors()"
+                    @input="$v.job.$touch()"
+                    @blur="$v.job.$touch()"
+                    :error-messages="jobErrors()"
                     type="text"
                     required
                 ></v-text-field>
@@ -74,7 +74,6 @@
                 <v-btn large type="submit" color="primary">Meet Now</v-btn>
             </v-form>
             <v-layout>
-                
                 <v-btn large to="/login" color="secondary">Login</v-btn>
                 <v-btn large to="/register" color="secondary">Register</v-btn>
             </v-layout>
@@ -85,6 +84,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
+import store from "../store"
 import { validationMixin } from "vuelidate"
 const validations = {
     phone: { required },
@@ -93,17 +93,17 @@ const validations = {
         required,
         minTwo: (value: string[]) => value.length > 1,
     },
-    occupation: { required },
+    job: { required },
 }
 
 @Component({ mixins: [validationMixin], validations })
 export default class Start extends Vue {
-    phone = ""
-    city = ""
-    hobbies: string[] = []
+    phone = store.state.phone
+    city = store.state.city
+    hobbies: string[] = store.state.hobbies
     hobbySuggestions = ["Football", "Food"]
-    occupation = ""
-    language = "English"
+    job = store.state.job
+    language = store.state.language
     languages = ["English"]
 
     phoneErrors() {
@@ -128,10 +128,10 @@ export default class Start extends Vue {
         return errors
     }
 
-    occupationErrors() {
+    jobErrors() {
         const errors: string[] = []
-        if (!this.$v.occupation.$dirty) return errors
-        !this.$v.occupation.required && errors.push("Occupation is required.")
+        if (!this.$v.job.$dirty) return errors
+        !this.$v.job.required && errors.push("Occupation is required.")
         return errors
     }
 
@@ -142,8 +142,13 @@ export default class Start extends Vue {
             console.log("invalid submission")
         } else {
             // do your submit logic here
+            store.commit("setPhone", { phone: this.phone })
+            store.commit("setCity", { city: this.city })
+            store.commit("setHobbies", { hobbies: this.hobbies })
+            store.commit("setJob", { job: this.job })
             console.log("form is valid")
             // route to phone verification
+            this.$router.push("verifyAnonymous")
         }
     }
 

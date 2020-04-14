@@ -1,6 +1,6 @@
 <template>
     <v-layout column>
-        <p class="title">We sent you an SMS verification code. Please insert it below.</p>
+        <p class="title">We sent you an SMS verification code to {{ phone }}. Please insert it below.</p>
         <v-layout align-center>
             <v-text-field
                 name="smsCode"
