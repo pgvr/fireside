@@ -19,9 +19,7 @@ const userState = getModule(UserModule)
 
 @Component({ components: { VerifyPhone } })
 export default class VerifyAnonymous extends Vue {
-    phone() {
-        return userState.phone
-    }
+    phone = userState.phone
     loading = false
     code = ""
     submit() {

@@ -34,10 +34,15 @@
 import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
+import UserModule from "@/store/modules/user.module"
+import { getModule } from "vuex-module-decorators"
+
 const validations = {
     phone: { required },
     password: { required },
 }
+
+const userState = getModule(UserModule)
 
 @Component({ mixins: [validationMixin], validations })
 export default class Login extends Vue {
@@ -66,7 +71,9 @@ export default class Login extends Vue {
         } else {
             // do your submit logic here
             console.log("form is valid")
+            console.log(this.password)
             // route to phone verification
+            userState.login({ phone: this.phone, password: this.password })
         }
     }
 }

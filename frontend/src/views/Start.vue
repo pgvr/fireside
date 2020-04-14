@@ -24,12 +24,12 @@
                     required
                 ></v-text-field>
                 <v-combobox
-                    v-model="hobbies"
-                    :items="hobbySuggestions"
+                    v-model="interests"
+                    :items="interestSuggestions"
                     chips
                     clearable
-                    @blur="$v.hobbies.$touch()"
-                    :error-messages="hobbyErrors()"
+                    @blur="$v.interests.$touch()"
+                    :error-messages="interestErrors()"
                     label="Your favorite hobbies"
                     multiple
                     prepend-icon="mdi-table-tennis"
@@ -40,7 +40,7 @@
                             :input-value="selected"
                             close
                             @click="select"
-                            @click:close="removeHobby(item)"
+                            @click:close="removeInterest(item)"
                         >
                             <strong>{{ item }}</strong>
                         </v-chip>
@@ -74,8 +74,8 @@
                 <v-btn large type="submit" color="primary">Meet Now</v-btn>
             </v-form>
             <v-layout>
-                <v-btn large to="/login" color="secondary">Login</v-btn>
-                <v-btn large to="/register" color="secondary">Register</v-btn>
+                <v-btn large @click="navigate('login')" color="secondary">Login</v-btn>
+                <v-btn large @click="navigate('register')" color="secondary">Register</v-btn>
             </v-layout>
         </v-layout>
     </v-container>
@@ -88,7 +88,7 @@ import { validationMixin } from "vuelidate"
 const validations = {
     phone: { required },
     city: { required },
-    hobbies: {
+    interests: {
         required,
         minTwo: (value: string[]) => value.length > 1,
     },
@@ -97,6 +97,7 @@ const validations = {
 
 import { getModule } from "vuex-module-decorators"
 import UserModule from "@/store/modules/user.module"
+import router from "@/router"
 
 const userState = getModule(UserModule)
 
@@ -104,11 +105,19 @@ const userState = getModule(UserModule)
 export default class Start extends Vue {
     phone = userState.phone
     city = userState.city
-    hobbies: string[] = userState.hobbies
-    hobbySuggestions = ["Football", "Food"]
+    interests: string[] = userState.interests
+    interestSuggestions = ["Football", "Food"]
     job = userState.job
     language = userState.language
     languages = ["English"]
+
+    navigate(route: string) {
+        userState.setPhone(this.phone)
+        userState.setCity(this.city)
+        userState.setInterests(this.interests)
+        userState.setJob(this.job)
+        router.push(route)
+    }
 
     phoneErrors() {
         const errors: string[] = []
@@ -124,11 +133,11 @@ export default class Start extends Vue {
         return errors
     }
 
-    hobbyErrors() {
+    interestErrors() {
         const errors: string[] = []
-        if (!this.$v.hobbies.$dirty) return errors
-        !this.$v.hobbies.required && errors.push("Hobbies are required.")
-        !this.$v.hobbies.minTwo && errors.push("You need at least two.")
+        if (!this.$v.interests.$dirty) return errors
+        !this.$v.interests.required && errors.push("Interests are required.")
+        !this.$v.interests.minTwo && errors.push("You need at least two.")
         return errors
     }
 
@@ -148,7 +157,7 @@ export default class Start extends Vue {
             // do your submit logic here
             userState.setPhone(this.phone)
             userState.setCity(this.city)
-            userState.setHobbies(this.hobbies)
+            userState.setInterests(this.interests)
             userState.setJob(this.job)
             console.log("form is valid")
             // route to phone verification
@@ -156,9 +165,9 @@ export default class Start extends Vue {
         }
     }
 
-    removeHobby(chip: string) {
-        const index = this.hobbies.indexOf(chip)
-        this.hobbies.splice(index, 1)
+    removeInterest(chip: string) {
+        const index = this.interests.indexOf(chip)
+        this.interests.splice(index, 1)
     }
 }
 </script>

@@ -1,5 +1,7 @@
 import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
 import store from "@/store"
+import router from "@/router"
+import axios from "axios"
 
 export interface User {
     phone: string
@@ -9,11 +11,11 @@ export interface User {
     language: string
 }
 
-@Module({ name: "User", store, namespaced: true, dynamic: true })
+@Module({ name: "User", store, dynamic: true })
 export default class UserModule extends VuexModule {
     phone = ""
     city = ""
-    hobbies: string[] = []
+    interests: string[] = []
     job = ""
     language = "English"
 
@@ -21,46 +23,57 @@ export default class UserModule extends VuexModule {
     setPhone(newPhone: string) {
         this.phone = newPhone
     }
+
     @Mutation
     setCity(newCity: string) {
         this.city = newCity
     }
+
     @Mutation
-    setHobbies(newHobbies: string[]) {
-        this.hobbies = newHobbies
+    setInterests(newInterests: string[]) {
+        this.interests = newInterests
     }
+
     @Mutation
     setJob(newJob: string) {
         this.job = newJob
     }
 
     @Action
-    async register({ phone, city, hobbies, job, language }: User) {
-        const body = { phone, city, hobbies, job, language }
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-        })
+    async register(password: string) {
+        const body = {
+            phone: this.phone,
+            city: this.city,
+            interests: this.interests,
+            job: this.job,
+            language: this.language,
+            password,
+        }
+        const response = await axios.post(`${process.env.VUE_APP_API_URL}/register`, body)
+
         if (response.status === 200) {
             // update state with user details
             // route to next page
+            const data = await response.data
+            console.log(data)
+            router.push("/")
         } else {
             // register failed
         }
     }
 
-    @Action
-    async login(phone: string, password: string) {
-        const body = { phone, password }
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
+    @Action({ rawError: true })
+    async login(auth: { phone: string; password: string }) {
+        const response = await axios.post(`${process.env.VUE_APP_API_URL}/login`, {
+            phone: auth.phone,
+            password: auth.password,
         })
         if (response.status === 200) {
             // update state with user details
             // route to next page
+            const data = await response.data
+            console.log(data)
+            router.push("/")
         } else {
             // register failed
         }
@@ -68,25 +81,15 @@ export default class UserModule extends VuexModule {
 
     @Action
     async logout() {
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/logout`, {
-            method: "DELETE",
-        })
+        const response = await axios.delete(`${process.env.VUE_APP_API_URL}/logout`)
         if (response.status === 200) {
             // update state with user details
             // route to next page
+            const data = await response.data
+            console.log(data)
+            router.push("start")
         } else {
             // register failed
         }
     }
-
-    // // action 'incr' commits mutation 'increment' when done with return value as payload
-    // @Action({ commit: "increment" })
-    // incr() {
-    //     return 5
-    // }
-    // // action 'decr' commits mutation 'decrement' when done with return value as payload
-    // @Action({ commit: "decrement" })
-    // decr() {
-    //     return 5
-    // }
 }

@@ -5,13 +5,11 @@
             <v-form @submit.prevent="register()">
                 <v-text-field
                     prepend-icon="mdi-phone"
-                    v-model="phone"
+                    :value="phone"
+                    readonly=""
                     label="Phone"
                     type="tel"
                     required
-                    :error-messages="phoneErrors()"
-                    @input="$v.phone.$touch()"
-                    @blur="$v.phone.$touch()"
                 ></v-text-field>
 
                 <v-text-field
@@ -45,8 +43,9 @@
 import { Component, Vue } from "vue-property-decorator"
 import { required, sameAs } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
+import { getModule } from "vuex-module-decorators"
+import UserModule from "@/store/modules/user.module"
 const validations = {
-    phone: { required },
     password: { required },
     repeatPassword: {
         required,
@@ -54,18 +53,13 @@ const validations = {
     },
 }
 
+const userState = getModule(UserModule)
+
 @Component({ mixins: [validationMixin], validations })
 export default class Register extends Vue {
-    phone = ""
+    phone = userState.phone
     password = ""
     repeatPassword = ""
-
-    phoneErrors() {
-        const errors: string[] = []
-        if (!this.$v.phone.$dirty) return errors
-        !this.$v.phone.required && errors.push("Phone is required.")
-        return errors
-    }
 
     passwordErrors() {
         const errors: string[] = []
@@ -90,11 +84,7 @@ export default class Register extends Vue {
         } else {
             // do your submit logic here
             console.log("form is valid")
-            // route to phone verification
-            await fetch(`${process.env.VUE_APP_API_URL}/register`, {
-                method: "POST",
-                body: JSON.stringify({ phone: "123" }),
-            })
+            userState.register(this.password)
         }
     }
 }
