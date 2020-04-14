@@ -21,12 +21,10 @@ export default class VerifyAnonymous extends Vue {
     }
     loading = false
     code = ""
-    created() {
-        console.log(store.state.phone)
-    }
 
     submit() {
         console.log("submit")
+        // route to loading screen and connect user
     }
 
     updateCode(value: string) {
