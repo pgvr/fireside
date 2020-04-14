@@ -1,5 +1,6 @@
 {
     "editor.formatOnSave": true,
+    "typescript.preferences.importModuleSpecifier": "relative",
     "[typescript]": {
         "editor.formatOnSave": false,
         "editor.codeActionsOnSave": {
