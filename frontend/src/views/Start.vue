@@ -84,7 +84,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
-import store from "../store"
 import { validationMixin } from "vuelidate"
 const validations = {
     phone: { required },
@@ -96,14 +95,19 @@ const validations = {
     job: { required },
 }
 
+import { getModule } from "vuex-module-decorators"
+import UserModule from "@/store/modules/user.module"
+
+const userState = getModule(UserModule)
+
 @Component({ mixins: [validationMixin], validations })
 export default class Start extends Vue {
-    phone = store.state.phone
-    city = store.state.city
-    hobbies: string[] = store.state.hobbies
+    phone = userState.phone
+    city = userState.city
+    hobbies: string[] = userState.hobbies
     hobbySuggestions = ["Football", "Food"]
-    job = store.state.job
-    language = store.state.language
+    job = userState.job
+    language = userState.language
     languages = ["English"]
 
     phoneErrors() {
@@ -142,10 +146,10 @@ export default class Start extends Vue {
             console.log("invalid submission")
         } else {
             // do your submit logic here
-            store.commit("setPhone", { phone: this.phone })
-            store.commit("setCity", { city: this.city })
-            store.commit("setHobbies", { hobbies: this.hobbies })
-            store.commit("setJob", { job: this.job })
+            userState.setPhone(this.phone)
+            userState.setCity(this.city)
+            userState.setHobbies(this.hobbies)
+            userState.setJob(this.job)
             console.log("form is valid")
             // route to phone verification
             this.$router.push("verifyAnonymous")

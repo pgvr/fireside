@@ -12,16 +12,18 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
 import VerifyPhone from "../components/VerifyPhone.vue"
-import store from "../store"
+import { getModule } from "vuex-module-decorators"
+import UserModule from "@/store/modules/user.module"
+
+const userState = getModule(UserModule)
 
 @Component({ components: { VerifyPhone } })
 export default class VerifyAnonymous extends Vue {
     phone() {
-        return store.state.phone
+        return userState.phone
     }
     loading = false
     code = ""
-
     submit() {
         console.log("submit")
         // route to loading screen and connect user
