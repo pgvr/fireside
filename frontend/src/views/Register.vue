@@ -91,6 +91,10 @@ export default class Register extends Vue {
             // do your submit logic here
             console.log("form is valid")
             // route to phone verification
+            await fetch(`${process.env.VUE_APP_API_URL}/register`, {
+                method: "POST",
+                body: JSON.stringify({ phone: "123" }),
+            })
         }
     }
 }
