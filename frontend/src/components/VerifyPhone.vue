@@ -20,8 +20,8 @@ import { Component, Vue, Prop } from "vue-property-decorator"
 
 @Component
 export default class VerifyPhone extends Vue {
-    @Prop(String) readonly phone: string | undefined
-    @Prop(Boolean) readonly loading: boolean | undefined
+    @Prop({ required: true }) readonly phone: string = ""
+    @Prop({ required: true }) readonly loading: boolean = false
     code = ""
 
     updateCode(value: string) {
