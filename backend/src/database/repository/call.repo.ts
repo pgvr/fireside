@@ -69,4 +69,9 @@ export default class CallRepo {
         }
         return dbCalls
     }
+
+    public static async getCallsByPhone(phone: string): Promise<Call[]> {
+        const calls = await CallModel.find({ phone }).sort({ createdAt: "descending" }).exec()
+        return calls
+    }
 }
