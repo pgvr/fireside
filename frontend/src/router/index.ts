@@ -7,6 +7,7 @@ import Register from "../views/Register.vue"
 import About from "../views/About.vue"
 import VerifyAnonymous from "../views/VerifyAnonymous.vue"
 import NotFound from "../views/NotFound.vue"
+import Call from "../views/Call.vue"
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,11 @@ const routes: Array<RouteConfig> = [
         path: "/register",
         name: "Register",
         component: Register,
+    },
+    {
+        path: "/call",
+        name: "Call",
+        component: Call,
     },
     {
         path: "*",

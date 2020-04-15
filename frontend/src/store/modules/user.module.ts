@@ -6,17 +6,17 @@ import axios from "axios"
 export interface User {
     phone: string
     city: string
-    hobbies: string[]
+    interests: string[]
     job: string
     language: string
 }
 
 @Module({ name: "User", store, dynamic: true })
 export default class UserModule extends VuexModule {
-    phone = ""
-    city = ""
+    phone = "+4915730717541"
+    city = "Mannheim"
     interests: string[] = []
-    job = ""
+    job = "Student"
     language = "English"
 
     @Mutation

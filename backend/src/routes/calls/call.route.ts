@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express"
 import { SuccessResponse } from "../../core/ApiResponse"
 import CallRepo from "../../database/repository/call.repo"
+import QueueRepo from "../../database/repository/queue.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import validator, { ValidationSource } from "../../helpers/validator"
 import schema from "./call.schema"
@@ -33,6 +34,18 @@ router.get(
         }
         // this means there is a call that has no "completedAt" ==> call is active
         return new SuccessResponse("Success", { callActive: true }).send(res)
+    }),
+)
+
+router.get(
+    "/stillInQueue/:phone",
+    asyncHandler(async (req, res) => {
+        const { phone } = req.params
+        const queueObj = await QueueRepo.getEntryByPhone(phone)
+        if (queueObj) {
+            return new SuccessResponse("Still in queue", { queue: true })
+        }
+        return new SuccessResponse("Not in queue anymore", { queue: false })
     }),
 )
 
