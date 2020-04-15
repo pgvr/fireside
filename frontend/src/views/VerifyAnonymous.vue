@@ -2,7 +2,7 @@
     <v-container>
         <v-layout column>
             <form @submit.prevent="submit()">
-                <VerifyPhone v-on:code="updateCode" :phone="phone()" :loading="loading" />
+                <VerifyPhone v-on:code="updateCode" :phone="phone" :loading="loading" />
                 <v-btn color="primary" type="submit">Submit</v-btn>
             </form>
         </v-layout>
