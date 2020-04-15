@@ -25,7 +25,7 @@ router.post(
 
         if (foundMatch) {
             // connect with match
-            const conferenceXml = buildConference("Welcome", "New Conference Name") // TODO: Should probably be something unique
+            const conferenceXml = buildConference("Welcome", new Date().getTime().toString()) // TODO: Should probably be something unique
 
             const numbers = [incomingParticipant.phone, foundMatch.phone]
 

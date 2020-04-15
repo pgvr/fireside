@@ -15,6 +15,8 @@ module.exports = {
         // e.g. "@typescript-eslint/explicit-function-return-type": "off",
         "max-classes-per-file": "off",
         "no-param-reassign": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "no-await-in-loop": "off",
+        "no-plusplus": "off"
     },
 }

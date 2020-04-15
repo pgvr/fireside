@@ -4,6 +4,7 @@ import logout from "./access/logout.route"
 import register from "./access/register.route"
 import token from "./access/token.route"
 import conference from "./conference/conference.route"
+import webhook from "./conference/webhook.route"
 import sendCode from "./verification/sendCode.route"
 import verifyCode from "./verification/verifyCode.route"
 
@@ -16,5 +17,6 @@ router.use("/logout", logout)
 router.use("/token", token)
 router.use("/sendCode", sendCode)
 router.use("/verifyCode", verifyCode)
+router.use("/webhook", webhook)
 
 export default router
