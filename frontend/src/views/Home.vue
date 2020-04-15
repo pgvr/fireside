@@ -40,7 +40,12 @@
                             </td>
                             <td>100</td>
                             <td>
-                                <v-btn icon><v-icon>mdi-account-plus</v-icon></v-btn>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-icon v-on="on">mdi-account-plus</v-icon>
+                                    </template>
+                                    <span>Feature coming soon!</span>
+                                </v-tooltip>
                             </td>
                         </tr>
                     </tbody>
