@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express"
 import { SuccessResponse } from "../../core/ApiResponse"
+import Logger from "../../core/Logger"
 import CallRepo from "../../database/repository/call.repo"
 import QueueRepo from "../../database/repository/queue.repo"
 import asyncHandler from "../../helpers/asyncHandler"
@@ -24,6 +25,8 @@ router.get(
     asyncHandler(async (req, res) => {
         const { phone } = req.params
         const latestCalls = await CallRepo.getCallsByPhone(phone)
+        Logger.info("latestCalls")
+        Logger.info(latestCalls)
         // no call exists yet, so not active
         if (latestCalls.length === 0) {
             return new SuccessResponse("Success", { callActive: false }).send(res)

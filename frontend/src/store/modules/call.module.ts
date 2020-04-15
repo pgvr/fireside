@@ -79,11 +79,11 @@ export default class CallModule extends VuexModule {
                             `${process.env.VUE_APP_API_URL}/calls/stillInQueue/${user.phone}`,
                         )
                         const { data } = response.data
-                        if (!data.queue) {
+                        if (data.queue === false) {
                             // not in queue anymore, call started
                             console.log("not in queue anymore, call must have started")
-                            this.setInQueue(false)
                             this.resetInterval()
+                            this.setInQueue(false)
                         }
                     }
                 }, 5000)
