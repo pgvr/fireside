@@ -21,17 +21,22 @@
                         <tr>
                             <th class="text-left">Date</th>
                             <th class="text-left">Duration</th>
-                            <th class="text-left">Match found?</th>
-                            <th class="text-left">Sparks earned</th>
+                            <th class="text-left">Guess correct?</th>
+                            <th class="text-left">Sparks</th>
                             <th class="text-left">Connect</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="call in calls()" :key="call.callId">
                             <td>{{ callStart(call) }}</td>
-                            <td>{{ callDuration(call) }} minutes</td>
+                            <td>{{ callDuration(call) }} min</td>
                             <td>
-                                <v-btn icon><v-icon>mdi-check</v-icon></v-btn>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-icon v-on="on">mdi-check</v-icon>
+                                    </template>
+                                    <span>Swimming, Football</span>
+                                </v-tooltip>
                             </td>
                             <td>100</td>
                             <td>
