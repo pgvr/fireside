@@ -2,18 +2,24 @@
     <v-container>
         <v-layout column>
             <h1 class="display-1">Call Screen</h1>
-            <v-layout v-if="!callInProgress()" column>
+            <v-layout v-if="callStatus() === 'idle'" column>
                 <p class="body-1">Click the button to find a stranger</p>
-                <v-btn color="primary" class="mt-4" v-if="!callInProgress()" @click="startCall()">Start Call</v-btn>
+                <v-btn :loading="callStateLoading()" color="primary" class="mt-4" @click="startCall()"
+                    >Start Call</v-btn
+                >
             </v-layout>
-            <v-layout v-else-if="callInProgress() && inQueue()" column>
-                <v-btn color="error" class="mt-4" v-if="inQueue()" @click="leaveQueue()">Leave Queue</v-btn>
+            <v-layout v-else-if="callStatus() === 'queue'" column>
+                <v-btn :loading="callStateLoading()" color="error" class="mt-4" @click="leaveQueue()"
+                    >Leave Queue</v-btn
+                >
             </v-layout>
-            <v-layout v-else column>
-                <v-btn color="success" class="mt-4" v-if="callInProgress()" @click="completeCall()"
+            <v-layout v-else-if="callStatus() === 'calling'" column>
+                <v-btn :loading="callStateLoading()" color="success" class="mt-4" @click="completeCall()"
                     >Complete Call</v-btn
                 >
-                <v-btn color="info" class="mt-4" v-if="callInProgress()" @click="resetCall()">Something is wrong</v-btn>
+                <v-btn :loading="callStateLoading()" color="info" class="mt-4" @click="resetCall()"
+                    >Something is wrong</v-btn
+                >
             </v-layout>
         </v-layout>
     </v-container>
@@ -30,11 +36,11 @@ const callState = getModule(CallModule)
 
 @Component
 export default class Call extends Vue {
-    inQueue() {
-        return callState.inQueue
+    callStatus() {
+        return callState.callStatus
     }
-    callInProgress() {
-        return callState.callInProgress
+    callStateLoading() {
+        return callState.loading
     }
 
     startCall() {
@@ -64,7 +70,7 @@ export default class Call extends Vue {
     }
 
     resetCall() {
-        callState.resetCall()
+        callState.setCallStatus("idle")
     }
 }
 </script>
