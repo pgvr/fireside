@@ -42,17 +42,6 @@ export default class UserRepo {
             .exec()
     }
 
-    public static findMatchingParticipant(user: User): Promise<User> {
-        // order by date desc to have FIFO like queuing
-        // match either city or interests
-        return UserModel.find()
-            .sort({ date: "ascending" })
-            .findOneAndRemove({
-                $or: [{ city: user.city }, { interests: { $in: user.interests } }],
-            })
-            .exec()
-    }
-
     public static findByPhone(phone: string): Promise<User> {
         return UserModel.findOne({ phone }).exec()
     }

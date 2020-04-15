@@ -14,7 +14,7 @@ export default interface User extends Document {
     updatedAt: Date
 }
 
-const schema = new Schema(
+export const schema = new Schema(
     {
         phone: {
             type: Schema.Types.String,

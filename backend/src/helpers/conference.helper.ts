@@ -13,7 +13,14 @@ export function buildConference(welcomeMessage: string, conferenceName: string) 
     const { VoiceResponse } = twilio.twiml
     const twiml = new VoiceResponse()
     twiml.say(welcomeMessage)
-    twiml.dial().conference(conferenceName)
+    twiml.dial().conference(
+        {
+            statusCallback: "https://32d1c555.ngrok.io/webhook",
+            statusCallbackMethod: "POST",
+            statusCallbackEvent: ["end", "start", "join", "leave"],
+        },
+        conferenceName,
+    )
     return twiml
 }
 
