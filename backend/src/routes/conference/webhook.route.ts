@@ -20,7 +20,7 @@ router.post(
             Logger.info("Conference Started")
             const conference = await getConference(confUpdate.ConferenceSid)
             const participants = await conference.participants().list()
-            await CallRepo.create(participants, conference.sid)
+            await CallRepo.create(participants, confUpdate.ConferenceSid)
         } else if (confUpdate.StatusCallbackEvent === "conference-end") {
             // update call with length and status
             Logger.info("Conference Ended")

@@ -9,7 +9,7 @@ export default interface User extends Document {
     interests: string[]
     job: string
     language: string
-    password: string
+    password?: string
     createdAt: Date
     updatedAt: Date
 }
@@ -43,14 +43,12 @@ export const schema = new Schema(
             type: Schema.Types.String,
         },
         createdAt: {
-            type: Date,
+            type: Schema.Types.Date,
             required: true,
-            select: false,
         },
         updatedAt: {
-            type: Date,
+            type: Schema.Types.Date,
             required: true,
-            select: false,
         },
     },
     {

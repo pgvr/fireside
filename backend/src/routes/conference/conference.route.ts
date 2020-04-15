@@ -5,6 +5,7 @@ import Logger from "../../core/Logger"
 import { QueueModel } from "../../database/model/queue.model"
 import User from "../../database/model/user.model"
 import QueueRepo from "../../database/repository/queue.repo"
+import UserRepo from "../../database/repository/user.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import { buildConference } from "../../helpers/conference.helper"
 import validator, { ValidationSource } from "../../helpers/validator"
@@ -32,6 +33,9 @@ router.post(
 
             const numbers = [incomingParticipant.phone, foundMatch.phone]
 
+            // ensure we have participants as users, if not create them as anon
+            await UserRepo.addUsersIfDontExist([incomingParticipant, foundMatch])
+
             await Promise.all(
                 numbers.map((number) => {
                     return client.calls.create({
@@ -50,12 +54,12 @@ router.post(
         }
 
         // put number in db and wait to be found
-        Logger.info("Adding to queue")
         const alreadyExists = await QueueModel.findOne({ phone: incomingParticipant.phone })
         if (alreadyExists) {
             Logger.info("User is already in queue")
             return new SuccessResponse("User is already in queue", { queue: true }).send(res)
         }
+        Logger.info("Adding to queue")
         await QueueRepo.addToQueue(incomingParticipant)
         return new SuccessResponse("No match found. Putting in db.", { queue: true }).send(res)
     }),

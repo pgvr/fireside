@@ -46,9 +46,9 @@ router.get(
         const { phone } = req.params
         const queueObj = await QueueRepo.getEntryByPhone(phone)
         if (queueObj) {
-            return new SuccessResponse("Still in queue", { queue: true })
+            return new SuccessResponse("Still in queue", { queue: true }).send(res)
         }
-        return new SuccessResponse("Not in queue anymore", { queue: false })
+        return new SuccessResponse("Not in queue anymore", { queue: false }).send(res)
     }),
 )
 

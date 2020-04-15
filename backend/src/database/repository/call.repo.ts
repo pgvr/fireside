@@ -11,13 +11,17 @@ export default class CallRepo {
         const now = new Date()
         const calls = []
         const users: User[] = []
+        Logger.info("Creating calls for both participants")
         for (let i = 0; i < participants.length; i++) {
             const participant = participants[i]
             const call = await getCall(participant.callSid)
             calls.push(call)
+            Logger.info(`Finding user for phone number ${call.to}`)
             const user = await UserRepo.findByPhone(call.to)
             users.push(user)
         }
+        Logger.info("Found both users")
+        Logger.info(users)
 
         let commonInterests: string[] = []
         // add city if it matches

@@ -15,7 +15,7 @@ export function buildConference(welcomeMessage: string, conferenceName: string) 
     twiml.say(welcomeMessage)
     twiml.dial().conference(
         {
-            statusCallback: "https://32d1c555.ngrok.io/webhook",
+            statusCallback: "https://53324380.ngrok.io/webhook",
             statusCallbackMethod: "POST",
             statusCallbackEvent: ["end", "start", "join", "leave"],
         },

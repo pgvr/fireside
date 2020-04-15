@@ -31,9 +31,12 @@ export const schema = new Schema(
             required: true,
         },
         createdAt: {
-            type: Date,
+            type: Schema.Types.Date,
             required: true,
-            select: false,
+        },
+        updatedAt: {
+            type: Schema.Types.Date,
+            required: true,
         },
     },
     {

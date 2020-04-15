@@ -1,4 +1,5 @@
 import { Types } from "mongoose"
+import Logger from "../../core/Logger"
 import Keystore from "../model/keystore.model"
 import User, { UserModel } from "../model/user.model"
 import KeystoreRepo from "./keystore.repo"
@@ -20,6 +21,14 @@ export default class UserRepo {
         const createdUser = await UserModel.create(user)
         const keystore = await KeystoreRepo.create(createdUser._id, accessTokenKey, refreshTokenKey)
         return { user: createdUser.toObject(), keystore }
+    }
+
+    public static async createAnon(user: User): Promise<User> {
+        const now = new Date()
+        user.createdAt = now
+        user.updatedAt = now
+        const dbUser = await UserModel.create(user)
+        return dbUser
     }
 
     public static async update(
@@ -44,5 +53,21 @@ export default class UserRepo {
 
     public static findByPhone(phone: string): Promise<User> {
         return UserModel.findOne({ phone }).exec()
+    }
+
+    public static async addUsersIfDontExist(users: User[]): Promise<User[]> {
+        const dbUsers = []
+        for (let i = 0; i < users.length; i++) {
+            const user = users[i]
+            Logger.info("before")
+            const exists = await UserRepo.findByPhone(user.phone)
+            Logger.info("after")
+            if (!exists) {
+                const dbUser = await UserRepo.createAnon(user)
+                dbUsers.push(dbUser)
+            }
+            Logger.info("after2")
+        }
+        return dbUsers
     }
 }

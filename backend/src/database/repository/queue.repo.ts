@@ -1,4 +1,3 @@
-import Logger from "../../core/Logger"
 import { QueueModel } from "../model/queue.model"
 import User from "../model/user.model"
 
@@ -19,12 +18,10 @@ export default class QueueRepo {
     }
 
     public static async addToQueue(user: User): Promise<User> {
-        const alreadyExists = await QueueModel.findOne({ phone: user.phone })
-        if (alreadyExists) {
-            Logger.info("User is already in queue")
-            return user
-        }
-        return QueueModel.create({ ...user, createdAt: new Date() })
+        const now = new Date()
+        user.createdAt = now
+        user.updatedAt = now
+        return QueueModel.create(user)
     }
 
     public static removeFromQueue(user: User): Promise<User> {
