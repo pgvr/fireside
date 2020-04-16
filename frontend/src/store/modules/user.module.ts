@@ -19,6 +19,7 @@ export default class UserModule extends VuexModule {
     interests: string[] = ["Hobby 1", "Hobby 2"]
     job = "Student"
     language = "English"
+    loggedIn = false
 
     @Mutation
     setPhone(newPhone: string) {

@@ -1,13 +1,14 @@
 import Vue from "vue"
 import VueRouter, { RouteConfig } from "vue-router"
-import Home from "../views/Home.vue"
-import Start from "../views/Start.vue"
-import Login from "../views/Login.vue"
-import Register from "../views/Register.vue"
 import About from "../views/About.vue"
-import VerifyAnonymous from "../views/VerifyAnonymous.vue"
-import NotFound from "../views/NotFound.vue"
 import Call from "../views/Call.vue"
+import Home from "../views/Home.vue"
+import Login from "../views/Login.vue"
+import NotFound from "../views/NotFound.vue"
+import PostCall from "../views/PostCall.vue"
+import Register from "../views/Register.vue"
+import Start from "../views/Start.vue"
+import VerifyAnonymous from "../views/VerifyAnonymous.vue"
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,11 @@ const routes: Array<RouteConfig> = [
         path: "/call",
         name: "Call",
         component: Call,
+    },
+    {
+        path: "/postCall",
+        name: "Post Call",
+        component: PostCall,
     },
     {
         path: "*",

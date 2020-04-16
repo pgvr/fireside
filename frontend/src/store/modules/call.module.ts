@@ -1,6 +1,7 @@
-import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
+import router from "@/router"
 import store from "@/store"
 import axios from "axios"
+import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
 import { User } from "./user.module"
 
 export interface Call {
@@ -19,7 +20,13 @@ export default class CallModule extends VuexModule {
     calls: Call[] = []
     updateQueueInterval = -1
     refreshQueueCounter = 0
+    // whether to allow submits in post call
+    postCallEditEnabled = false
 
+    @Mutation
+    setPostCallEdit(newValue: boolean) {
+        this.postCallEditEnabled = newValue
+    }
     @Mutation
     setCallStatus(newStatus: "idle" | "calling" | "queue") {
         this.callStatus = newStatus
@@ -44,6 +51,55 @@ export default class CallModule extends VuexModule {
     @Mutation
     setLoading(newLoading: boolean) {
         this.loading = newLoading
+    }
+
+    @Action
+    async fetchEditStatus(phone: string) {
+        try {
+            this.setLoading(true)
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/single/${phone}`)
+            const { data } = response.data
+            if (data?.guessedInterests) {
+                // already submitted once
+                this.setPostCallEdit(false)
+            } else {
+                this.setPostCallEdit(true)
+            }
+            this.setLoading(false)
+        } catch (error) {
+            console.log(error)
+            this.setLoading(false)
+            this.setPostCallEdit(false)
+        }
+    }
+
+    @Action
+    async submitGuesses(payload: { phone: string; guesses: string[] }) {
+        try {
+            this.setLoading(true)
+            const body = { phone: payload.phone, submittedInterests: payload.guesses }
+            const response = await axios.post(`${process.env.VUE_APP_API_URL}/calls/submit`, body)
+            const { data } = response.data
+            this.setLoading(false)
+            return { guessedCorrect: data.guessedCorrect, points: data.points }
+        } catch (error) {
+            console.log(error)
+            this.setLoading(false)
+            return null
+        }
+    }
+
+    @Action
+    async submitRating(payload: { phone: string; rating: number }) {
+        try {
+            this.setLoading(true)
+            const body = { phone: payload.phone, rating: payload.rating }
+            await axios.post(`${process.env.VUE_APP_API_URL}/calls/rate`, body)
+            this.setLoading(false)
+        } catch (error) {
+            console.log(error)
+            this.setLoading(false)
+        }
     }
 
     @Action
@@ -128,6 +184,8 @@ export default class CallModule extends VuexModule {
             } else {
                 // bring user to post call screen
                 console.log("call finished, navigate to post call")
+                router.push("/postCall")
+                this.setCallStatus("idle")
             }
         } catch (error) {
             console.log(error)

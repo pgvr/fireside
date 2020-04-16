@@ -48,6 +48,18 @@ router.get(
     }),
 )
 
+router.get(
+    "/single/:phone",
+    validator(schema.phone, ValidationSource.PARAM),
+    asyncHandler(async (req, res) => {
+        const { phone } = req.params
+        const [call] = await CallRepo.getLatestCall(phone)
+        // call must be done since there is no conference anymore
+        Logger.info(call)
+        return new SuccessResponse("Success", call).send(res)
+    }),
+)
+
 router.post(
     "/submit",
     validator(schema.submit, ValidationSource.BODY),

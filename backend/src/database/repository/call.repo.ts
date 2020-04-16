@@ -49,7 +49,7 @@ export default class CallRepo {
     }
 
     public static async getLatestCall(phone: string): Promise<Call[]> {
-        return CallModel.find({ phone }).sort({ completedAt: "descending" }).limit(1).exec()
+        return CallModel.find({ phone }).sort({ completedAt: "descending" }).limit(1).lean()
     }
 
     public static async submitGuesses(phone: string, guesses: string[]): Promise<Call> {
