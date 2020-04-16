@@ -1,51 +1,20 @@
 /* eslint-disable no-await-in-loop */
-import { ParticipantInstance } from "twilio/lib/rest/api/v2010/account/conference/participant"
-import Logger from "../../core/Logger"
-import { getCall } from "../../helpers/conference.helper"
 import Call, { CallModel } from "../model/call.model"
-import User from "../model/user.model"
-import UserRepo from "./user.repo"
+import Conference from "../model/conference.model"
 
 export default class CallRepo {
-    public static async create(participants: ParticipantInstance[], conferenceId: string): Promise<Call[]> {
+    public static async create(numbers: string[], conference: Conference): Promise<Call[]> {
         const now = new Date()
-        const calls = []
-        const users: User[] = []
-        Logger.info("Creating calls for both participants")
-        for (let i = 0; i < participants.length; i++) {
-            const participant = participants[i]
-            const call = await getCall(participant.callSid)
-            calls.push(call)
-            Logger.info(`Finding user for phone number ${call.to}`)
-            const user = await UserRepo.findByPhone(call.to)
-            users.push(user)
-        }
-        Logger.info("Found both users")
-        Logger.info(users)
-
-        let commonInterests: string[] = []
-        // add city if it matches
-        if (users[0].city === users[1].city) {
-            commonInterests.push(users[0].city)
-        }
-        // check all matches and add them
-        const intersection = users[0].interests.filter((x) => users[1].interests.includes(x))
-        if (intersection.length > 0) {
-            commonInterests = [...commonInterests, ...intersection]
-        }
-
-        Logger.info("Common Interests:")
-        Logger.info(commonInterests)
 
         const dbCalls = []
-        for (let i = 0; i < calls.length; i++) {
-            const call = calls[i]
+        for (let i = 0; i < numbers.length; i++) {
+            const number = numbers[i]
             const dbCall = await CallModel.create(<Call>{
-                callId: call.sid,
-                phone: call.to,
-                createdAt: now,
-                commonInterests,
-                conferenceId,
+                phone: number,
+                createdAt: conference.callStartedAt,
+                completedAt: now,
+                commonInterests: conference.commonInterests,
+                conferenceId: conference.conferenceId,
             })
             dbCalls.push(dbCall)
         }

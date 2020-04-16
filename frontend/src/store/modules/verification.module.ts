@@ -4,7 +4,7 @@ import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
 
 @Module({ name: "Verification", store, dynamic: true })
 export default class VerificationModule extends VuexModule {
-    verified = false
+    verified = true
     loading = false
 
     @Mutation

@@ -1,24 +1,27 @@
 import { Document, model, Schema } from "mongoose"
 
-export const DOCUMENT_NAME = "call"
-export const COLLECTION_NAME = "calls"
+export const DOCUMENT_NAME = "conference"
+export const COLLECTION_NAME = "conferences"
 
-export default interface Call extends Document {
-    conferenceId: string
-    phone: string
+export default interface Conference extends Document {
+    conferenceId?: string
+    phoneOne: string
+    phoneTwo: string
     commonInterests: string[]
-    rating?: number
     createdAt: Date
-    completedAt?: Date
+    callStartedAt?: Date
 }
 
 const schema = new Schema(
     {
         conferenceId: {
             type: Schema.Types.String,
+        },
+        phoneOne: {
+            type: Schema.Types.String,
             required: true,
         },
-        phone: {
+        phoneTwo: {
             type: Schema.Types.String,
             required: true,
         },
@@ -26,14 +29,11 @@ const schema = new Schema(
             type: [Schema.Types.String],
             required: true,
         },
-        rating: {
-            type: Schema.Types.Number,
-        },
         createdAt: {
             type: Date,
             required: true,
         },
-        completedAt: {
+        callStartedAt: {
             type: Date,
         },
     },
@@ -42,4 +42,4 @@ const schema = new Schema(
     },
 )
 
-export const CallModel = model<Call>(DOCUMENT_NAME, schema, COLLECTION_NAME)
+export const ConferenceModel = model<Conference>(DOCUMENT_NAME, schema, COLLECTION_NAME)

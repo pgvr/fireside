@@ -4,6 +4,7 @@ import express from "express"
 import { SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
 import CallRepo from "../../database/repository/call.repo"
+import ConferenceRepo from "../../database/repository/conference.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import { ConferenceUpdate, getConference } from "../../helpers/conference.helper"
 
@@ -18,13 +19,15 @@ router.post(
         if (confUpdate.StatusCallbackEvent === "conference-start") {
             // create call for participants in db
             Logger.info("Conference Started")
+            // update conference with a callStartedAt Date
             const conference = await getConference(confUpdate.ConferenceSid)
             const participants = await conference.participants().list()
-            await CallRepo.create(participants, confUpdate.ConferenceSid)
+            await ConferenceRepo.updateStart(participants, confUpdate.ConferenceSid)
         } else if (confUpdate.StatusCallbackEvent === "conference-end") {
             // update call with length and status
             Logger.info("Conference Ended")
-            await CallRepo.completeConference(confUpdate.ConferenceSid)
+            const conference = await ConferenceRepo.removeConference(confUpdate.ConferenceSid)
+            await CallRepo.create([conference.phoneOne, conference.phoneTwo], conference)
         } else {
             // handle everything else
         }

@@ -4,6 +4,7 @@ import { NotFoundResponse, SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
 import { QueueModel } from "../../database/model/queue.model"
 import User from "../../database/model/user.model"
+import ConferenceRepo from "../../database/repository/conference.repo"
 import QueueRepo from "../../database/repository/queue.repo"
 import UserRepo from "../../database/repository/user.repo"
 import asyncHandler from "../../helpers/asyncHandler"
@@ -24,12 +25,27 @@ router.post(
         const incomingParticipant = req.body as User
 
         // search db for match
-        const foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
+        let foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
 
         if (foundMatch) {
             // connect with match
             Logger.info("Match found, initiating...")
-            const conferenceXml = buildConference("Welcome", new Date().getTime().toString())
+
+            // found match is coming from queue db collection, create a new object of it to remove _id, etc.
+            foundMatch = <User>{
+                phone: foundMatch.phone,
+                city: foundMatch.city,
+                interests: foundMatch.interests,
+                job: foundMatch.job,
+                language: foundMatch.language,
+            }
+            // Call being initiated, create conference in db to keep track
+            await ConferenceRepo.create(foundMatch, incomingParticipant)
+
+            const conferenceXml = buildConference(
+                "Welcome to your fireside chat. Enjoy!",
+                new Date().getTime().toString(),
+            )
 
             const numbers = [incomingParticipant.phone, foundMatch.phone]
 

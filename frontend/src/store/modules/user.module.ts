@@ -1,7 +1,7 @@
-import { Module, VuexModule, Mutation, Action } from "vuex-module-decorators"
-import store from "@/store"
 import router from "@/router"
+import store from "@/store"
 import axios from "axios"
+import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
 
 export interface User {
     phone: string
@@ -13,10 +13,10 @@ export interface User {
 
 @Module({ name: "User", store, dynamic: true })
 export default class UserModule extends VuexModule {
-    phone = ""
-    // phone = "+4915730717541"
+    // phone = ""
+    phone = "+4915730717541"
     city = "Mannheim"
-    interests: string[] = []
+    interests: string[] = ["Hobby 1", "Hobby 2"]
     job = "Student"
     language = "English"
 
