@@ -7,6 +7,14 @@ import User from "../model/user.model"
 
 export default class ConferenceRepo {
     public static async create(userOne: User, userTwo: User) {
+        // make sure users dont already have conf, remove if so
+        await ConferenceModel.findOneAndDelete({
+            $or: [{ phoneOne: userOne.phone }, { phoneTwo: userOne.phone }],
+        }).exec()
+        await ConferenceModel.findOneAndDelete({
+            $or: [{ phoneOne: userTwo.phone }, { phoneTwo: userTwo.phone }],
+        }).exec()
+
         let commonInterests: string[] = []
         // add city if it matches
         if (userOne.city === userTwo.city) {
@@ -53,5 +61,11 @@ export default class ConferenceRepo {
             conferenceId,
         })
         return conference
+    }
+
+    public static async getConferenceForPhone(phone: string) {
+        return ConferenceModel.findOne({
+            $or: [{ phoneOne: phone }, { phoneTwo: phone }],
+        }).exec()
     }
 }
