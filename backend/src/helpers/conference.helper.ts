@@ -12,6 +12,9 @@ const client = twilio(accountSid, authToken)
 export function buildConference(welcomeMessage: string, conferenceName: string) {
     const { VoiceResponse } = twilio.twiml
     const twiml = new VoiceResponse()
+    twiml.pause({
+        length: 2,
+    })
     twiml.say(welcomeMessage)
     twiml.dial().conference(
         {
