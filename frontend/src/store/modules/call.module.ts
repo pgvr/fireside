@@ -1,8 +1,11 @@
 import router from "@/router"
 import store from "@/store"
 import axios from "axios"
-import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import UiModule from "./ui.module"
 import { User } from "./user.module"
+
+const uiState = getModule(UiModule)
 
 export interface Call {
     callId: string
@@ -11,6 +14,7 @@ export interface Call {
     createdAt: Date
     completedAt: Date
     commonInterests: string[]
+    guessedInterests?: string[]
 }
 
 @Module({ name: "Call", store, dynamic: true })
@@ -181,6 +185,7 @@ export default class CallModule extends VuexModule {
             if (data.callActive) {
                 // dont allow to complete because call is still active
                 console.log("call still active")
+                uiState.showSnackbarMessage("Wait for your call to finish")
             } else {
                 // bring user to post call screen
                 console.log("call finished, navigate to post call")

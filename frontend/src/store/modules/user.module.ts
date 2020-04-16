@@ -9,6 +9,7 @@ export interface User {
     interests: string[]
     job: string
     language: string
+    points?: number
 }
 
 @Module({ name: "User", store, dynamic: true })
@@ -20,6 +21,12 @@ export default class UserModule extends VuexModule {
     job = "Student"
     language = "English"
     loggedIn = false
+    points = 0
+
+    @Mutation
+    setPoints(newPoints: number) {
+        this.points = newPoints
+    }
 
     @Mutation
     setPhone(newPhone: string) {
