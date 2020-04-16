@@ -45,7 +45,7 @@ export default class CallRepo {
     }
 
     public static async getCallsByPhone(phone: string): Promise<Call[]> {
-        const calls = await CallModel.find({ phone }).sort({ createdAt: "descending" }).exec()
+        const calls = await CallModel.find({ phone }).sort({ createdAt: "descending" }).lean<Call>().exec()
         Logger.info(calls)
         return calls
     }

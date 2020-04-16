@@ -5,12 +5,71 @@
             <v-form @submit.prevent="register()">
                 <v-text-field
                     prepend-icon="mdi-phone"
-                    :value="phone"
-                    readonly=""
+                    v-model="phone"
                     label="Phone"
                     type="tel"
                     required
+                    :error-messages="phoneErrors()"
+                    @input="$v.phone.$touch()"
+                    @blur="$v.phone.$touch()"
                 ></v-text-field>
+                <v-text-field
+                    prepend-icon="mdi-city"
+                    v-model="city"
+                    @input="$v.city.$touch()"
+                    @blur="$v.city.$touch()"
+                    :error-messages="cityErrors()"
+                    label="City"
+                    type="text"
+                    required
+                ></v-text-field>
+                <v-combobox
+                    v-model="interests"
+                    :items="interestSuggestions"
+                    chips
+                    clearable
+                    @blur="$v.interests.$touch()"
+                    :error-messages="interestErrors()"
+                    label="Your favorite hobbies"
+                    multiple
+                    prepend-icon="mdi-table-tennis"
+                >
+                    <template v-slot:selection="{ attrs, item, select, selected }">
+                        <v-chip
+                            v-bind="attrs"
+                            :input-value="selected"
+                            close
+                            @click="select"
+                            @click:close="removeInterest(item)"
+                        >
+                            <strong>{{ item }}</strong>
+                        </v-chip>
+                    </template>
+                </v-combobox>
+                <v-text-field
+                    prepend-icon="mdi-briefcase"
+                    v-model="job"
+                    label="Occupation"
+                    @input="$v.job.$touch()"
+                    @blur="$v.job.$touch()"
+                    :error-messages="jobErrors()"
+                    type="text"
+                    required
+                ></v-text-field>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-select
+                            :items="languages"
+                            v-model="language"
+                            prepend-icon="mdi-translate"
+                            label="Language"
+                            readonly
+                            required
+                            v-on="on"
+                        ></v-select>
+                    </template>
+                    <span>We only support English for now</span>
+                </v-tooltip>
 
                 <v-text-field
                     prepend-icon="mdi-lock"
@@ -33,7 +92,7 @@
                     required
                 ></v-text-field>
 
-                <v-btn large type="submit" color="primary">Register</v-btn>
+                <v-btn large type="submit" color="primary">Meet Now</v-btn>
             </v-form>
         </v-layout>
     </v-container>
@@ -51,6 +110,13 @@ const validations = {
         required,
         matchesPassword: sameAs("password"),
     },
+    phone: { required },
+    city: { required },
+    interests: {
+        required,
+        minTwo: (value: string[]) => value.length > 1,
+    },
+    job: { required },
 }
 
 const userState = getModule(UserModule)
@@ -58,6 +124,12 @@ const userState = getModule(UserModule)
 @Component({ mixins: [validationMixin], validations })
 export default class Register extends Vue {
     phone = userState.phone
+    city = userState.city
+    interests: string[] = userState.interests
+    interestSuggestions = ["Football", "Food"]
+    job = userState.job
+    language = userState.language
+    languages = ["English"]
     password = ""
     repeatPassword = ""
 
@@ -73,6 +145,35 @@ export default class Register extends Vue {
         if (!this.$v.repeatPassword.$dirty) return errors
         !this.$v.repeatPassword.required && errors.push("Repeat Password is required.")
         !this.$v.repeatPassword.matchesPassword && errors.push("Passwords must match.")
+        return errors
+    }
+
+    phoneErrors() {
+        const errors: string[] = []
+        if (!this.$v.phone.$dirty) return errors
+        !this.$v.phone.required && errors.push("Phone is required.")
+        return errors
+    }
+
+    cityErrors() {
+        const errors: string[] = []
+        if (!this.$v.city.$dirty) return errors
+        !this.$v.city.required && errors.push("City is required.")
+        return errors
+    }
+
+    interestErrors() {
+        const errors: string[] = []
+        if (!this.$v.interests.$dirty) return errors
+        !this.$v.interests.required && errors.push("Interests are required.")
+        !this.$v.interests.minTwo && errors.push("You need at least two.")
+        return errors
+    }
+
+    jobErrors() {
+        const errors: string[] = []
+        if (!this.$v.job.$dirty) return errors
+        !this.$v.job.required && errors.push("Occupation is required.")
         return errors
     }
 

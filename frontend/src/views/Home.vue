@@ -5,7 +5,7 @@
                 <v-img src="../assets/fire.png" :contain="true" max-width="32" max-height="32"></v-img>
                 <v-toolbar-title class="ml-2">Fireside</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-btn icon><v-icon>mdi-account</v-icon></v-btn>
+                <v-btn icon @click="logout"><v-icon>mdi-account</v-icon></v-btn>
             </v-app-bar>
 
             <v-row justify="center">
@@ -33,9 +33,17 @@
                             <td>
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on }">
-                                        <v-icon v-on="on">mdi-check</v-icon>
+                                        <v-icon
+                                            v-on="on"
+                                            v-if="call.guessedInterests && call.guessedInterests.length > 0"
+                                            >mdi-check</v-icon
+                                        >
+                                        <v-icon v-on="on" v-else>mdi-close</v-icon>
                                     </template>
-                                    <span>{{ call.guessedInterests.join(", ") }}</span>
+                                    <span v-if="call.guessedInterests && call.guessedInterests.length > 0">{{
+                                        guessedInterests(call)
+                                    }}</span>
+                                    <span v-else>You didn't guess any common interests</span>
                                 </v-tooltip>
                             </td>
                             <td>{{ callSparks(call) }}</td>
@@ -91,6 +99,9 @@ export default class Home extends Vue {
         }
         return 30
     }
+    guessedInterests(call: Call) {
+        return call.guessedInterests?.join(", ")
+    }
 
     created() {
         this.getCalls()
@@ -98,6 +109,10 @@ export default class Home extends Vue {
 
     async getCalls() {
         await callState.getCalls(this.phone())
+    }
+
+    logout() {
+        userState.logout()
     }
 }
 </script>

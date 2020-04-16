@@ -18,7 +18,7 @@ const schema = new Schema(
         client: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: "User",
+            ref: "user",
             index: true,
         },
         primaryKey: {

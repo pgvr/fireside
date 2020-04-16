@@ -18,9 +18,9 @@ export default class UserRepo {
         const now = new Date()
         user.createdAt = now
         user.updatedAt = now
-        const createdUser = await UserModel.create(user)
+        const createdUser = await UserModel.findOneAndUpdate({ phone: user.phone }, user, { upsert: true, new: true })
         const keystore = await KeystoreRepo.create(createdUser._id, accessTokenKey, refreshTokenKey)
-        return { user: createdUser.toObject(), keystore }
+        return { user: createdUser, keystore }
     }
 
     public static async createAnon(user: User): Promise<User> {

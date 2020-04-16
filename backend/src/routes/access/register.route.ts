@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt"
 import crypto from "crypto"
 import express from "express"
-import _ from "lodash"
 import { createTokens } from "../../auth/auth.utils"
 import { BadRequestError } from "../../core/ApiError"
 import { SuccessResponse } from "../../core/ApiResponse"
@@ -18,7 +17,7 @@ router.post(
     validator(schema.signup),
     asyncHandler(async (req, res) => {
         const user = await UserRepo.findByPhone(req.body.phone)
-        if (user) throw new BadRequestError("User already registered")
+        if (user && user.password) throw new BadRequestError("User already registered")
 
         const accessTokenKey = crypto.randomBytes(64).toString("hex")
         const refreshTokenKey = crypto.randomBytes(64).toString("hex")
@@ -36,10 +35,9 @@ router.post(
             accessTokenKey,
             refreshTokenKey,
         )
-
         const tokens = await createTokens(createdUser, keystore.primaryKey, keystore.secondaryKey)
         new SuccessResponse("Signup Successful", {
-            user: _.pick(createdUser, ["_id", "name", "email", "roles", "profilePicUrl"]),
+            user: createdUser,
             tokens,
         }).send(res)
     }),

@@ -25,6 +25,7 @@
                 ></v-text-field>
 
                 <v-btn large type="submit" color="primary">Login</v-btn>
+                <v-btn color="secondary" to="/register">No account yet?</v-btn>
             </v-form>
         </v-layout>
     </v-container>
@@ -46,7 +47,7 @@ const userState = getModule(UserModule)
 
 @Component({ mixins: [validationMixin], validations })
 export default class Login extends Vue {
-    phone = ""
+    phone = userState.phone
     password = ""
 
     phoneErrors() {
