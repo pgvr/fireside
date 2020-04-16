@@ -13,7 +13,8 @@ export interface User {
 
 @Module({ name: "User", store, dynamic: true })
 export default class UserModule extends VuexModule {
-    phone = "+4915730717541"
+    phone = ""
+    // phone = "+4915730717541"
     city = "Mannheim"
     interests: string[] = []
     job = "Student"

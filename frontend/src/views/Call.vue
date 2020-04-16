@@ -30,9 +30,11 @@ import { Component, Vue } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
 import UserModule, { User } from "@/store/modules/user.module"
 import CallModule from "@/store/modules/call.module"
+import VerificationModule from "@/store/modules/verification.module"
 
 const userState = getModule(UserModule)
 const callState = getModule(CallModule)
+const verificationState = getModule(VerificationModule)
 
 @Component
 export default class Call extends Vue {
@@ -41,6 +43,12 @@ export default class Call extends Vue {
     }
     callStateLoading() {
         return callState.loading
+    }
+
+    created() {
+        if (!verificationState.verified) {
+            this.$router.push("/start")
+        }
     }
 
     startCall() {
