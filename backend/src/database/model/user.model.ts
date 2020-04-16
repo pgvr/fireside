@@ -12,6 +12,7 @@ export default interface User extends Document {
     password?: string
     createdAt: Date
     updatedAt: Date
+    points?: number
 }
 
 export const schema = new Schema(
@@ -49,6 +50,9 @@ export const schema = new Schema(
         updatedAt: {
             type: Schema.Types.Date,
             required: true,
+        },
+        points: {
+            type: Schema.Types.Number,
         },
     },
     {

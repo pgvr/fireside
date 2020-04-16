@@ -47,4 +47,18 @@ export default class CallRepo {
         const calls = await CallModel.find({ phone }).sort({ createdAt: "descending" }).exec()
         return calls
     }
+
+    public static async getLatestCall(phone: string): Promise<Call[]> {
+        return CallModel.find({ phone }).sort({ completedAt: "descending" }).limit(1).exec()
+    }
+
+    public static async submitGuesses(phone: string, guesses: string[]): Promise<Call> {
+        return CallModel.find({ phone })
+            .sort({ completedAt: "descending" })
+            .findOneAndUpdate({ phone }, { guessedInterests: guesses })
+    }
+
+    public static async rateLatestCall(phone: string, rating: number): Promise<Call> {
+        return CallModel.find({ phone }).sort({ completedAt: "descending" }).findOneAndUpdate({ phone }, { rating })
+    }
 }

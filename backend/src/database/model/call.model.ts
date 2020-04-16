@@ -7,6 +7,7 @@ export default interface Call extends Document {
     conferenceId: string
     phone: string
     commonInterests: string[]
+    guessedInterests?: string[]
     rating?: number
     createdAt: Date
     completedAt?: Date
@@ -25,6 +26,9 @@ const schema = new Schema(
         commonInterests: {
             type: [Schema.Types.String],
             required: true,
+        },
+        guessedInterests: {
+            type: [Schema.Types.String],
         },
         rating: {
             type: Schema.Types.Number,

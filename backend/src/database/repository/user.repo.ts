@@ -70,4 +70,10 @@ export default class UserRepo {
         }
         return dbUsers
     }
+
+    public static async updatePoints(phone: string, addPoints: number): Promise<User> {
+        const user = await UserModel.findOne({ phone }).exec()
+        const newPoints = (user.points || 0) + addPoints
+        return UserModel.findOneAndUpdate({ phone }, { points: newPoints })
+    }
 }
