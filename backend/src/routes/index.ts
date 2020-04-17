@@ -6,6 +6,7 @@ import token from "./access/token.route"
 import call from "./calls/call.route"
 import conference from "./conference/conference.route"
 import webhook from "./conference/webhook.route"
+import user from "./user/user.route"
 import sendCode from "./verification/sendCode.route"
 import verifyCode from "./verification/verifyCode.route"
 
@@ -20,5 +21,6 @@ router.use("/sendCode", sendCode)
 router.use("/verifyCode", verifyCode)
 router.use("/webhook", webhook)
 router.use("/calls", call)
+router.use("/user", user)
 
 export default router
