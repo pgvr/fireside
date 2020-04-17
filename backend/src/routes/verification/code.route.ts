@@ -38,7 +38,7 @@ router.post(
             const refreshTokenKey = crypto.randomBytes(64).toString("hex")
 
             const { user: createdUser } = await UserRepo.create(user, accessTokenKey, refreshTokenKey)
-            const tokens = await createTokens(user, accessTokenKey, refreshTokenKey)
+            const tokens = await createTokens(createdUser, accessTokenKey, refreshTokenKey)
             return new SuccessResponse("Phone number verified.", { createdUser, tokens }).send(res)
         }
         return new AuthFailureResponse("Invalid SMS Token").send(res)

@@ -10,7 +10,8 @@ export default {
         interests: Joi.array().required().items(Joi.string()),
         job: Joi.string().required(),
         language: Joi.string().required(),
-        code: Joi.number().required(),
+        code: Joi.string().required(),
+        points: Joi.number().required(),
     }),
     login: Joi.object().keys({
         phone: Joi.string().required(),

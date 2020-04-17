@@ -18,6 +18,7 @@ export default class UserRepo {
 
         user.createdAt = now
         user.updatedAt = now
+        user.points = 0
         const createdUser = await UserModel.create(user)
         const keystore = await KeystoreRepo.create(createdUser._id, accessTokenKey, refreshTokenKey)
         return { user: createdUser.toObject(), keystore }

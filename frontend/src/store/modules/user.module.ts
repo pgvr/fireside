@@ -97,7 +97,7 @@ export default class UserModule extends VuexModule {
     @Action
     async getUser() {
         try {
-            const response = await axios.delete(`${process.env.VUE_APP_API_URL}/user/me`)
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/user/me`)
             const { data } = response.data
             this.setUser(data.user)
         } catch (error) {

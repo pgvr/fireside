@@ -9,10 +9,9 @@ export default interface User extends Document {
     interests: string[]
     job: string
     language: string
-    password?: string
     createdAt: Date
     updatedAt: Date
-    points?: number
+    points: number
 }
 
 export const schema = new Schema(
@@ -41,9 +40,6 @@ export const schema = new Schema(
             type: Schema.Types.String,
             required: true,
         },
-        password: {
-            type: Schema.Types.String,
-        },
         createdAt: {
             type: Schema.Types.Date,
             required: true,
@@ -54,6 +50,7 @@ export const schema = new Schema(
         },
         points: {
             type: Schema.Types.Number,
+            required: true,
         },
     },
     {
