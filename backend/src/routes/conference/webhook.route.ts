@@ -28,13 +28,8 @@ router.post(
             Logger.info("Conference Ended")
             const conference = await ConferenceRepo.removeConference(confUpdate.ConferenceSid)
             await CallRepo.create([conference.phoneOne, conference.phoneTwo], conference)
-        } else {
-            // handle everything else
         }
-        // put number in db and wait to be found
-        // TODO: implement queue collection
-        // await UserRepo.createUser(incomingParticipant)
-        return new SuccessResponse("No match found. Putting in db.", null).send(res)
+        return new SuccessResponse("Success", null).send(res)
     }),
 )
 

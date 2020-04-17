@@ -1,16 +1,18 @@
+// eslint-disable-next-line import/no-unresolved
+import { ProtectedRequest } from "app-request"
 import express from "express"
+import { Types } from "mongoose"
 import twilio from "twilio"
+import authentication from "../../auth/authentication"
+import { BadRequestError } from "../../core/ApiError"
 import { NotFoundResponse, SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
-import { QueueModel } from "../../database/model/queue.model"
 import User from "../../database/model/user.model"
 import ConferenceRepo from "../../database/repository/conference.repo"
 import QueueRepo from "../../database/repository/queue.repo"
 import UserRepo from "../../database/repository/user.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import { buildConference } from "../../helpers/conference.helper"
-import validator, { ValidationSource } from "../../helpers/validator"
-import schema from "./conference.schema"
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
@@ -18,11 +20,17 @@ const client = twilio(accountSid, authToken)
 
 const router = express.Router()
 
+/*-------------------------------------------------------------------------*/
+// Below all APIs are private APIs protected for Access Token
+router.use("/", authentication)
+/*-------------------------------------------------------------------------*/
+
 router.post(
     "/",
-    validator(schema.participant, ValidationSource.BODY),
-    asyncHandler(async (req, res) => {
-        const incomingParticipant = req.body as User
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const incomingParticipant = await UserRepo.findByPhone(req.user.phone)
+
+        if (!incomingParticipant) throw new BadRequestError("User not registered")
 
         // search db for match
         let foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
@@ -44,13 +52,10 @@ router.post(
 
             const conferenceXml = buildConference(
                 "Welcome to your fireside chat. Enjoy!",
-                new Date().getTime().toString(),
+                Types.ObjectId().toHexString(),
             )
 
             const numbers = [incomingParticipant.phone, foundMatch.phone]
-
-            // ensure we have participants as users, if not create them as anon
-            await UserRepo.addUsersIfDontExist([incomingParticipant, foundMatch])
 
             await Promise.all(
                 numbers.map((number) => {
@@ -70,7 +75,7 @@ router.post(
         }
 
         // put number in db and wait to be found
-        const alreadyExists = await QueueModel.findOne({ phone: incomingParticipant.phone })
+        const alreadyExists = await QueueRepo.getEntryByPhone(incomingParticipant.phone)
         if (alreadyExists) {
             Logger.info("User is already in queue")
             return new SuccessResponse("User is already in queue", { queue: true }).send(res)
@@ -83,14 +88,16 @@ router.post(
 
 router.post(
     "/leaveQueue",
-    validator(schema.participant, ValidationSource.BODY),
-    asyncHandler(async (req, res) => {
-        const incomingParticipant = req.body as User
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const incomingParticipant = await UserRepo.findByPhone(req.user.phone)
+
+        if (!incomingParticipant) throw new BadRequestError("User not registered")
+
         const removed = await QueueRepo.removeFromQueue(incomingParticipant)
         if (removed) {
             return new SuccessResponse("Removed user from queue", removed).send(res)
         }
-        return new NotFoundResponse("User not found in queue")
+        return new NotFoundResponse("User not found in queue").send(res)
     }),
 )
 

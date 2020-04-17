@@ -1,19 +1,23 @@
+import router from "@/router"
 import store from "@/store"
 import Axios from "axios"
-import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import UserModule from "./user.module"
+
+const userState = getModule(UserModule)
 
 @Module({ name: "Verification", store, dynamic: true })
 export default class VerificationModule extends VuexModule {
-    verified = true
     loading = false
+    shouldLogin = false
 
-    @Mutation
-    setVerified(value: boolean) {
-        this.verified = value
-    }
     @Mutation
     setLoading(value: boolean) {
         this.loading = value
+    }
+    @Mutation
+    setShouldLogin(value: boolean) {
+        this.shouldLogin = value
     }
 
     @Action
@@ -25,20 +29,36 @@ export default class VerificationModule extends VuexModule {
     }
 
     @Action
-    async verifyCode(payload: { code: string; phone: string }) {
+    async verifyCode(code: string) {
         this.setLoading(true)
         try {
-            const body = { phone: payload.phone, code: payload.code }
-            await Axios.post(`${process.env.VUE_APP_API_URL}/verifyCode`, body)
+            let response
+            if (this.shouldLogin) {
+                // login
+                const body = { phone: userState.user.phone, code }
+                response = await Axios.post(`${process.env.VUE_APP_API_URL}/code/login`, body)
+            } else {
+                // register
+                const body = {
+                    ...userState.user,
+                    code,
+                }
+                response = await Axios.post(`${process.env.VUE_APP_API_URL}/code/register`, body)
+            }
+            const { data } = response.data
+            const tokens = data.tokens
+            const user = data.user
+            localStorage.setItem("token", tokens.accessToken)
+            Axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
+            userState.authSuccess(tokens, user)
+            router.push("/")
             // if not 200 it will go into catch
             this.setLoading(false)
-            this.setVerified(true)
-            return true
         } catch (error) {
             console.log(error)
             this.setLoading(false)
-            this.setVerified(false)
-            return false
+            userState.authError()
+            localStorage.removeItem("token")
         }
     }
 }

@@ -19,14 +19,6 @@ export interface Tokens {
 
 @Module({ name: "User", store, dynamic: true })
 export default class UserModule extends VuexModule {
-    // phone = ""
-    phone = "+4915730717541"
-    city = "Mannheim"
-    interests: string[] = ["Hobby 1", "Hobby 2"]
-    job = "Student"
-    language = "English"
-    loggedIn = false
-    points = 0
     status: "loading" | "success" | "error" | "" = ""
     accessToken = localStorage.getItem("token") || ""
     refreshToken = ""
@@ -36,6 +28,7 @@ export default class UserModule extends VuexModule {
         interests: [],
         job: "Student2",
         language: "English",
+        points: 0,
     }
 
     get isLoggedIn() {
@@ -48,27 +41,27 @@ export default class UserModule extends VuexModule {
 
     @Mutation
     setPoints(newPoints: number) {
-        this.points = newPoints
+        this.user.points = newPoints
     }
 
     @Mutation
     setPhone(newPhone: string) {
-        this.phone = newPhone
+        this.user.phone = newPhone
     }
 
     @Mutation
     setCity(newCity: string) {
-        this.city = newCity
+        this.user.city = newCity
     }
 
     @Mutation
     setInterests(newInterests: string[]) {
-        this.interests = newInterests
+        this.user.interests = newInterests
     }
 
     @Mutation
     setJob(newJob: string) {
-        this.job = newJob
+        this.user.job = newJob
     }
 
     @Mutation
@@ -96,50 +89,19 @@ export default class UserModule extends VuexModule {
         this.refreshToken = ""
     }
 
-    @Action
-    async register(password: string) {
-        try {
-            const body = {
-                phone: this.phone,
-                city: this.city,
-                interests: this.interests,
-                job: this.job,
-                language: this.language,
-                password,
-            }
-            const response = await axios.post(`${process.env.VUE_APP_API_URL}/register`, body)
-            const { data } = response.data
-            const tokens = data.tokens
-            const user = data.user
-            localStorage.setItem("token", tokens.accessToken)
-            axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
-            this.authSuccess(tokens, user)
-            router.push("/")
-        } catch (error) {
-            this.authError()
-            localStorage.removeItem("token")
-        }
+    @Mutation
+    setUser(user: User) {
+        this.user = user
     }
 
-    @Action({ rawError: true })
-    async login(auth: { phone: string; password: string }) {
+    @Action
+    async getUser() {
         try {
-            // commit('auth_request')
-            const response = await axios.post(`${process.env.VUE_APP_API_URL}/login`, {
-                phone: auth.phone,
-                password: auth.password,
-            })
+            const response = await axios.delete(`${process.env.VUE_APP_API_URL}/user/me`)
             const { data } = response.data
-            const tokens = data.tokens
-            const user = data.user
-            localStorage.setItem("token", tokens.accessToken)
-            axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
-            this.authSuccess(tokens, user)
-            router.push("/")
+            this.setUser(data.user)
         } catch (error) {
             console.log(error)
-            this.authError()
-            localStorage.removeItem("token")
         }
     }
 

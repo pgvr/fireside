@@ -45,22 +45,24 @@ export default class CallRepo {
     }
 
     public static async getCallsByPhone(phone: string): Promise<Call[]> {
-        const calls = await CallModel.find({ phone }).sort({ createdAt: "descending" }).lean<Call>().exec()
+        const calls = await CallModel.find({ phone }).sort({ createdAt: "descending" }).exec()
         Logger.info(calls)
         return calls
+    }
+
+    public static async getCallById(id: string): Promise<Call> {
+        return CallModel.findById(id).lean()
     }
 
     public static async getLatestCall(phone: string): Promise<Call[]> {
         return CallModel.find({ phone }).sort({ completedAt: "descending" }).limit(1).lean()
     }
 
-    public static async submitGuesses(phone: string, guesses: string[]): Promise<Call> {
-        return CallModel.find({ phone })
-            .sort({ completedAt: "descending" })
-            .findOneAndUpdate({ phone }, { guessedInterests: guesses })
+    public static async submitGuesses(callId: string, guesses: string[]): Promise<Call> {
+        return CallModel.findByIdAndUpdate(callId, { guessedInterests: guesses })
     }
 
-    public static async rateLatestCall(phone: string, rating: number): Promise<Call> {
-        return CallModel.find({ phone }).sort({ completedAt: "descending" }).findOneAndUpdate({ phone }, { rating })
+    public static async rateCall(callId: string, rating: number): Promise<Call> {
+        return CallModel.findByIdAndUpdate(callId, { rating })
     }
 }

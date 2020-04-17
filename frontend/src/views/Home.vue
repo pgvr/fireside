@@ -27,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="call in calls()" :key="call.callId">
+                        <tr v-for="call in calls()" :key="call._id">
                             <td>{{ callStart(call) }}</td>
                             <td>{{ callDuration(call) }} min</td>
                             <td>
@@ -67,24 +67,22 @@
 import { Vue, Component } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
 import UserModule from "@/store/modules/user.module"
-import UiModule from "@/store/modules/ui.module"
 import CallModule, { Call } from "@/store/modules/call.module"
 import moment from "moment"
 
 const userState = getModule(UserModule)
 const callState = getModule(CallModule)
-const uiState = getModule(UiModule)
 
 @Component
 export default class Home extends Vue {
     phone() {
-        return userState.phone
+        return userState.user.phone
     }
     calls() {
         return callState.calls
     }
     userSparks() {
-        return userState.points
+        return userState.user.points
     }
 
     callStart(call: Call) {
@@ -105,10 +103,15 @@ export default class Home extends Vue {
 
     created() {
         this.getCalls()
+        this.getUser()
     }
 
-    async getCalls() {
-        await callState.getCalls(this.phone())
+    getCalls() {
+        callState.getCalls()
+    }
+
+    getUser() {
+        userState.getUser()
     }
 
     logout() {

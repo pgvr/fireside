@@ -7,9 +7,8 @@ import Home from "../views/Home.vue"
 import Login from "../views/Login.vue"
 import NotFound from "../views/NotFound.vue"
 import PostCall from "../views/PostCall.vue"
-import Register from "../views/Register.vue"
 import Start from "../views/Start.vue"
-import VerifyAnonymous from "../views/VerifyAnonymous.vue"
+import VerifyPhone from "../views/VerifyPhone.vue"
 
 const userState = getModule(UserModule)
 Vue.use(VueRouter)
@@ -32,9 +31,9 @@ const routes: Array<RouteConfig> = [
         },
     },
     {
-        path: "/verifyAnonymous",
-        name: "Verify Anonymous",
-        component: VerifyAnonymous,
+        path: "/verify",
+        name: "Verify Phone",
+        component: VerifyPhone,
         meta: {
             requiresAuth: false,
         },
@@ -48,22 +47,20 @@ const routes: Array<RouteConfig> = [
         },
     },
     {
-        path: "/register",
-        name: "Register",
-        component: Register,
-        meta: {
-            requiresAuth: false,
-        },
-    },
-    {
         path: "/call",
         name: "Call",
         component: Call,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: "/postCall",
         name: "Post Call",
         component: PostCall,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: "*",

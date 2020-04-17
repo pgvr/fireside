@@ -3,18 +3,18 @@ import store from "@/store"
 import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
 import UiModule from "./ui.module"
-import { User } from "./user.module"
 
 const uiState = getModule(UiModule)
 
 export interface Call {
-    callId: string
+    _id: string
     conferenceId: string
     phone: string
     createdAt: Date
+    rating: number
     completedAt: Date
     commonInterests: string[]
-    guessedInterests?: string[]
+    guessedInterests: string[]
 }
 
 @Module({ name: "Call", store, dynamic: true })
@@ -58,34 +58,14 @@ export default class CallModule extends VuexModule {
     }
 
     @Action
-    async fetchEditStatus(phone: string) {
+    async submitGuesses(payload: { callId: string; guesses: string[] }) {
         try {
             this.setLoading(true)
-            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/single/${phone}`)
-            const { data } = response.data
-            if (data?.guessedInterests) {
-                // already submitted once
-                this.setPostCallEdit(false)
-            } else {
-                this.setPostCallEdit(true)
-            }
-            this.setLoading(false)
-        } catch (error) {
-            console.log(error)
-            this.setLoading(false)
-            this.setPostCallEdit(false)
-        }
-    }
-
-    @Action
-    async submitGuesses(payload: { phone: string; guesses: string[] }) {
-        try {
-            this.setLoading(true)
-            const body = { phone: payload.phone, submittedInterests: payload.guesses }
+            const body = { callId: payload.callId, submittedInterests: payload.guesses }
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/calls/submit`, body)
             const { data } = response.data
             this.setLoading(false)
-            return { guessedCorrect: data.guessedCorrect, points: data.points }
+            return { guessedCorrect: data.guessedCorrect, total: data.total, points: data.points }
         } catch (error) {
             console.log(error)
             this.setLoading(false)
@@ -94,10 +74,10 @@ export default class CallModule extends VuexModule {
     }
 
     @Action
-    async submitRating(payload: { phone: string; rating: number }) {
+    async submitRating(payload: { callId: string; rating: number }) {
         try {
             this.setLoading(true)
-            const body = { phone: payload.phone, rating: payload.rating }
+            const body = { callId: payload.callId, rating: payload.rating }
             await axios.post(`${process.env.VUE_APP_API_URL}/calls/rate`, body)
             this.setLoading(false)
         } catch (error) {
@@ -107,10 +87,10 @@ export default class CallModule extends VuexModule {
     }
 
     @Action
-    async getCalls(phone: string) {
+    async getCalls() {
         try {
             this.setLoading(true)
-            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/${phone}`)
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls`)
             this.setLoading(false)
             const { data } = response.data
             this.setCalls(data)
@@ -121,10 +101,10 @@ export default class CallModule extends VuexModule {
     }
 
     @Action
-    async findConference(user: User) {
+    async findConference() {
         try {
             this.setLoading(true)
-            const response = await axios.post(`${process.env.VUE_APP_API_URL}/conference`, { ...user })
+            const response = await axios.post(`${process.env.VUE_APP_API_URL}/conference`)
             this.setLoading(false)
             const { data } = response.data
             if (data.queue) {
@@ -134,12 +114,10 @@ export default class CallModule extends VuexModule {
                     console.log("checking if still in queue")
                     if (this.refreshQueueCounter === 5) {
                         console.log("Queue timeout, removing user from queue")
-                        this.leaveCallQueue(user)
+                        this.leaveCallQueue()
                     } else {
                         this.increaseQueueCounter()
-                        const response = await axios.get(
-                            `${process.env.VUE_APP_API_URL}/calls/stillInQueue/${user.phone}`,
-                        )
+                        const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/stillInQueue`)
                         const { data } = response.data
                         if (data.queue === false) {
                             // not in queue anymore, call started
@@ -162,12 +140,12 @@ export default class CallModule extends VuexModule {
     }
 
     @Action
-    async leaveCallQueue(user: User) {
+    async leaveCallQueue() {
         try {
             this.setLoading(true)
             this.resetInterval()
             this.setCallStatus("idle")
-            await axios.post(`${process.env.VUE_APP_API_URL}/conference/leaveQueue`, { ...user })
+            await axios.post(`${process.env.VUE_APP_API_URL}/conference/leaveQueue`)
             this.setLoading(false)
         } catch (error) {
             console.log(error)
@@ -176,10 +154,10 @@ export default class CallModule extends VuexModule {
     }
 
     @Action
-    async completeCall(phone: string) {
+    async completeCall() {
         try {
             this.setLoading(true)
-            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/isCallActive/${phone}`)
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/isCallActive`)
             this.setLoading(false)
             const { data } = response.data
             if (data.callActive) {

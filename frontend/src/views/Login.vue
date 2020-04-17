@@ -13,19 +13,8 @@
                     @input="$v.phone.$touch()"
                     @blur="$v.phone.$touch()"
                 ></v-text-field>
-                <v-text-field
-                    prepend-icon="mdi-lock"
-                    v-model="password"
-                    @input="$v.password.$touch()"
-                    @blur="$v.password.$touch()"
-                    :error-messages="passwordErrors()"
-                    label="Password"
-                    type="password"
-                    required
-                ></v-text-field>
-
                 <v-btn large type="submit" color="primary">Login</v-btn>
-                <v-btn color="secondary" to="/register">No account yet?</v-btn>
+                <v-btn color="secondary" to="/start">No account yet?</v-btn>
             </v-form>
         </v-layout>
     </v-container>
@@ -36,19 +25,19 @@ import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
 import UserModule from "@/store/modules/user.module"
+import VerificationModule from "@/store/modules/verification.module"
 import { getModule } from "vuex-module-decorators"
 
 const validations = {
     phone: { required },
-    password: { required },
 }
 
 const userState = getModule(UserModule)
+const verificationState = getModule(VerificationModule)
 
 @Component({ mixins: [validationMixin], validations })
 export default class Login extends Vue {
-    phone = userState.phone
-    password = ""
+    phone = userState.user.phone
 
     phoneErrors() {
         const errors: string[] = []
@@ -57,24 +46,11 @@ export default class Login extends Vue {
         return errors
     }
 
-    passwordErrors() {
-        const errors: string[] = []
-        if (!this.$v.password.$dirty) return errors
-        !this.$v.password.required && errors.push("Password is required.")
-        return errors
-    }
-
     async login() {
-        console.log("submit!")
         this.$v.$touch()
-        if (this.$v.$invalid) {
-            console.log("invalid submission")
-        } else {
-            // do your submit logic here
-            console.log("form is valid")
-            console.log(this.password)
-            // route to phone verification
-            userState.login({ phone: this.phone, password: this.password })
+        if (!this.$v.$invalid) {
+            verificationState.setShouldLogin(true)
+            this.$router.push("/verify")
         }
     }
 }

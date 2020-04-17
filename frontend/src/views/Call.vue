@@ -28,13 +28,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
-import UserModule, { User } from "@/store/modules/user.module"
 import CallModule from "@/store/modules/call.module"
-import VerificationModule from "@/store/modules/verification.module"
 
-const userState = getModule(UserModule)
 const callState = getModule(CallModule)
-const verificationState = getModule(VerificationModule)
 
 @Component
 export default class Call extends Vue {
@@ -45,36 +41,16 @@ export default class Call extends Vue {
         return callState.loading
     }
 
-    created() {
-        if (!verificationState.verified) {
-            this.$router.push("/start")
-        }
-    }
-
     startCall() {
-        const user: User = {
-            phone: userState.phone,
-            city: userState.city,
-            interests: userState.interests,
-            job: userState.job,
-            language: userState.language,
-        }
-        callState.findConference(user)
+        callState.findConference()
     }
 
     completeCall() {
-        callState.completeCall(userState.phone)
+        callState.completeCall()
     }
 
     leaveQueue() {
-        const user: User = {
-            phone: userState.phone,
-            city: userState.city,
-            interests: userState.interests,
-            job: userState.job,
-            language: userState.language,
-        }
-        callState.leaveCallQueue(user)
+        callState.leaveCallQueue()
     }
 
     resetCall() {

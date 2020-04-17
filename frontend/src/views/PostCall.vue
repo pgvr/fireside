@@ -82,26 +82,14 @@ export default class PostCall extends Vue {
     allowEdit() {
         return callState.postCallEditEnabled
     }
-    anonymousAccount() {
-        return !userState.loggedIn
-    }
-
-    created() {
-        if (!verificationState.verified) {
-            this.$router.push("/start")
-        } else {
-            callState.fetchEditStatus(userState.phone)
-        }
-    }
 
     async submit() {
         console.log("submit")
-        const result = await callState.submitGuesses({ phone: userState.phone, guesses: this.guesses })
-        console.log(result)
-        if (this.rating > 0) {
-            await callState.submitRating({ phone: userState.phone, rating: this.rating })
-        }
-        await callState.fetchEditStatus(userState.phone)
+        // const result = await callState.submitGuesses({ phone: userState.phone, guesses: this.guesses })
+        // console.log(result)
+        // if (this.rating > 0) {
+        //     await callState.submitRating({ phone: userState.phone, rating: this.rating })
+        // }
     }
 
     async rate() {

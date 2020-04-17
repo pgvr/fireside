@@ -85,6 +85,11 @@
 import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
+import { getModule } from "vuex-module-decorators"
+import UserModule from "@/store/modules/user.module"
+import VerificationModule from "@/store/modules/verification.module"
+import router from "@/router"
+
 const validations = {
     phone: { required },
     city: { required },
@@ -95,20 +100,17 @@ const validations = {
     job: { required },
 }
 
-import { getModule } from "vuex-module-decorators"
-import UserModule from "@/store/modules/user.module"
-import router from "@/router"
-
 const userState = getModule(UserModule)
+const verificationState = getModule(VerificationModule)
 
 @Component({ mixins: [validationMixin], validations })
 export default class Start extends Vue {
-    phone = userState.phone
-    city = userState.city
-    interests: string[] = userState.interests
+    phone = ""
+    city = ""
+    interests: string[] = []
     interestSuggestions = ["Football", "Food"]
-    job = userState.job
-    language = userState.language
+    job = ""
+    language = "English"
     languages = ["English"]
 
     navigate(route: string) {
@@ -149,19 +151,14 @@ export default class Start extends Vue {
     }
 
     async meet() {
-        console.log("submit!")
         this.$v.$touch()
-        if (this.$v.$invalid) {
-            console.log("invalid submission")
-        } else {
-            // do your submit logic here
+        if (!this.$v.$invalid) {
             userState.setPhone(this.phone)
             userState.setCity(this.city)
             userState.setInterests(this.interests)
             userState.setJob(this.job)
-            console.log("form is valid")
-            // route to phone verification
-            this.$router.push("verifyAnonymous")
+            verificationState.setShouldLogin(false)
+            this.$router.push("/verify")
         }
     }
 
