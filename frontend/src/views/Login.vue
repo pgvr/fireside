@@ -49,6 +49,7 @@ export default class Login extends Vue {
     async login() {
         this.$v.$touch()
         if (!this.$v.$invalid) {
+            userState.setPhone(this.phone)
             verificationState.setShouldLogin(true)
             this.$router.push("/verify")
         }
