@@ -75,7 +75,6 @@
             </v-form>
             <v-layout>
                 <v-btn large @click="navigate('login')" color="secondary">Login</v-btn>
-                <v-btn large @click="navigate('register')" color="secondary">Register</v-btn>
             </v-layout>
         </v-layout>
     </v-container>

@@ -23,10 +23,10 @@ export default class UserModule extends VuexModule {
     accessToken = localStorage.getItem("token") || ""
     refreshToken = ""
     user: User = {
-        phone: "+4915730717541",
-        city: "Mannheim",
+        phone: "",
+        city: "",
         interests: [],
-        job: "Student2",
+        job: "",
         language: "English",
         points: 0,
     }
