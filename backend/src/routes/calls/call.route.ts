@@ -104,4 +104,16 @@ router.post(
     }),
 )
 
+router.get(
+    "/single/:callId",
+    asyncHandler(async (req: ProtectedRequest, res: Response) => {
+        const { phone } = req.user
+        const { callId } = req.params
+        const call = await CallRepo.getCallById(callId)
+        if (!call) return new BadRequestError("Call does not exist")
+        if (call.phone !== phone) return new BadRequestError("Call does not belong to token phone number")
+        return new SuccessResponse("Success", call).send(res)
+    }),
+)
+
 export default router

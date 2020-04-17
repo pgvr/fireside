@@ -11,7 +11,7 @@
                     clearable
                     @blur="$v.guesses.$touch()"
                     :error-messages="guessesErrors()"
-                    label="Common Interests"
+                    label="Guess Interests"
                     multiple
                     prepend-icon="mdi-table-tennis"
                 >
@@ -45,7 +45,6 @@
                 </v-tooltip>
                 <v-btn v-if="allowEdit()" large color="primary" type="submit">Submit</v-btn>
             </form>
-            <v-btn class="mt-4" v-if="anonymousAccount()" large color="success" to="/register">Create Account</v-btn>
             <v-btn class="mt-4" color="secondary" to="/call">Meet Again!</v-btn>
             <v-tooltip bottom v-if="!allowEdit()">
                 <template v-slot:activator="{ on }">
@@ -60,46 +59,52 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
-import UserModule, { User } from "@/store/modules/user.module"
 import CallModule from "@/store/modules/call.module"
-import VerificationModule from "@/store/modules/verification.module"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
+
+const callState = getModule(CallModule)
+
 const validations = {
     guesses: {
         required,
+        maxAmount: (value: string[]) => value.length <= callState.callDetail.commonInterests?.length,
     },
 }
 
-const userState = getModule(UserModule)
-const callState = getModule(CallModule)
-const verificationState = getModule(VerificationModule)
-
 @Component({ mixins: [validationMixin], validations })
 export default class PostCall extends Vue {
-    guesses: string[] = []
-    rating = 0
+    guesses: string[] = callState.callDetail.guessedInterests
+    rating = callState.callDetail.rating
+    call() {
+        return callState.callDetail
+    }
     allowEdit() {
-        return callState.postCallEditEnabled
+        return callState.callDetail.guessedInterests?.length === 0
+    }
+    created() {
+        callState.getCall(this.$route.params.id)
+    }
+    maxGuesses() {
+        return callState.callDetail.commonInterests?.length
     }
 
     async submit() {
-        console.log("submit")
-        // const result = await callState.submitGuesses({ phone: userState.phone, guesses: this.guesses })
-        // console.log(result)
-        // if (this.rating > 0) {
-        //     await callState.submitRating({ phone: userState.phone, rating: this.rating })
-        // }
-    }
-
-    async rate() {
-        return true
+        this.$v.$touch()
+        if (!this.$v.$invalid) {
+            callState.submitGuesses({ callId: this.$route.params.id, guesses: this.guesses })
+            if (this.rating > 0) {
+                callState.submitRating({ callId: this.$route.params.id, rating: this.rating })
+            }
+        }
     }
 
     guessesErrors() {
         const errors: string[] = []
         if (!this.$v.guesses.$dirty) return errors
         !this.$v.guesses.required && errors.push("Interests are required.")
+        !this.$v.guesses.maxAmount && errors.push(`You only have ${this.maxGuesses()} common interests`)
+
         return errors
     }
 

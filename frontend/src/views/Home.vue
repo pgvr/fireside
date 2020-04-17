@@ -27,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="call in calls()" :key="call._id">
+                        <tr v-for="call in calls()" :key="call._id" @click="goToDetail(call)">
                             <td>{{ callStart(call) }}</td>
                             <td>{{ callDuration(call) }} min</td>
                             <td>
@@ -76,13 +76,17 @@ const callState = getModule(CallModule)
 @Component
 export default class Home extends Vue {
     phone() {
-        return userState.user.phone
+        return userState.user?.phone
     }
     calls() {
         return callState.calls
     }
     userSparks() {
-        return userState.user.points
+        return userState.user?.points
+    }
+
+    goToDetail(call: Call) {
+        this.$router.push(`/postCall/${call._id}`)
     }
 
     callStart(call: Call) {

@@ -9,7 +9,7 @@ export interface User {
     interests: string[]
     job: string
     language: string
-    points?: number
+    points: number
 }
 
 export interface Tokens {

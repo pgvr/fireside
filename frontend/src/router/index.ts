@@ -55,7 +55,7 @@ const routes: Array<RouteConfig> = [
         },
     },
     {
-        path: "/postCall",
+        path: "/postCall/:id",
         name: "Post Call",
         component: PostCall,
         meta: {

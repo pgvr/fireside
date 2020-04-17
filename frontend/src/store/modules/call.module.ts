@@ -22,11 +22,17 @@ export default class CallModule extends VuexModule {
     callStatus: "idle" | "calling" | "queue" = "idle"
     loading = false
     calls: Call[] = []
+    // dont know why this doesnt complain
+    callDetail = {} as Call
     updateQueueInterval = -1
     refreshQueueCounter = 0
     // whether to allow submits in post call
     postCallEditEnabled = false
 
+    @Mutation
+    setCallDetail(newCall: Call) {
+        this.callDetail = newCall
+    }
     @Mutation
     setPostCallEdit(newValue: boolean) {
         this.postCallEditEnabled = newValue
@@ -95,6 +101,20 @@ export default class CallModule extends VuexModule {
             this.setLoading(false)
             const { data } = response.data
             this.setCalls(data)
+        } catch (error) {
+            console.log(error)
+            this.setLoading(false)
+        }
+    }
+
+    @Action
+    async getCall(id: string) {
+        try {
+            this.setLoading(true)
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/single/${id}`)
+            this.setLoading(false)
+            const { data } = response.data
+            this.setCallDetail(data)
         } catch (error) {
             console.log(error)
             this.setLoading(false)
