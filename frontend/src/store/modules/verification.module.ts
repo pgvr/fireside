@@ -24,7 +24,7 @@ export default class VerificationModule extends VuexModule {
     async sendVerificationSms(phone: string) {
         this.setLoading(true)
         const body = { phone }
-        await Axios.post(`${process.env.VUE_APP_API_URL}/sendCode`, body)
+        await Axios.post(`${process.env.VUE_APP_API_URL}/code/send`, body)
         this.setLoading(false)
     }
 
