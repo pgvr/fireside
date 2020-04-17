@@ -3,10 +3,11 @@ import { ParticipantInstance } from "twilio/lib/rest/api/v2010/account/conferenc
 import Logger from "../../core/Logger"
 import { getCall } from "../../helpers/conference.helper"
 import Conference, { ConferenceModel } from "../model/conference.model"
+import QueueUser from "../model/queue.model"
 import User from "../model/user.model"
 
 export default class ConferenceRepo {
-    public static async create(userOne: User, userTwo: User) {
+    public static async create(userOne: QueueUser, userTwo: User) {
         // make sure users dont already have conf, remove if so
         await ConferenceModel.findOneAndDelete({
             $or: [{ phoneOne: userOne.phone }, { phoneTwo: userOne.phone }],

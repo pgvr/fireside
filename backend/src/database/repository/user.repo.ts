@@ -6,7 +6,7 @@ import KeystoreRepo from "./keystore.repo"
 export default class UserRepo {
     // contains critical information of the user
     public static findById(id: Types.ObjectId): Promise<User> {
-        return UserModel.findOne({ _id: id }).select("+phone +password").lean<User>().exec()
+        return UserModel.findById(id.toString()).lean<User>().exec()
     }
 
     public static async create(

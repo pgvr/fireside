@@ -47,6 +47,7 @@ export default class CallModule extends VuexModule {
     resetInterval() {
         clearInterval(this.updateQueueInterval)
         this.updateQueueInterval = -1
+        this.refreshQueueCounter = 0
     }
     @Mutation
     increaseQueueCounter() {

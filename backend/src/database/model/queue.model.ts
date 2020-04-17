@@ -1,15 +1,22 @@
-import { model, Schema } from "mongoose"
-import User from "./user.model"
+import { Document, model, Schema } from "mongoose"
 
-export const DOCUMENT_NAME = "member"
+export const DOCUMENT_NAME = "queueUser"
 export const COLLECTION_NAME = "queue"
+
+export default interface QueueUser extends Document {
+    phone: string
+    city: string
+    interests: string[]
+    job: string
+    language: string
+}
 
 export const schema = new Schema(
     {
         phone: {
             type: Schema.Types.String,
             required: true,
-            index: true,
+            unique: true,
             trim: true,
             maxlength: 100,
         },
@@ -30,18 +37,10 @@ export const schema = new Schema(
             type: Schema.Types.String,
             required: true,
         },
-        createdAt: {
-            type: Schema.Types.Date,
-            required: true,
-        },
-        updatedAt: {
-            type: Schema.Types.Date,
-            required: true,
-        },
     },
     {
         versionKey: false,
     },
 )
 
-export const QueueModel = model<User>(DOCUMENT_NAME, schema, COLLECTION_NAME)
+export const QueueModel = model<QueueUser>(DOCUMENT_NAME, schema, COLLECTION_NAME)

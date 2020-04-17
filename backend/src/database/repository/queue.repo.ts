@@ -1,8 +1,8 @@
-import { QueueModel } from "../model/queue.model"
+import QueueUser, { QueueModel } from "../model/queue.model"
 import User from "../model/user.model"
 
 export default class QueueRepo {
-    public static findMatchingParticipant(user: User): Promise<User> {
+    public static findMatchingParticipant(user: User): Promise<QueueUser> {
         // order by date desc to have FIFO like queuing
         // match either city or interests
         return QueueModel.find({ phone: { $ne: user.phone } })
@@ -13,18 +13,22 @@ export default class QueueRepo {
             .exec()
     }
 
-    public static getEntryByPhone(phone: string): Promise<User> {
+    public static getEntryByPhone(phone: string): Promise<QueueUser> {
         return QueueModel.findOne({ phone }).exec()
     }
 
-    public static async addToQueue(user: User): Promise<User> {
-        const now = new Date()
-        user.createdAt = now
-        user.updatedAt = now
-        return QueueModel.create(user)
+    public static async addToQueue(user: User): Promise<QueueUser> {
+        const queueUser = <QueueUser>{
+            phone: user.phone,
+            city: user.city,
+            interests: user.interests,
+            job: user.job,
+            language: user.language,
+        }
+        return QueueModel.create(queueUser)
     }
 
-    public static removeFromQueue(user: User): Promise<User> {
+    public static removeFromQueue(user: QueueUser): Promise<QueueUser> {
         return QueueModel.findOneAndDelete({ phone: user.phone }).exec()
     }
 }

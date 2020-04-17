@@ -7,7 +7,7 @@ import authentication from "../../auth/authentication"
 import { BadRequestError } from "../../core/ApiError"
 import { NotFoundResponse, SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
-import User from "../../database/model/user.model"
+import QueueUser from "../../database/model/queue.model"
 import ConferenceRepo from "../../database/repository/conference.repo"
 import QueueRepo from "../../database/repository/queue.repo"
 import UserRepo from "../../database/repository/user.repo"
@@ -40,7 +40,7 @@ router.post(
             Logger.info("Match found, initiating...")
 
             // found match is coming from queue db collection, create a new object of it to remove _id, etc.
-            foundMatch = <User>{
+            foundMatch = <QueueUser>{
                 phone: foundMatch.phone,
                 city: foundMatch.city,
                 interests: foundMatch.interests,
