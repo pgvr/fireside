@@ -30,6 +30,9 @@ router.post(
         const call = await CallRepo.getCallById(callId)
         if (!call) throw new BadRequestError("Call does not exist")
 
+        if (submittedInterests.length > call.commonInterests.length)
+            throw new BadRequestError("You submitted more interests than there are common interests")
+
         if (call.guessedInterests && call.guessedInterests.length > 0) {
             // already submitted once
             return new SuccessResponse("You already submitted to this call", call.guessedInterests).send(res)
