@@ -1,5 +1,6 @@
 <template>
-    <v-container>
+    <v-container
+        ><AppBar />
         <v-layout column>
             <h1 class="display-1">Start</h1>
             <v-form @submit.prevent="meet()">
@@ -88,6 +89,7 @@ import { getModule } from "vuex-module-decorators"
 import UserModule from "@/store/modules/user.module"
 import VerificationModule from "@/store/modules/verification.module"
 import router from "@/router"
+import AppBar from "../components/AppBar.vue"
 
 const validations = {
     phone: { required },
@@ -102,7 +104,7 @@ const validations = {
 const userState = getModule(UserModule)
 const verificationState = getModule(VerificationModule)
 
-@Component({ mixins: [validationMixin], validations })
+@Component({ mixins: [validationMixin], validations, components: { AppBar } })
 export default class Start extends Vue {
     phone = ""
     city = ""
