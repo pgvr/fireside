@@ -4,12 +4,16 @@
         <v-layout column>
             <v-row justify="center">
                 <h1 class="display-1 pr-2">Your Sparks:</h1>
-                <h1 class="display-1">{{ userSparks() }}</h1>
+                <v-progress-circular v-if="userLoading()" indeterminate color="primary"></v-progress-circular>
+                <h1 class="display-1" v-else>{{ userSparks() }}</h1>
             </v-row>
             <v-row class="mt-5">
                 <h2 class="title">Past Fireside Chats</h2>
             </v-row>
-            <v-simple-table :fixed-header="true">
+            <v-row justify="center" class="py-4" v-if="callsLoading()">
+                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+            </v-row>
+            <v-simple-table :fixed-header="true" v-else>
                 <template v-slot:default>
                     <thead>
                         <tr>
@@ -80,6 +84,12 @@ export default class Home extends Vue {
     }
     userSparks() {
         return userState.user?.points
+    }
+    userLoading() {
+        return userState.loading
+    }
+    callsLoading() {
+        return callState.loading
     }
 
     goToDetail(call: Call) {
