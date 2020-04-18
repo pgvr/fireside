@@ -15,6 +15,8 @@ export interface Call {
     completedAt: Date
     commonInterests: string[]
     guessedInterests: string[]
+    points: number
+    firstCall: boolean
 }
 
 @Module({ name: "Call", store, dynamic: true })

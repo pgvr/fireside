@@ -10,12 +10,16 @@ export default class CallRepo {
         const dbCalls = []
         for (let i = 0; i < numbers.length; i++) {
             const number = numbers[i]
+            const calls = await CallRepo.getCallsByPhone(number)
+            const firstCall = calls.length === 1
             const dbCall = await CallModel.create(<Call>{
                 phone: number,
                 createdAt: conference.callStartedAt,
                 completedAt: now,
                 commonInterests: conference.commonInterests,
                 conferenceId: conference.conferenceId,
+                points: 0,
+                firstCall,
             })
             dbCalls.push(dbCall)
         }
@@ -29,19 +33,6 @@ export default class CallRepo {
     public static async getCallsByConferenceId(conferenceId: string): Promise<Call[]> {
         const calls = await CallModel.find({ conferenceId }).exec()
         return calls
-    }
-
-    public static async completeConference(conferenceId: string): Promise<Call[]> {
-        const calls = await CallRepo.getCallsByConferenceId(conferenceId)
-        const now = new Date()
-        const dbCalls = []
-        for (let i = 0; i < calls.length; i++) {
-            const call = calls[i]
-            // should only ever find 2 calls because conference id is unique
-            const dbCall = await CallModel.updateOne({ conferenceId, phone: call.phone }, { completedAt: now })
-            dbCalls.push(dbCall)
-        }
-        return dbCalls
     }
 
     public static async getCallsByPhone(phone: string): Promise<Call[]> {
@@ -58,8 +49,8 @@ export default class CallRepo {
         return CallModel.find({ phone }).sort({ completedAt: "descending" }).limit(1).lean()
     }
 
-    public static async submitGuesses(callId: string, guesses: string[]): Promise<Call> {
-        return CallModel.findByIdAndUpdate(callId, { guessedInterests: guesses })
+    public static async submitGuesses(callId: string, guesses: string[], points: number): Promise<Call> {
+        return CallModel.findByIdAndUpdate(callId, { guessedInterests: guesses, points })
     }
 
     public static async rateCall(callId: string, rating: number): Promise<Call> {

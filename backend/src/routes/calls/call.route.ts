@@ -44,18 +44,17 @@ router.post(
         Logger.info(`Guessed correctly: ${intersection.join(" ")}`)
         // 50 points for each correct guess
         let points = intersection.length * 50
-        // update call with guessed interests
-        await CallRepo.submitGuesses(callId, submittedInterests)
-        // update user profile with points
-        await UserRepo.updatePoints(phone, points)
-        const calls = await CallRepo.getCallsByPhone(req.user.phone)
-        const firstCall = calls.length === 1
+        const { firstCall } = call
         // grant 100 for first call, 30 for every following call
         if (firstCall) {
             points += 100
         } else {
             points += 30
         }
+        // update call with guessed interests
+        await CallRepo.submitGuesses(callId, submittedInterests, points)
+        // update user profile with points
+        await UserRepo.updatePoints(phone, points)
         return new SuccessResponse("Guess Submitted", {
             guessedCorrect: intersection.length,
             total: call.commonInterests.length,

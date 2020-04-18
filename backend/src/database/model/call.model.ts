@@ -7,10 +7,12 @@ export default interface Call extends Document {
     conferenceId: string
     phone: string
     commonInterests: string[]
-    guessedInterests?: string[]
-    rating?: number
+    guessedInterests: string[]
+    rating: number
     createdAt: Date
-    completedAt?: Date
+    completedAt: Date
+    points: number
+    firstCall: boolean
 }
 
 const schema = new Schema(
@@ -29,9 +31,19 @@ const schema = new Schema(
         },
         guessedInterests: {
             type: [Schema.Types.String],
+            required: true,
         },
         rating: {
             type: Schema.Types.Number,
+            required: true,
+        },
+        points: {
+            type: Schema.Types.Number,
+            required: true,
+        },
+        firstCall: {
+            type: Schema.Types.Boolean,
+            required: true,
         },
         createdAt: {
             type: Date,
@@ -39,6 +51,7 @@ const schema = new Schema(
         },
         completedAt: {
             type: Date,
+            required: true,
         },
     },
     {

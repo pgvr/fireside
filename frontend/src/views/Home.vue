@@ -40,7 +40,7 @@
                                     <span v-else>You didn't guess any common interests</span>
                                 </v-tooltip>
                             </td>
-                            <td>{{ callSparks(call) }}</td>
+                            <td>{{ call.points }}</td>
                             <td>
                                 <v-tooltip bottom>
                                     <template v-slot:activator="{ on }">
@@ -93,10 +93,7 @@ export default class Home extends Vue {
         return Math.round(moment(call.completedAt).diff(moment(call.createdAt)) / 1000 / 60)
     }
     callSparks(call: Call) {
-        if (call.guessedInterests && call.guessedInterests.length > 0) {
-            return call.guessedInterests.length * 50 + 30
-        }
-        return 30
+        return call.points
     }
     guessedInterests(call: Call) {
         return call.guessedInterests?.join(", ")
