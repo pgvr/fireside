@@ -1,25 +1,50 @@
 <template>
     <v-container>
         <AppBar />
-        <v-layout column>
-            <h1 class="display-1">Call Screen</h1>
-            <v-layout v-if="callStatus() === 'idle'" column>
-                <p class="body-1">Click the button to find a stranger</p>
-                <v-btn :loading="callStateLoading()" color="primary" class="mt-4" @click="startCall()"
+        <v-layout column align-center>
+            <div class="display-1 mb-8" style="text-align:center;">Set up a Fireside chat by tapping the bonfire</div>
+            <BonfireIcon
+                :loading="callStatus() === 'queue'"
+                class="mb-8"
+                width="150"
+                height="150"
+                :gray="callStatus() === 'idle'"
+            />
+
+            <v-layout column>
+                <p
+                    v-if="(callStatus() === 'idle') | (callStatus() === 'queue')"
+                    class="body-1"
+                    style="text-align:center"
+                >
+                    Your phone will ring as soon as we find a likeminded person.
+                </p>
+                <p v-if="callStatus() === 'calling'" class="body-1" style="text-align:center">
+                    Once your call is done, navigate to the call summary.
+                </p>
+                <v-btn
+                    v-if="callStatus() === 'idle'"
+                    :loading="callStateLoading()"
+                    color="primary"
+                    class="mt-4"
+                    @click="startCall()"
                     >Start Call</v-btn
                 >
-            </v-layout>
-            <v-layout v-else-if="callStatus() === 'queue'" column>
-                <v-btn :loading="callStateLoading()" color="error" class="mt-4" @click="leaveQueue()"
+                <v-btn
+                    v-if="callStatus() === 'queue'"
+                    :loading="callStateLoading()"
+                    color="error"
+                    class="mt-4"
+                    @click="leaveQueue()"
                     >Leave Queue</v-btn
                 >
-            </v-layout>
-            <v-layout v-else-if="callStatus() === 'calling'" column>
-                <v-btn :loading="callStateLoading()" color="success" class="mt-4" @click="completeCall()"
+                <v-btn
+                    v-if="callStatus() === 'calling'"
+                    :loading="callStateLoading()"
+                    color="success"
+                    class="mt-4"
+                    @click="completeCall()"
                     >Complete Call</v-btn
-                >
-                <v-btn :loading="callStateLoading()" color="info" class="mt-4" @click="resetCall()"
-                    >Something is wrong</v-btn
                 >
             </v-layout>
         </v-layout>
@@ -33,14 +58,16 @@ import { getModule } from "vuex-module-decorators"
 import CallModule from "@/store/modules/call.module"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
+import BonfireIcon from "../components/BonfireIcon.vue"
 
 const callState = getModule(CallModule)
 
-@Component({ components: { BottomNav, AppBar } })
+@Component({ components: { BottomNav, AppBar, BonfireIcon } })
 export default class Call extends Vue {
     callStatus() {
         return callState.callStatus
     }
+
     callStateLoading() {
         return callState.loading
     }
@@ -55,10 +82,6 @@ export default class Call extends Vue {
 
     leaveQueue() {
         callState.leaveCallQueue()
-    }
-
-    resetCall() {
-        callState.setCallStatus("idle")
     }
 }
 </script>

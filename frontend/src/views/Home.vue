@@ -70,11 +70,12 @@ import CallModule, { Call } from "@/store/modules/call.module"
 import moment from "moment"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
+import BonfireIcon from "../components/BonfireIcon.vue"
 
 const userState = getModule(UserModule)
 const callState = getModule(CallModule)
 
-@Component({ components: { BottomNav, AppBar } })
+@Component({ components: { BottomNav, AppBar, BonfireIcon } })
 export default class Home extends Vue {
     phone() {
         return userState.user?.phone
