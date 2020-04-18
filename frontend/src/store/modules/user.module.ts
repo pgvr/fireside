@@ -99,7 +99,6 @@ export default class UserModule extends VuexModule {
 
     @Mutation
     setLoading(newLoading: boolean) {
-        console.log("reloading Mutator: " + newLoading)
         this.loading = newLoading
     }
 
