@@ -87,7 +87,7 @@ export default class Home extends Vue {
     }
 
     callStart(call: Call) {
-        return moment(call.createdAt).format("DD.MM.YYYY HH:mm")
+        return moment(call.createdAt).format("DD.MM.YY HH:mm")
     }
     callDuration(call: Call) {
         return Math.round(moment(call.completedAt).diff(moment(call.createdAt)) / 1000 / 60)
