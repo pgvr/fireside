@@ -41,7 +41,7 @@
             <v-layout column v-else-if="allowEdit === false">
                 <p class="body-1">
                     You discovered {{ correctGuesses.length }} out of {{ maxGuesses }} similarities.
-                    <span>Good job!</span><span>You'll get 'em next time!</span>
+                    <span v-if="correctGuesses.length > 0">Good job!</span><span v-else>You'll get 'em next time!</span>
                 </p>
                 <div v-if="call.firstCall">First Call: +100</div>
                 <div v-else>Call Completed: +30</div>
