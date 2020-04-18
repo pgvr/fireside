@@ -18,7 +18,7 @@ export interface Tokens {
     refreshToken: string
 }
 
-@Module({ name: "User", store, dynamic: true })
+@Module({ name: "User", store, dynamic: true, namespaced: true })
 export default class UserModule extends VuexModule {
     status: "loading" | "success" | "error" | "" = ""
     accessToken = localStorage.getItem("token") || ""

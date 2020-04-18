@@ -19,7 +19,7 @@ export interface Call {
     firstCall: boolean
 }
 
-@Module({ name: "Call", store, dynamic: true })
+@Module({ name: "Call", store, dynamic: true, namespaced: true })
 export default class CallModule extends VuexModule {
     callStatus: "idle" | "calling" | "queue" = "idle"
     loading = false

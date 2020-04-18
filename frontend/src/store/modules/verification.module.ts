@@ -6,7 +6,7 @@ import UserModule from "./user.module"
 
 const userState = getModule(UserModule)
 
-@Module({ name: "Verification", store, dynamic: true })
+@Module({ name: "Verification", store, dynamic: true, namespaced: true })
 export default class VerificationModule extends VuexModule {
     loading = false
     shouldLogin = false
