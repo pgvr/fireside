@@ -1,63 +1,79 @@
 <template>
     <v-container
         ><AppBar />
-        <v-layout column>
-            <h1 class="display-2">Post Call Edit Allowed</h1>
-            <p class="body-1">What do you have in common with your latest call?</p>
-            <form @submit.prevent="submit">
-                <v-combobox
-                    v-model="guesses"
-                    :disabled="!allowEdit"
-                    chips
-                    clearable
-                    :loading="loading"
-                    @blur="$v.guesses.$touch()"
-                    :error-messages="guessesErrors()"
-                    label="Guess Interests"
-                    multiple
-                    prepend-icon="mdi-table-tennis"
-                >
-                    <template v-slot:selection="{ attrs, item, select, selected }">
-                        <v-chip
-                            v-bind="attrs"
-                            :input-value="selected"
-                            close
-                            @click="select"
-                            @click:close="removeGuess(item)"
-                        >
-                            <strong>{{ item }}</strong>
-                        </v-chip>
-                    </template>
-                </v-combobox>
-                <h4 class="display-1">How was your call?</h4>
+        <v-layout column v-if="loading">
+            Loading...
+        </v-layout>
+        <v-layout column v-else>
+            <v-layout column v-if="allowEdit === true">
+                <p class="body-1">
+                    Which similarities did you discover during your fireside chat? (Hint: there are
+                    {{ call.commonInterests.length }})
+                </p>
+                <form @submit.prevent="submit">
+                    <v-combobox
+                        v-model="guesses"
+                        :disabled="!allowEdit"
+                        chips
+                        clearable
+                        :loading="loading"
+                        @blur="$v.guesses.$touch()"
+                        :error-messages="guessesErrors()"
+                        label="Guess Interests"
+                        multiple
+                        prepend-icon="mdi-table-tennis"
+                    >
+                        <template v-slot:selection="{ attrs, item, select, selected }">
+                            <v-chip
+                                v-bind="attrs"
+                                :input-value="selected"
+                                close
+                                @click="select"
+                                @click:close="removeGuess(item)"
+                            >
+                                <strong>{{ item }}</strong>
+                            </v-chip>
+                        </template>
+                    </v-combobox>
+                    <v-btn v-if="allowEdit" large color="primary" type="submit">Submit</v-btn>
+                </form>
+            </v-layout>
+            <v-layout column v-else-if="allowEdit === false">
+                <p class="body-1">
+                    You discovered {{ correctGuesses.length }} out of {{ maxGuesses }} similarities.
+                    <span>Good job!</span><span>You'll get 'em next time!</span>
+                </p>
+                <div v-if="call.firstCall">First Call: +100</div>
+                <div v-else>Call Completed: +30</div>
+                <div v-for="interest in correctGuesses" :key="interest">
+                    <div>{{ interest }}: +50</div>
+                </div>
+                <div>Total: {{ call.points }}</div>
+            </v-layout>
+            <v-layout column>
+                <p class="body-1" v-if="rating === 0">Help us improve our service by rating the call.</p>
+                <p class="body-1" v-if="rating !== 0">Thank you for rating the call 😊</p>
                 <v-rating
-                    :readonly="!allowEdit"
-                    v-model="rating"
+                    :readonly="rating !== 0"
+                    @input="rateCall"
+                    :value="rating"
                     length="5"
                     empty-icon="mdi-star-outline"
                     full-icon="mdi-star"
                 ></v-rating>
-                <v-tooltip bottom v-if="!allowEdit">
-                    <template v-slot:activator="{ on }">
-                        <span v-on="on"
-                            ><v-btn :disabled="true" large color="primary" type="submit">Submit</v-btn></span
-                        >
-                    </template>
-                    <span>You already submitted your answers for the latest call</span>
-                </v-tooltip>
-                <v-btn v-if="allowEdit" large color="primary" type="submit">Submit</v-btn>
-            </form>
-            <v-btn class="mt-4" color="secondary" to="/call">Meet Again!</v-btn>
-            <v-tooltip bottom v-if="!allowEdit">
-                <template v-slot:activator="{ on }">
-                    <span v-on="on"><v-btn class="mt-4" small color="secondary">Set up random calls</v-btn></span>
-                </template>
-                <span>Coming Soon</span>
-            </v-tooltip>
+                <v-layout row wrap>
+                    <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                            <span v-on="on"
+                                ><v-btn class="mt-4" text color="secondary">Set up scheduled calls</v-btn></span
+                            >
+                        </template>
+                        <span>Coming Soon</span>
+                    </v-tooltip>
+                </v-layout>
+            </v-layout>
         </v-layout>
-        <!-- <v-layout column>
-            <h1>PostCall
-        </v-layout> -->
+
         <BottomNav />
     </v-container>
 </template>
@@ -84,20 +100,25 @@ const validations = {
 export default class CallDetail extends Vue {
     guesses: string[] = []
     rating = 0
-    loading = false
-    allowEdit = false
+    loading = true
+    allowEdit!: boolean
     maxGuesses = 0
+    call!: Call
+    correctGuesses!: string[]
 
     async created() {
         this.loading = true
         const call = (await callState.getCall(this.$route.params.id)) as Call
         if (call) {
+            this.call = call
             this.guesses = call.guessedInterests
             this.rating = call.rating
             this.allowEdit = call.guessedInterests.length === 0
             this.maxGuesses = call.commonInterests.length
+            this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
             this.loading = false
         } else {
+            console.log("something went wrong loading the call, redirecting to home")
             this.$router.push("/")
         }
     }
@@ -112,10 +133,13 @@ export default class CallDetail extends Vue {
             if (result) {
                 this.showSubmitResult(result)
             }
-            if (this.rating > 0) {
-                callState.submitRating({ callId: this.$route.params.id, rating: this.rating })
-            }
         }
+    }
+
+    async rateCall(event: number) {
+        await callState.submitRating({ callId: this.call._id, rating: event })
+        this.rating = event
+        console.log("thanks")
     }
 
     showSubmitResult(result: { guessedCorrect: number; total: number; points: number; firstCall: boolean }) {

@@ -11,7 +11,7 @@ export default class CallRepo {
         for (let i = 0; i < numbers.length; i++) {
             const number = numbers[i]
             const calls = await CallRepo.getCallsByPhone(number)
-            const firstCall = calls.length === 1
+            const firstCall = calls.length === 0
             const dbCall = await CallModel.create(<Call>{
                 phone: number,
                 createdAt: conference.callStartedAt,
@@ -20,6 +20,7 @@ export default class CallRepo {
                 conferenceId: conference.conferenceId,
                 points: 0,
                 firstCall,
+                rating: 0,
             })
             dbCalls.push(dbCall)
         }

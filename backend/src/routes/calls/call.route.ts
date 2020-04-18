@@ -35,7 +35,7 @@ router.post(
 
         if (call.guessedInterests && call.guessedInterests.length > 0) {
             // already submitted once
-            return new SuccessResponse("You already submitted to this call", call.guessedInterests).send(res)
+            throw new BadRequestError("You already submitted to this call")
         }
         // get correct guesses
         const intersection = call.commonInterests.filter((x) =>
@@ -109,8 +109,8 @@ router.post(
         const { phone } = req.user
         const call = await CallRepo.getCallById(callId)
 
-        if (call.phone !== phone) return new BadRequestError("Call does not belong to token phone number")
-
+        if (call.phone !== phone) throw new BadRequestError("Call does not belong to token phone number")
+        if (call.rating > 0) throw new BadRequestError("Call is already rated")
         Logger.info(`Rating call with ${rating}`)
         const dbCall = await CallRepo.rateCall(callId, rating)
         return new SuccessResponse("Rated Call", dbCall).send(res)

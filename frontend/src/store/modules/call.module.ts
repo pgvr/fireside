@@ -193,6 +193,7 @@ export default class CallModule extends VuexModule {
                 // bring user to post call screen
                 console.log("call finished, navigate to post call")
                 const { call } = data
+                console.log(call)
                 router.push(`/detail/${call._id}`)
                 this.setCallStatus("idle")
             }
