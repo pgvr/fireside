@@ -100,8 +100,11 @@ export default class Home extends Vue {
     }
 
     created() {
+        if (!userState.user._id) {
+            console.log("home reloads")
+            userState.getUser()
+        }
         callState.getCalls()
-        userState.getUser()
     }
 
     logout() {
