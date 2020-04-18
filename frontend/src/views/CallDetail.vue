@@ -98,7 +98,7 @@ export default class CallDetail extends Vue {
             this.maxGuesses = call.commonInterests.length
             this.loading = false
         } else {
-            this.$router.push("/")
+            this.$router.push("/home")
         }
     }
 
