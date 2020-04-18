@@ -1,17 +1,18 @@
-import { readFile } from "fs"
 import { sign, verify } from "jsonwebtoken"
-import path from "path"
 import { promisify } from "util"
+import { PRIVATE_KEY, PUBLIC_KEY } from "../config"
 import { BadTokenError, InternalError, TokenExpiredError } from "./ApiError"
 import Logger from "./Logger"
 
 export default class JWT {
-    private static readPublicKey(): Promise<string> {
-        return promisify(readFile)(path.join(__dirname, "../../keys/public.pem"), "utf8")
+    private static readPublicKey(): string {
+        return PUBLIC_KEY
+        // return promisify(readFile)(path.join(__dirname, "../../keys/public.pem"), "utf8")
     }
 
-    private static readPrivateKey(): Promise<string> {
-        return promisify(readFile)(path.join(__dirname, "../../keys/private.pem"), "utf8")
+    private static readPrivateKey(): string {
+        return PRIVATE_KEY
+        // return promisify(readFile)(path.join(__dirname, "../../keys/private.pem"), "utf8")
     }
 
     public static async encode(payload: JwtPayload): Promise<string> {

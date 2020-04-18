@@ -10,12 +10,16 @@ export const db = {
     password: process.env.DB_USER_PWD,
 }
 
+const privateKeyBuffer = Buffer.from(process.env.PRIVATE_KEY, "base64")
+export const PRIVATE_KEY = privateKeyBuffer.toString("ascii")
+const publicKeyBuffer = Buffer.from(process.env.PUBLIC_KEY, "base64")
+export const PUBLIC_KEY = publicKeyBuffer.toString("ascii")
 export const corsUrl = process.env.CORS_URL
 export const baseUrl = process.env.NODE_ENV === "production" ? process.env.BASE_URL_PROD : process.env.BASE_URL_DEV
 
 export const tokenInfo = {
-    accessTokenValidityDays: parseInt(process.env.ACCESS_TOKEN_VALIDITY_DAYS),
-    refreshTokenValidityDays: parseInt(process.env.REFRESH_TOKEN_VALIDITY_DAYS),
+    accessTokenValidityDays: Number(process.env.ACCESS_TOKEN_VALIDITY_DAYS),
+    refreshTokenValidityDays: Number(process.env.REFRESH_TOKEN_VALIDITY_DAYS),
     issuer: process.env.TOKEN_ISSUER,
     audience: process.env.TOKEN_AUDIENCE,
 }
