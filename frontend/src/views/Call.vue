@@ -22,6 +22,7 @@
                 >
             </v-layout>
         </v-layout>
+        <BottomNav />
     </v-container>
 </template>
 
@@ -29,10 +30,11 @@
 import { Component, Vue } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
 import CallModule from "@/store/modules/call.module"
+import BottomNav from "../components/BottomNav.vue"
 
 const callState = getModule(CallModule)
 
-@Component
+@Component({ components: { BottomNav } })
 export default class Call extends Vue {
     callStatus() {
         return callState.callStatus

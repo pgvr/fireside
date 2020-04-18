@@ -60,6 +60,7 @@
                 </template>
             </v-simple-table>
         </v-layout>
+        <BottomNav />
     </v-container>
 </template>
 
@@ -69,11 +70,12 @@ import { getModule } from "vuex-module-decorators"
 import UserModule from "@/store/modules/user.module"
 import CallModule, { Call } from "@/store/modules/call.module"
 import moment from "moment"
+import BottomNav from "../components/BottomNav.vue"
 
 const userState = getModule(UserModule)
 const callState = getModule(CallModule)
 
-@Component
+@Component({ components: { BottomNav } })
 export default class Home extends Vue {
     phone() {
         return userState.user?.phone
