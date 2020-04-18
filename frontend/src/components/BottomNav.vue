@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <v-bottom-navigation fixed :value="activeBtn" grow color="orange">
+        <v-bottom-navigation fixed grow color="orange">
             <v-btn to="/profile">
                 <span>Profile</span>
                 <v-icon>mdi-account</v-icon>
@@ -18,10 +18,3 @@
         </v-bottom-navigation>
     </v-container>
 </template>
-
-<script lang="ts">
-import { Vue, Component } from "vue-property-decorator"
-
-@Component
-export default class Home extends Vue {}
-</script>
