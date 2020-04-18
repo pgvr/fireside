@@ -1,5 +1,6 @@
 <template>
-    <v-container>
+    <v-container
+        ><AppBar />
         <v-layout column>
             <h1 class="display-2">Post Call</h1>
             <p class="body-1">What do you have in common with your latest call?</p>
@@ -54,6 +55,7 @@
                 <span>Coming Soon</span>
             </v-tooltip>
         </v-layout>
+        <BottomNav />
     </v-container>
 </template>
 
@@ -63,6 +65,8 @@ import { getModule } from "vuex-module-decorators"
 import CallModule from "@/store/modules/call.module"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
+import BottomNav from "../components/BottomNav.vue"
+import AppBar from "../components/AppBar.vue"
 
 const callState = getModule(CallModule)
 
@@ -73,7 +77,7 @@ const validations = {
     },
 }
 
-@Component({ mixins: [validationMixin], validations })
+@Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar } })
 export default class PostCall extends Vue {
     guesses: string[] = []
     rating = 0
