@@ -113,8 +113,8 @@ export default class Home extends Vue {
     created() {
         if (!userState.user._id) {
             userState.getUser()
+            callState.getCalls()
         }
-        callState.getCalls()
     }
 
     logout() {
