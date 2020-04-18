@@ -126,7 +126,7 @@ export default class UserModule extends VuexModule {
             localStorage.removeItem("token")
             this.resetAuth()
             delete axios.defaults.headers.common["Authorization"]
-            router.push("/start")
+            router.push("/")
             this.setLoading(false)
         } catch (error) {
             console.log(error)
