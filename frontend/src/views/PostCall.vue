@@ -9,6 +9,7 @@
                     :disabled="!allowEdit()"
                     chips
                     clearable
+                    :loading="loading"
                     @blur="$v.guesses.$touch()"
                     :error-messages="guessesErrors()"
                     label="Guess Interests"
@@ -74,16 +75,21 @@ const validations = {
 
 @Component({ mixins: [validationMixin], validations })
 export default class PostCall extends Vue {
-    guesses: string[] = callState.callDetail.guessedInterests
-    rating = callState.callDetail.rating
+    guesses: string[] = []
+    rating = 0
+    loading = false
     call() {
         return callState.callDetail
     }
     allowEdit() {
         return callState.callDetail.guessedInterests?.length === 0
     }
-    created() {
-        callState.getCall(this.$route.params.id)
+    async created() {
+        this.loading = true
+        await callState.getCall(this.$route.params.id)
+        this.guesses = callState.callDetail.guessedInterests
+        this.rating = callState.callDetail.rating
+        this.loading = false
     }
     maxGuesses() {
         return callState.callDetail.commonInterests?.length

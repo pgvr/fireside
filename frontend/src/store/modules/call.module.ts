@@ -110,6 +110,7 @@ export default class CallModule extends VuexModule {
     @Action
     async getCall(id: string) {
         try {
+            console.log("getting")
             this.setLoading(true)
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/single/${id}`)
             this.setLoading(false)
