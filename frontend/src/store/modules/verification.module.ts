@@ -51,7 +51,12 @@ export default class VerificationModule extends VuexModule {
             localStorage.setItem("token", tokens.accessToken)
             Axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
             userState.authSuccess(tokens, user)
-            router.push("/home")
+            if (this.shouldLogin) {
+                router.push("/home")
+            } else {
+                // for first time users bring them to the call directly
+                router.push("/call")
+            }
             // if not 200 it will go into catch
             this.setLoading(false)
         } catch (error) {
