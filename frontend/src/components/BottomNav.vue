@@ -6,7 +6,7 @@
                 <v-icon>mdi-account</v-icon>
             </v-btn>
 
-            <v-btn to="/">
+            <v-btn to="/home">
                 <span>Home</span>
                 <v-icon>mdi-home</v-icon>
             </v-btn>

@@ -4,6 +4,7 @@ import axios from "axios"
 import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
 
 export interface User {
+    _id: string
     phone: string
     city: string
     interests: string[]
@@ -22,7 +23,9 @@ export default class UserModule extends VuexModule {
     status: "loading" | "success" | "error" | "" = ""
     accessToken = localStorage.getItem("token") || ""
     refreshToken = ""
+    loading = false
     user: User = {
+        _id: "",
         phone: "",
         city: "",
         interests: [],
@@ -94,29 +97,41 @@ export default class UserModule extends VuexModule {
         this.user = user
     }
 
+    @Mutation
+    setLoading(newLoading: boolean) {
+        console.log("reloading Mutator: " + newLoading)
+        this.loading = newLoading
+    }
+
     @Action
     async getUser() {
         try {
+            this.setLoading(true)
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/user/me`)
             const { data } = response.data
             this.setUser(data.user)
+            this.setLoading(false)
         } catch (error) {
             console.log(error)
+            this.setLoading(false)
         }
     }
 
     @Action
     async logout() {
         try {
+            this.setLoading(true)
             const response = await axios.delete(`${process.env.VUE_APP_API_URL}/logout`)
             const { data } = response.data
             console.log(data)
             localStorage.removeItem("token")
             this.resetAuth()
             delete axios.defaults.headers.common["Authorization"]
-            router.push("/start")
+            router.push("/")
+            this.setLoading(false)
         } catch (error) {
             console.log(error)
+            this.setLoading(false)
         }
     }
 }

@@ -118,8 +118,7 @@ export default class CallDetail extends Vue {
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
             this.loading = false
         } else {
-            console.log("something went wrong loading the call, redirecting to home")
-            this.$router.push("/")
+            this.$router.push("/home")
         }
     }
 

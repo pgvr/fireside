@@ -5,8 +5,10 @@ import { getModule } from "vuex-module-decorators"
 import Call from "../views/Call.vue"
 import CallDetail from "../views/CallDetail.vue"
 import Home from "../views/Home.vue"
+import Landing from "../views/Landing.vue"
 import Login from "../views/Login.vue"
 import NotFound from "../views/NotFound.vue"
+import Profile from "../views/Profile.vue"
 import Start from "../views/Start.vue"
 import VerifyPhone from "../views/VerifyPhone.vue"
 
@@ -16,6 +18,14 @@ Vue.use(VueRouter)
 const routes: Array<RouteConfig> = [
     {
         path: "/",
+        name: "Landing",
+        component: Landing,
+        meta: {
+            requiresAuth: false,
+        },
+    },
+    {
+        path: "/home",
         name: "Home",
         component: Home,
         meta: {
@@ -44,6 +54,14 @@ const routes: Array<RouteConfig> = [
         component: Login,
         meta: {
             requiresAuth: false,
+        },
+    },
+    {
+        path: "/profile",
+        name: "Profile",
+        component: Profile,
+        meta: {
+            requiresAuth: true,
         },
     },
     {
@@ -97,7 +115,7 @@ router.beforeEach((to, from, next) => {
         console.log("This route is for logged out users.")
         if (userState.isLoggedIn) {
             console.log("User logged in, redirect to home.")
-            next("/")
+            next("/home")
             return
         }
         console.log("User not logged in, allowing navigation.")

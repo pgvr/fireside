@@ -8,6 +8,7 @@
                         name="smsCode"
                         label="Verification Code"
                         id="smsCode"
+                        autofocus
                         v-model="code"
                         :loading="loading()"
                     ></v-text-field>
