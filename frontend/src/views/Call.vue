@@ -1,5 +1,6 @@
 <template>
     <v-container>
+        <AppBar />
         <v-layout column>
             <h1 class="display-1">Call Screen</h1>
             <v-layout v-if="callStatus() === 'idle'" column>
@@ -31,10 +32,11 @@ import { Component, Vue } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
 import CallModule from "@/store/modules/call.module"
 import BottomNav from "../components/BottomNav.vue"
+import AppBar from "../components/AppBar.vue"
 
 const callState = getModule(CallModule)
 
-@Component({ components: { BottomNav } })
+@Component({ components: { BottomNav, AppBar } })
 export default class Call extends Vue {
     callStatus() {
         return callState.callStatus

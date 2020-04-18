@@ -1,13 +1,7 @@
 <template>
     <v-container>
+        <AppBar />
         <v-layout column>
-            <v-app-bar app>
-                <v-img src="../assets/fire.png" :contain="true" max-width="32" max-height="32"></v-img>
-                <v-toolbar-title class="ml-2">Fireside</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-btn icon @click="logout"><v-icon>mdi-account</v-icon></v-btn>
-            </v-app-bar>
-
             <v-row justify="center">
                 <h1 class="display-1 pr-2">Your Sparks:</h1>
                 <h1 class="display-1">{{ userSparks() }}</h1>
@@ -71,11 +65,12 @@ import UserModule from "@/store/modules/user.module"
 import CallModule, { Call } from "@/store/modules/call.module"
 import moment from "moment"
 import BottomNav from "../components/BottomNav.vue"
+import AppBar from "../components/AppBar.vue"
 
 const userState = getModule(UserModule)
 const callState = getModule(CallModule)
 
-@Component({ components: { BottomNav } })
+@Component({ components: { BottomNav, AppBar } })
 export default class Home extends Vue {
     phone() {
         return userState.user?.phone
