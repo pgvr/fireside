@@ -100,15 +100,7 @@ export default class Home extends Vue {
     }
 
     created() {
-        this.getCalls()
-        this.getUser()
-    }
-
-    getCalls() {
         callState.getCalls()
-    }
-
-    getUser() {
         userState.getUser()
     }
 
