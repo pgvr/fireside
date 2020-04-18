@@ -83,7 +83,7 @@ export default class Home extends Vue {
     }
 
     goToDetail(call: Call) {
-        this.$router.push(`/postCall/${call._id}`)
+        this.$router.push(`/detail/${call._id}`)
     }
 
     callStart(call: Call) {

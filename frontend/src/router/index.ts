@@ -3,10 +3,10 @@ import Vue from "vue"
 import VueRouter, { RouteConfig } from "vue-router"
 import { getModule } from "vuex-module-decorators"
 import Call from "../views/Call.vue"
+import CallDetail from "../views/CallDetail.vue"
 import Home from "../views/Home.vue"
 import Login from "../views/Login.vue"
 import NotFound from "../views/NotFound.vue"
-import PostCall from "../views/PostCall.vue"
 import Start from "../views/Start.vue"
 import VerifyPhone from "../views/VerifyPhone.vue"
 
@@ -55,9 +55,9 @@ const routes: Array<RouteConfig> = [
         },
     },
     {
-        path: "/postCall/:id",
-        name: "Post Call",
-        component: PostCall,
+        path: "/detail/:id",
+        name: "Call Detail",
+        component: CallDetail,
         meta: {
             requiresAuth: true,
         },

@@ -72,7 +72,7 @@ export default class CallModule extends VuexModule {
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/calls/submit`, body)
             const { data } = response.data
             this.setLoading(false)
-            return { guessedCorrect: data.guessedCorrect, total: data.total, points: data.points }
+            return data
         } catch (error) {
             console.log(error)
             this.setLoading(false)
@@ -110,15 +110,16 @@ export default class CallModule extends VuexModule {
     @Action
     async getCall(id: string) {
         try {
-            console.log("getting")
             this.setLoading(true)
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/single/${id}`)
             this.setLoading(false)
             const { data } = response.data
             this.setCallDetail(data)
+            return data
         } catch (error) {
             console.log(error)
             this.setLoading(false)
+            return null
         }
     }
 
@@ -189,7 +190,8 @@ export default class CallModule extends VuexModule {
             } else {
                 // bring user to post call screen
                 console.log("call finished, navigate to post call")
-                router.push("/postCall")
+                const { call } = data
+                router.push(`/detail/${call._id}`)
                 this.setCallStatus("idle")
             }
         } catch (error) {

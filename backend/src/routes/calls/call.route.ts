@@ -42,16 +42,25 @@ router.post(
             submittedInterests.map((i) => i.toLowerCase()).includes(x.toLowerCase()),
         )
         Logger.info(`Guessed correctly: ${intersection.join(" ")}`)
+        // 50 points for each correct guess
         let points = intersection.length * 50
-        points += 30 // call bonus
         // update call with guessed interests
         await CallRepo.submitGuesses(callId, submittedInterests)
         // update user profile with points
         await UserRepo.updatePoints(phone, points)
+        const calls = await CallRepo.getCallsByPhone(req.user.phone)
+        const firstCall = calls.length === 1
+        // grant 100 for first call, 30 for every following call
+        if (firstCall) {
+            points += 100
+        } else {
+            points += 30
+        }
         return new SuccessResponse("Guess Submitted", {
             guessedCorrect: intersection.length,
             total: call.commonInterests.length,
             points,
+            firstCall,
         }).send(res)
     }),
 )
@@ -77,8 +86,10 @@ router.get(
             // call in progress
             return new SuccessResponse("Success", { callActive: true }).send(res)
         }
+        // calls ordered desc, so first one must be the new one because the conference has ended
+        const calls = await CallRepo.getCallsByPhone(phone)
         // call must be done since there is no conference anymore
-        return new SuccessResponse("Success", { callActive: false }).send(res)
+        return new SuccessResponse("Success", { callActive: false, call: calls[0] }).send(res)
     }),
 )
 
