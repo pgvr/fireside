@@ -11,6 +11,7 @@ export const db = {
 }
 
 export const corsUrl = process.env.CORS_URL
+export const baseUrl = process.env.NODE_ENV === "production" ? process.env.BASE_URL_PROD : process.env.BASE_URL_DEV
 
 export const tokenInfo = {
     accessTokenValidityDays: parseInt(process.env.ACCESS_TOKEN_VALIDITY_DAYS),

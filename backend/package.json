@@ -1,7 +1,7 @@
 {
-    "name": "nodejs-backend-architecture",
+    "name": "fireside-backend",
     "version": "1.0.1",
-    "description": "The architecture for nodejs backend application. It is build on top of expressjs using typescript.",
+    "description": "Backend for the Fireside Chat Application",
     "main": "index.js",
     "scripts": {
         "start": "npm run serve",
@@ -17,10 +17,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/afteracademy/nodejs-backend-architecture-typescript.git"
+        "url": "https://github.com/patrickgoeler/twilio-hackathon.git"
     },
-    "author": "AfterAcademy",
-    "license": "Apache-2.0",
+    "author": "Patrick Goeler",
+    "license": "TBD",
     "dependencies": {
         "@hapi/joi": "^17.1.1",
         "bcrypt": "^4.0.1",

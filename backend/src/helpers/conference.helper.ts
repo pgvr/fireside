@@ -1,4 +1,5 @@
 import twilio from "twilio"
+import { baseUrl } from "../config"
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
@@ -18,7 +19,7 @@ export function buildConference(welcomeMessage: string, conferenceName: string) 
     twiml.say(welcomeMessage)
     twiml.dial().conference(
         {
-            statusCallback: "https://8172c6b5.ngrok.io/webhook",
+            statusCallback: `${baseUrl}/webhook`,
             statusCallbackMethod: "POST",
             statusCallbackEvent: ["end", "start", "join", "leave"],
         },
