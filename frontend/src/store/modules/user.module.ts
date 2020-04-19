@@ -22,7 +22,7 @@ export interface Tokens {
 export default class UserModule extends VuexModule {
     status: "loading" | "success" | "error" | "" = ""
     accessToken = localStorage.getItem("token") || ""
-    refreshToken = ""
+    refreshToken = localStorage.getItem("refreshToken") || ""
     loading = false
     user: User = {
         _id: "",
@@ -73,11 +73,11 @@ export default class UserModule extends VuexModule {
     }
 
     @Mutation
-    authSuccess(tokens: Tokens, user: User) {
+    authSuccess(payload: { tokens: Tokens; user: User }) {
         this.status = "success"
-        this.accessToken = tokens.accessToken
-        this.refreshToken = tokens.refreshToken
-        this.user = user
+        this.accessToken = payload.tokens.accessToken
+        this.refreshToken = payload.tokens.refreshToken
+        this.user = payload.user
     }
 
     @Mutation
@@ -124,6 +124,7 @@ export default class UserModule extends VuexModule {
             const { data } = response.data
             console.log(data)
             localStorage.removeItem("token")
+            localStorage.removeItem("refreshToken")
             this.resetAuth()
             delete axios.defaults.headers.common["Authorization"]
             router.push("/")

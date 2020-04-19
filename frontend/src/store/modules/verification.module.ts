@@ -49,8 +49,9 @@ export default class VerificationModule extends VuexModule {
             const tokens = data.tokens
             const user = data.user
             localStorage.setItem("token", tokens.accessToken)
+            localStorage.setItem("refreshToken", tokens.refreshToken)
             Axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
-            userState.authSuccess(tokens, user)
+            userState.authSuccess({ tokens, user })
             if (this.shouldLogin) {
                 router.push("/home")
             } else {
@@ -64,6 +65,7 @@ export default class VerificationModule extends VuexModule {
             this.setLoading(false)
             userState.authError()
             localStorage.removeItem("token")
+            localStorage.removeItem("refreshToken")
         }
     }
 }
