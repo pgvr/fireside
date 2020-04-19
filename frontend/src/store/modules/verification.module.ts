@@ -2,9 +2,11 @@ import router from "@/router"
 import store from "@/store"
 import Axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import UiModule from "./ui.module"
 import UserModule from "./user.module"
 
 const userState = getModule(UserModule)
+const uiState = getModule(UiModule)
 
 @Module({ name: "Verification", store, dynamic: true, namespaced: true })
 export default class VerificationModule extends VuexModule {
@@ -43,6 +45,7 @@ export default class VerificationModule extends VuexModule {
                     ...userState.user,
                     code,
                 }
+                delete body._id
                 response = await Axios.post(`${process.env.VUE_APP_API_URL}/code/register`, body)
             }
             const { data } = response.data
@@ -66,6 +69,7 @@ export default class VerificationModule extends VuexModule {
             userState.authError()
             localStorage.removeItem("token")
             localStorage.removeItem("refreshToken")
+            uiState.showSnackbarMessage("Something went wrong. Please check the token and try again.")
         }
     }
 }

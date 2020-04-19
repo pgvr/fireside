@@ -2,9 +2,8 @@
     <v-app>
         <v-content>
             <router-view />
-
             <!-- Global Snackbar managed via ui state -->
-            <v-snackbar @input="updateSnackbar" :value="showSnackbar()">
+            <v-snackbar class="mb-8" @input="updateSnackbar" :value="showSnackbar()">
                 {{ snackbarMessage() }}
                 <v-btn color="pink" text @click="updateSnackbar(false)">
                     Close

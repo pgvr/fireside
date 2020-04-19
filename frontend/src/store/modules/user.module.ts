@@ -103,6 +103,17 @@ export default class UserModule extends VuexModule {
     }
 
     @Action
+    async doesUserExist(phone: string) {
+        try {
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/user/exists/${phone}`)
+            console.log("user for " + phone + "exists: " + !!response.data.data)
+            return !!response.data.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    @Action
     async getUser() {
         try {
             this.setLoading(true)

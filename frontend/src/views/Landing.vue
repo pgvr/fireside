@@ -1,9 +1,9 @@
 <template>
     <v-container>
         <v-layout column align-center>
-            <BonfireIcon :width="200" :height="200" />
-            <h1 class="display-3 mt-4">Fireside</h1>
-            <v-card class="mt-4" max-width="500">
+            <BonfireIcon class="mt-12" :width="200" :height="200" />
+            <h1 class="display-3 mt-4 mb-8">Fireside</h1>
+            <v-card style="width: 100%;" max-width="500">
                 <v-card-text>
                     <div>Abous Us</div>
                     <p class="display-1 text--primary">
