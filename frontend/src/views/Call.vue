@@ -2,7 +2,7 @@
     <v-container>
         <AppBar />
         <v-layout column align-center>
-            <div class="display-1 mb-8" style="text-align:center;">Set up a Fireside chat by tapping the bonfire</div>
+            <div class="display-1 mb-8" style="text-align:center;">Ready to have a Chat?</div>
             <BonfireIcon
                 :loading="callStatus() === 'queue'"
                 class="mb-8"

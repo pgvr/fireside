@@ -9,6 +9,7 @@
                         label="Verification Code"
                         id="smsCode"
                         autofocus
+                        :error-messages="error()"
                         v-model="code"
                         :loading="loading()"
                     ></v-text-field>
@@ -37,6 +38,9 @@ export default class VerifyPhone extends Vue {
     }
     phone() {
         return userState.user.phone
+    }
+    error() {
+        return userState.status === "error" ? ["Something went wrong, please try again."] : []
     }
 
     created() {

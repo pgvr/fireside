@@ -24,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="call in calls()" :key="call._id" @click="goToDetail(call)">
+                        <tr style="cursor: pointer" v-for="call in calls()" :key="call._id" @click="goToDetail(call)">
                             <td>{{ callStart(call) }}</td>
                             <td>{{ callDuration(call) }} min</td>
                             <td>

@@ -22,6 +22,7 @@ const routes: Array<RouteConfig> = [
         component: Landing,
         meta: {
             requiresAuth: false,
+            title: "Fireside | Welcome To Fireside",
         },
     },
     {
@@ -30,6 +31,7 @@ const routes: Array<RouteConfig> = [
         component: Home,
         meta: {
             requiresAuth: true,
+            title: "Fireside | Home",
         },
     },
     {
@@ -38,6 +40,7 @@ const routes: Array<RouteConfig> = [
         component: Start,
         meta: {
             requiresAuth: false,
+            title: "Fireside | Get Started",
         },
     },
     {
@@ -46,6 +49,7 @@ const routes: Array<RouteConfig> = [
         component: VerifyPhone,
         meta: {
             requiresAuth: false,
+            title: "Fireside | Verify Your Phone",
         },
     },
     {
@@ -54,6 +58,7 @@ const routes: Array<RouteConfig> = [
         component: Login,
         meta: {
             requiresAuth: false,
+            title: "Fireside | Login",
         },
     },
     {
@@ -62,6 +67,7 @@ const routes: Array<RouteConfig> = [
         component: Profile,
         meta: {
             requiresAuth: true,
+            title: "Fireside | Profile",
         },
     },
     {
@@ -70,6 +76,7 @@ const routes: Array<RouteConfig> = [
         component: Call,
         meta: {
             requiresAuth: true,
+            title: "Fireside | Chat",
         },
     },
     {
@@ -78,12 +85,16 @@ const routes: Array<RouteConfig> = [
         component: CallDetail,
         meta: {
             requiresAuth: true,
+            title: "Fireside | Chat Detail",
         },
     },
     {
         path: "*",
         name: "404",
         component: NotFound,
+        meta: {
+            title: "Fireside | Not Found",
+        },
     },
     // {
     //     path: "/about",
@@ -102,6 +113,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+    document.title = to.meta.title || "Fireside"
     if (to.matched.some(record => record.meta.requiresAuth)) {
         console.log("This route requires auth.")
         if (userState.isLoggedIn) {
