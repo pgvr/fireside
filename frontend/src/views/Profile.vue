@@ -2,15 +2,14 @@
     <v-container>
         <AppBar />
         <v-layout column>
-            <div class="display-3">User Profile</div>
-
-            <h1 class="display-1">Start</h1>
-            <v-form @submit.prevent="meet()">
+            <h1 class="display-1">Your Profile</h1>
+            <v-form @submit.prevent="update()">
                 <v-text-field
                     prepend-icon="mdi-phone"
                     v-model="phone"
                     label="Phone"
                     type="tel"
+                    readonly
                     required
                     :error-messages="phoneErrors()"
                     :loading="userStateLoading()"
@@ -78,7 +77,7 @@
                     <span>We only support English for now</span>
                 </v-tooltip>
 
-                <v-btn large type="submit" color="primary">Meet Now</v-btn>
+                <v-btn large type="submit" color="primary">Update</v-btn>
             </v-form>
         </v-layout>
         <BottomNav />
@@ -158,6 +157,15 @@ export default class Profile extends Vue {
         if (!this.$v.job.$dirty) return errors
         !this.$v.job.required && errors.push("Occupation is required.")
         return errors
+    }
+
+    removeInterest(chip: string) {
+        const index = this.interests.indexOf(chip)
+        this.interests.splice(index, 1)
+    }
+
+    update() {
+        console.log("update user info")
     }
 }
 </script>
