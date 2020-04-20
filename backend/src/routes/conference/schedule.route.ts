@@ -1,11 +1,10 @@
 // eslint-disable-next-line import/no-unresolved
-import { ProtectedRequest } from "app-request"
 import express from "express"
 import { Types } from "mongoose"
 import twilio from "twilio"
 import { localApiKey } from "../../config"
 import { AuthFailureError, BadRequestError } from "../../core/ApiError"
-import { NotFoundResponse, SuccessResponse } from "../../core/ApiResponse"
+import { SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
 import ConferenceRepo from "../../database/repository/conference.repo"
 import QueueRepo from "../../database/repository/queue.repo"
@@ -101,21 +100,6 @@ router.post(
         // again for this route schedule is true
         await QueueRepo.addToQueue(incomingParticipant, true)
         return new SuccessResponse("No match found. Putting in db.", { queue: true }).send(res)
-    }),
-)
-
-router.post(
-    "/leave",
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const incomingParticipant = await UserRepo.findByPhone(req.user.phone)
-
-        if (!incomingParticipant) throw new BadRequestError("User not registered")
-
-        const removed = await QueueRepo.removeFromQueue(incomingParticipant)
-        if (removed) {
-            return new SuccessResponse("Removed user from queue", removed).send(res)
-        }
-        return new NotFoundResponse("User not found in queue").send(res)
     }),
 )
 

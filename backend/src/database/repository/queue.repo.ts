@@ -29,7 +29,7 @@ export default class QueueRepo {
         return QueueModel.create(queueUser)
     }
 
-    public static removeFromQueue(user: QueueUser): Promise<QueueUser> {
+    public static removeFromQueue(user: User): Promise<QueueUser> {
         return QueueModel.findOneAndDelete({ phone: user.phone }).exec()
     }
 }
