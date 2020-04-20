@@ -10,6 +10,7 @@ export default interface Conference extends Document {
     commonInterests: string[]
     createdAt: Date
     callStartedAt?: Date
+    isScheduled: boolean
 }
 
 const schema = new Schema(
@@ -35,6 +36,10 @@ const schema = new Schema(
         },
         callStartedAt: {
             type: Date,
+        },
+        isScheduled: {
+            type: Schema.Types.Boolean,
+            required: true,
         },
     },
     {

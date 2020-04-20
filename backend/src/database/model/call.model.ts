@@ -13,6 +13,7 @@ export default interface Call extends Document {
     completedAt: Date
     points: number
     firstCall: boolean
+    isScheduled: boolean
 }
 
 const schema = new Schema(
@@ -51,6 +52,10 @@ const schema = new Schema(
         },
         completedAt: {
             type: Date,
+            required: true,
+        },
+        isScheduled: {
+            type: Schema.Types.Boolean,
             required: true,
         },
     },

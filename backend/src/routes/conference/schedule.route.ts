@@ -61,7 +61,7 @@ router.post(
                 language: foundMatch.language,
             }
             // Call being initiated, create conference in db to keep track
-            await ConferenceRepo.create(foundMatch, incomingParticipant)
+            await ConferenceRepo.create(foundMatch, incomingParticipant, true)
 
             const conferenceXml = buildConference(
                 "Welcome to your fireside chat. Enjoy!",

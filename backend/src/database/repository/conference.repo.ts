@@ -7,7 +7,7 @@ import QueueUser from "../model/queue.model"
 import User from "../model/user.model"
 
 export default class ConferenceRepo {
-    public static async create(userOne: QueueUser, userTwo: User) {
+    public static async create(userOne: QueueUser, userTwo: User, isScheduled = false) {
         // make sure users dont already have conf, remove if so
         await ConferenceModel.findOneAndDelete({
             $or: [{ phoneOne: userOne.phone }, { phoneTwo: userOne.phone }],
@@ -37,6 +37,7 @@ export default class ConferenceRepo {
             phoneTwo: userTwo.phone,
             commonInterests,
             createdAt: now,
+            isScheduled,
         })
     }
 

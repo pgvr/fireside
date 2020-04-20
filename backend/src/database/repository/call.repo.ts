@@ -21,6 +21,7 @@ export default class CallRepo {
                 points: 0,
                 firstCall,
                 rating: 0,
+                isScheduled: conference.isScheduled,
             })
             dbCalls.push(dbCall)
         }
