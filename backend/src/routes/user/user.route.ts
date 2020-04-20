@@ -35,4 +35,15 @@ router.get(
     }),
 )
 
+router.post(
+    "/update",
+    asyncHandler(async (req: ProtectedRequest, res) => {
+        const { user } = req.body
+        user._id = req.user._id
+
+        await UserRepo.updateInfo(user)
+        return new SuccessResponse("Updated user: ", { user }).send(res)
+    }),
+)
+
 export default router

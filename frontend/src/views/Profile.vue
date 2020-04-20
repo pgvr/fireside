@@ -91,7 +91,7 @@ import { validationMixin } from "vuelidate"
 import { getModule } from "vuex-module-decorators"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
-import UserModule from "@/store/modules/user.module"
+import UserModule, { User } from "@/store/modules/user.module"
 
 const validations = {
     phone: { required },
@@ -164,8 +164,19 @@ export default class Profile extends Vue {
         this.interests.splice(index, 1)
     }
 
-    update() {
+    async update() {
         console.log("update user info")
+
+        this.$v.$touch()
+        if (!this.$v.$invalid) {
+            const updateUser = {
+                city: this.city,
+                interests: this.interests,
+                job: this.job,
+            } as Partial<User>
+
+            userState.updateUser(updateUser)
+        }
     }
 }
 </script>
