@@ -17,6 +17,8 @@ export const PUBLIC_KEY = publicKeyBuffer.toString("ascii")
 export const corsUrl = process.env.CORS_URL
 export const baseUrl = process.env.NODE_ENV === "production" ? process.env.BASE_URL_PROD : process.env.BASE_URL_DEV
 
+export const localApiKey = process.env.API_KEY
+
 export const tokenInfo = {
     accessTokenValidityDays: Number(process.env.ACCESS_TOKEN_VALIDITY_DAYS),
     refreshTokenValidityDays: Number(process.env.REFRESH_TOKEN_VALIDITY_DAYS),

@@ -1,3 +1,5 @@
+import Joi from "@hapi/joi"
+
 export default {
     // participant: Joi.object().keys({
     //     phone: Joi.string().required(),
@@ -6,4 +8,12 @@ export default {
     //     job: Joi.string().required(),
     //     language: Joi.string().required(),
     // }),
+    auth: Joi.object()
+        .keys({
+            apikey: Joi.string().required(),
+        })
+        .unknown(true),
+    scheduledConference: Joi.object().keys({
+        phone: Joi.string().required(),
+    }),
 }
