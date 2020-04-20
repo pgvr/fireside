@@ -37,6 +37,7 @@ router.get(
 
 router.post(
     "/update",
+    validator(schema.update, ValidationSource.BODY),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const { user } = req.body
         user._id = req.user._id
