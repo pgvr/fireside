@@ -4,7 +4,7 @@
     "description": "Backend for the Fireside Chat Application",
     "main": "index.js",
     "scripts": {
-        "start": "npm run serve",
+        "start": "node build/server.js",
         "serve": "node -r dotenv/config build/server.js",
         "build": "npm run build-ts",
         "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
