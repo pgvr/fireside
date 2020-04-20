@@ -4,27 +4,42 @@ import Call, { CallModel } from "../model/call.model"
 import Conference from "../model/conference.model"
 
 export default class CallRepo {
-    public static async create(numbers: string[], conference: Conference): Promise<Call[]> {
+    public static async create(conference: Conference): Promise<Call[]> {
         const now = new Date()
-
         const dbCalls = []
-        for (let i = 0; i < numbers.length; i++) {
-            const number = numbers[i]
-            const calls = await CallRepo.getCallsByPhone(number)
-            const firstCall = calls.length === 0
-            const dbCall = await CallModel.create(<Call>{
-                phone: number,
-                createdAt: conference.callStartedAt,
-                completedAt: now,
-                commonInterests: conference.commonInterests,
-                conferenceId: conference.conferenceId,
-                points: 0,
-                firstCall,
-                rating: 0,
-                isScheduled: conference.isScheduled,
-            })
-            dbCalls.push(dbCall)
-        }
+
+        const numberOne = conference.userOne.phone
+        const callsOne = await CallRepo.getCallsByPhone(numberOne)
+        const firstCallOne = callsOne.length === 0
+        const dbCallOne = await CallModel.create(<Call>{
+            phone: numberOne,
+            createdAt: conference.callStartedAt,
+            completedAt: now,
+            commonInterests: conference.commonInterests,
+            conferenceId: conference.conferenceId,
+            points: 0,
+            firstCall: firstCallOne,
+            rating: 0,
+            isScheduled: conference.userOne.isScheduled,
+        })
+        dbCalls.push(dbCallOne)
+
+        const numberTwo = conference.userTwo.phone
+        const callsTwo = await CallRepo.getCallsByPhone(numberTwo)
+        const firstCallTwo = callsTwo.length === 0
+        const dbCallTwo = await CallModel.create(<Call>{
+            phone: numberTwo,
+            createdAt: conference.callStartedAt,
+            completedAt: now,
+            commonInterests: conference.commonInterests,
+            conferenceId: conference.conferenceId,
+            points: 0,
+            firstCall: firstCallTwo,
+            rating: 0,
+            isScheduled: conference.userTwo.isScheduled,
+        })
+        dbCalls.push(dbCallTwo)
+
         return dbCalls
     }
 

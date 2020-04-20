@@ -17,13 +17,14 @@ export default class QueueRepo {
         return QueueModel.findOne({ phone }).exec()
     }
 
-    public static async addToQueue(user: User): Promise<QueueUser> {
+    public static async addToQueue(user: User, isScheduled: boolean): Promise<QueueUser> {
         const queueUser = <QueueUser>{
             phone: user.phone,
             city: user.city,
             interests: user.interests,
             job: user.job,
             language: user.language,
+            isScheduled,
         }
         return QueueModel.create(queueUser)
     }

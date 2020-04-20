@@ -5,12 +5,17 @@ export const COLLECTION_NAME = "conferences"
 
 export default interface Conference extends Document {
     conferenceId?: string
-    phoneOne: string
-    phoneTwo: string
+    userOne: {
+        phone: string
+        isScheduled: boolean
+    }
+    userTwo: {
+        phone: string
+        isScheduled: boolean
+    }
     commonInterests: string[]
     createdAt: Date
     callStartedAt?: Date
-    isScheduled: boolean
 }
 
 const schema = new Schema(
@@ -18,12 +23,14 @@ const schema = new Schema(
         conferenceId: {
             type: Schema.Types.String,
         },
-        phoneOne: {
-            type: Schema.Types.String,
+        userOne: {
+            type: Schema.Types.Map,
+            of: Schema.Types.String,
             required: true,
         },
-        phoneTwo: {
-            type: Schema.Types.String,
+        userTwo: {
+            type: Schema.Types.Map,
+            of: Schema.Types.String,
             required: true,
         },
         commonInterests: {
@@ -36,10 +43,6 @@ const schema = new Schema(
         },
         callStartedAt: {
             type: Date,
-        },
-        isScheduled: {
-            type: Schema.Types.Boolean,
-            required: true,
         },
     },
     {
