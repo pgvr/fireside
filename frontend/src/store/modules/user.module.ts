@@ -1,7 +1,9 @@
 import router from "@/router"
 import store from "@/store"
 import axios from "axios"
-import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import UiModule from "./ui.module"
+const uiState = getModule(UiModule)
 
 export interface User {
     _id: string
@@ -90,6 +92,18 @@ export default class UserModule extends VuexModule {
         this.status = ""
         this.accessToken = ""
         this.refreshToken = ""
+    }
+
+    @Mutation
+    authExpired() {
+        this.status = ""
+        this.accessToken = ""
+        this.refreshToken = ""
+        delete axios.defaults.headers.common["Authorization"]
+        localStorage.removeItem("token")
+        localStorage.removeItem("refreshToken")
+        uiState.showSnackbarMessage("Plase log in again")
+        router.push("/login")
     }
 
     @Mutation
