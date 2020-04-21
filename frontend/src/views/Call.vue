@@ -2,7 +2,15 @@
     <v-container>
         <AppBar />
         <v-layout column align-center>
-            <div class="display-1 mb-8" style="text-align:center;">Ready to have a Chat?</div>
+            <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'idle'">
+                Ready to have a Chat?
+            </div>
+            <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'queue'">
+                Hang tight, we are setting up a call.
+            </div>
+            <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'calling'">
+                A call is on its way. Enjoy!
+            </div>
             <BonfireIcon
                 :loading="callStatus() === 'queue'"
                 class="mb-8"
@@ -19,8 +27,8 @@
                 >
                     Your phone will ring as soon as we find a likeminded person.
                 </p>
-                <p v-if="callStatus() === 'calling'" class="body-1" style="text-align:center">
-                    Once your call is done, navigate to the call summary.
+                <p v-if="callStatus() === 'queue'" class="body-1" style="text-align:center">
+                    Once your call is done, you can find it in the overview.
                 </p>
                 <v-btn
                     v-if="callStatus() === 'idle'"
@@ -46,6 +54,9 @@
                     @click="completeCall()"
                     >Complete Call</v-btn
                 >
+                <v-btn :loading="callStateLoading()" color="secondary" class="mt-4" @click="refreshCallStatus()"
+                    >Refresh Call Status</v-btn
+                >
             </v-layout>
         </v-layout>
         <BottomNav />
@@ -66,6 +77,10 @@ const callState = getModule(CallModule)
 export default class Call extends Vue {
     callStatus() {
         return callState.callStatus
+    }
+
+    refreshCallStatus() {
+        callState.checkQueueStatus()
     }
 
     callStateLoading() {

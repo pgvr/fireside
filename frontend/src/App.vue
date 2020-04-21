@@ -17,6 +17,7 @@
 import { Vue, Component } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
 import UiModule from "@/store/modules/ui.module"
+import store from "./store"
 
 const uiState = getModule(UiModule)
 
@@ -30,6 +31,12 @@ export default class App extends Vue {
     }
     updateSnackbar(value: boolean) {
         uiState.setShowSnackbar(value)
+    }
+
+    created() {
+        // fetch initial data
+        // module import doesnt work for some reason
+        store.dispatch("Call/checkQueueStatus")
     }
 }
 </script>
