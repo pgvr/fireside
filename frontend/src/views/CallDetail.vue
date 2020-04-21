@@ -130,7 +130,7 @@ export default class CallDetail extends Vue {
                 guesses: this.guesses,
             })
             if (result) {
-                this.showSubmitResult(result)
+                this.showSubmitResult()
             }
         }
     }
@@ -141,13 +141,18 @@ export default class CallDetail extends Vue {
         console.log("thanks")
     }
 
-    showSubmitResult(result: { guessedCorrect: number; total: number; points: number; firstCall: boolean }) {
+    async showSubmitResult() {
         this.allowEdit = false
-        const { guessedCorrect, total, points, firstCall } = result
-        if (firstCall) {
-            // first call stuff, also points includes a + 100 for fist call
-        } else {
-            // normal stuff
+        this.loading = true
+        const call = (await callState.getCall(this.$route.params.id)) as Call
+        if (call) {
+            this.call = call
+            this.guesses = call.guessedInterests
+            this.rating = call.rating
+            this.allowEdit = call.guessedInterests.length === 0
+            this.maxGuesses = call.commonInterests.length
+            this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
+            this.loading = false
         }
     }
 
