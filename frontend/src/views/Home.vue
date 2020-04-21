@@ -32,13 +32,13 @@
                                     <template v-slot:activator="{ on }">
                                         <v-icon
                                             v-on="on"
-                                            v-if="call.guessedInterests && call.guessedInterests.length > 0"
+                                            v-if="correctInterests(call) && correctInterests(call).length > 0"
                                             >mdi-check</v-icon
                                         >
                                         <v-icon v-on="on" v-else>mdi-close</v-icon>
                                     </template>
-                                    <span v-if="call.guessedInterests && call.guessedInterests.length > 0">{{
-                                        guessedInterests(call)
+                                    <span v-if="correctInterests(call) && correctInterests(call).length > 0">{{
+                                        correctInterests(call)
                                     }}</span>
                                     <span v-else>You didn't guess any common interests</span>
                                 </v-tooltip>
@@ -97,8 +97,9 @@ export default class Home extends Vue {
     callSparks(call: Call) {
         return call.points
     }
-    guessedInterests(call: Call) {
-        return call.guessedInterests?.join(", ")
+    correctInterests(call: Call) {
+        const correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
+        return correctGuesses.join(", ")
     }
 
     created() {
