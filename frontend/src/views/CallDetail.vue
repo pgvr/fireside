@@ -92,7 +92,7 @@ const callState = getModule(CallModule)
 const validations = {
     guesses: {
         required,
-        maxAmount: (value: string[]) => value.length <= callState.callDetail.commonInterests?.length,
+        maxAmount: (value: string[]) => value.length <= callState.CallDetail?.commonInterests.length,
     },
 }
 

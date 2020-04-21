@@ -44,7 +44,7 @@ router.post(
     validator(schema.setting, ValidationSource.BODY),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const { userId, days, hours, numPerDay } = req.body
-        if (userId !== req.user._id) throw new AuthFailureError("Incorrect userId")
+        if (userId !== req.user._id.toString()) throw new AuthFailureError("Incorrect userId")
         const setting: any = { userId, days, hours, numPerDay }
 
         await SettingRepo.update(setting)
