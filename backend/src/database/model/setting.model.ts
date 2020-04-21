@@ -8,6 +8,8 @@ export default interface Setting extends Document {
     days: number[]
     hours: number[]
     numPerDay: number
+    createdAt: Date
+    updatedAt: Date
 }
 
 export const schema = new Schema(
@@ -32,6 +34,14 @@ export const schema = new Schema(
             type: Schema.Types.Number,
             required: true,
             min: 1,
+        },
+        createdAt: {
+            type: Schema.Types.Date,
+            required: true,
+        },
+        updatedAt: {
+            type: Schema.Types.Date,
+            required: true,
         },
     },
     {
