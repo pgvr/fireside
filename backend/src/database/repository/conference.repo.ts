@@ -13,10 +13,10 @@ export default class ConferenceRepo {
     ) {
         // make sure users dont already have conf, remove if so
         await ConferenceModel.findOneAndDelete({
-            $or: [{ "userOne.phone": userOne.user.phone }, { "userTwo.phone": userOne.user.phone }],
+            $or: [{ userOnePhone: userOne.user.phone }, { userTwoPhone: userOne.user.phone }],
         }).exec()
         await ConferenceModel.findOneAndDelete({
-            $or: [{ "userOne.phone": userTwo.user.phone }, { "userTwo.phone": userTwo.user.phone }],
+            $or: [{ userOnePhone: userTwo.user.phone }, { userTwoPhone: userTwo.user.phone }],
         }).exec()
 
         let commonInterests: string[] = []
@@ -36,14 +36,10 @@ export default class ConferenceRepo {
         const now = new Date()
 
         return ConferenceModel.create(<Conference>{
-            userOne: {
-                phone: userOne.user.phone,
-                isScheduled: userOne.isScheduled,
-            },
-            userTwo: {
-                phone: userTwo.user.phone,
-                isScheduled: userTwo.isScheduled,
-            },
+            userOnePhone: userOne.user.phone,
+            userOneIsScheduled: userOne.isScheduled,
+            userTwoPhone: userTwo.user.phone,
+            userTwoIsScheduled: userTwo.isScheduled,
             commonInterests,
             createdAt: now,
         })
@@ -59,7 +55,7 @@ export default class ConferenceRepo {
         const now = new Date()
         const conference = ConferenceModel.findOneAndUpdate(
             {
-                $or: [{ phoneOne: calls[0].to }, { phoneTwo: calls[0].to }],
+                $or: [{ userOnePhone: calls[0].to }, { userTwoPhone: calls[0].to }],
             },
             { callStartedAt: now, conferenceId },
         )
@@ -75,7 +71,7 @@ export default class ConferenceRepo {
 
     public static async getConferenceForPhone(phone: string) {
         return ConferenceModel.findOne({
-            $or: [{ phoneOne: phone }, { phoneTwo: phone }],
+            $or: [{ userOnePhone: phone }, { userTwoPhone: phone }],
         }).exec()
     }
 }
