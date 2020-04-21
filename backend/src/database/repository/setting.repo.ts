@@ -1,7 +1,8 @@
+import { Types } from "mongoose"
 import Setting, { SettingModel } from "../model/setting.model"
 
 export default class SettingRepo {
-    public static findByUserId(userId: string): Promise<Setting> {
+    public static findByUserId(userId: Types.ObjectId): Promise<Setting> {
         return SettingModel.findOne({ userId }).lean<Setting>().exec()
     }
 
@@ -21,7 +22,7 @@ export default class SettingRepo {
         return setting
     }
 
-    public static async delete(userId: string): Promise<Setting> {
+    public static async delete(userId: Types.ObjectId): Promise<Setting> {
         const setting = SettingModel.findOneAndDelete({ userId })
         return setting
     }

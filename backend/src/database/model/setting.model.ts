@@ -1,10 +1,10 @@
-import { Document, model, Schema } from "mongoose"
+import { Document, model, Schema, Types } from "mongoose"
 
 export const DOCUMENT_NAME = "setting"
 export const COLLECTION_NAME = "settings"
 
 export default interface Setting extends Document {
-    userId: string
+    userId: Types.ObjectId
     days: number[]
     hours: number[]
     numPerDay: number
@@ -15,7 +15,7 @@ export default interface Setting extends Document {
 export const schema = new Schema(
     {
         userId: {
-            type: Schema.Types.String,
+            type: Schema.Types.ObjectId,
             required: true,
         },
         days: {

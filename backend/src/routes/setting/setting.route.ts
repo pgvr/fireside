@@ -2,7 +2,6 @@
 import { ProtectedRequest } from "app-request"
 import express from "express"
 import authentication from "../../auth/authentication"
-import { AuthFailureError } from "../../core/ApiError"
 import { SuccessMsgResponse, SuccessResponse } from "../../core/ApiResponse"
 import SettingRepo from "../../database/repository/setting.repo"
 import asyncHandler from "../../helpers/asyncHandler"
@@ -31,8 +30,9 @@ router.post(
     "/create",
     validator(schema.setting, ValidationSource.BODY),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const { userId, days, hours, numPerDay } = req.body
-        const setting: any = { userId, days, hours, numPerDay }
+        const { days, hours, numPerDay } = req.body
+        const setting: any = { days, hours, numPerDay }
+        setting.userId = req.user._id
 
         await SettingRepo.create(setting)
         return new SuccessResponse("Created setting: ", { setting }).send(res)
@@ -43,9 +43,10 @@ router.post(
     "/update",
     validator(schema.setting, ValidationSource.BODY),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const { userId, days, hours, numPerDay } = req.body
-        if (userId !== req.user._id.toString()) throw new AuthFailureError("Incorrect userId")
-        const setting: any = { userId, days, hours, numPerDay }
+        const { days, hours, numPerDay } = req.body
+
+        const setting: any = { days, hours, numPerDay }
+        setting.userId = req.user._id
 
         await SettingRepo.update(setting)
         return new SuccessResponse("Updated setting: ", { setting }).send(res)
