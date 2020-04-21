@@ -23,6 +23,7 @@ export interface Call {
 export default class CallModule extends VuexModule {
     callStatus: "idle" | "queue" | "calling" = "idle"
     loading = false
+    callDetail!: Call
     calls: Call[] = []
     @Mutation
     setCallStatus(newStatus: "idle" | "queue" | "calling") {
@@ -35,6 +36,10 @@ export default class CallModule extends VuexModule {
     @Mutation
     setLoading(newLoading: boolean) {
         this.loading = newLoading
+    }
+    @Mutation
+    setCallDetail(newCall: Call) {
+        this.callDetail = newCall
     }
 
     @Action
@@ -87,6 +92,7 @@ export default class CallModule extends VuexModule {
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/single/${id}`)
             this.setLoading(false)
             const { data } = response.data
+            this.setCallDetail(data)
             return data
         } catch (error) {
             console.log(error)
