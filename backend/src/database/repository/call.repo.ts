@@ -8,7 +8,7 @@ export default class CallRepo {
         const now = new Date()
         const dbCalls = []
 
-        const numberOne = conference.userOne.phone
+        const numberOne = conference.userOnePhone
         const callsOne = await CallRepo.getCallsByPhone(numberOne)
         const firstCallOne = callsOne.length === 0
         const dbCallOne = await CallModel.create(<Call>{
@@ -20,11 +20,11 @@ export default class CallRepo {
             points: 0,
             firstCall: firstCallOne,
             rating: 0,
-            isScheduled: conference.userOne.isScheduled,
+            isScheduled: conference.userOneIsScheduled,
         })
         dbCalls.push(dbCallOne)
 
-        const numberTwo = conference.userTwo.phone
+        const numberTwo = conference.userTwoPhone
         const callsTwo = await CallRepo.getCallsByPhone(numberTwo)
         const firstCallTwo = callsTwo.length === 0
         const dbCallTwo = await CallModel.create(<Call>{
@@ -36,7 +36,7 @@ export default class CallRepo {
             points: 0,
             firstCall: firstCallTwo,
             rating: 0,
-            isScheduled: conference.userTwo.isScheduled,
+            isScheduled: conference.userTwoIsScheduled,
         })
         dbCalls.push(dbCallTwo)
 
