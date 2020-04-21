@@ -2,7 +2,8 @@
 import { ProtectedRequest } from "app-request"
 import express from "express"
 import authentication from "../../auth/authentication"
-import { BadRequestResponse, SuccessResponse } from "../../core/ApiResponse"
+import { BadRequestError } from "../../core/ApiError"
+import { SuccessResponse } from "../../core/ApiResponse"
 import SettingRepo from "../../database/repository/setting.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import validator, { ValidationSource } from "../../helpers/validator"
@@ -57,7 +58,7 @@ router.delete(
     "/delete",
     asyncHandler(async (req: ProtectedRequest, res) => {
         const deletedSetting = await SettingRepo.delete(req.user._id)
-        if (!deletedSetting) return new BadRequestResponse()
+        if (!deletedSetting) throw new BadRequestError("Setting does not exist.")
         return new SuccessResponse("Deleted setting", deletedSetting).send(res)
     }),
 )

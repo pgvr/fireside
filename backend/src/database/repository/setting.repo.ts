@@ -19,6 +19,6 @@ export default class SettingRepo {
     }
 
     public static async delete(userId: Types.ObjectId): Promise<Setting> {
-        return SettingModel.findOneAndDelete({ userId })
+        return SettingModel.findOneAndDelete({ userId }).exec()
     }
 }
