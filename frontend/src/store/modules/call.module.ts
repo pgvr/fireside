@@ -21,45 +21,16 @@ export interface Call {
 
 @Module({ name: "Call", store, dynamic: true, namespaced: true })
 export default class CallModule extends VuexModule {
-    callStatus: "idle" | "calling" | "queue" = "idle"
+    callStatus: "idle" | "queue" | "calling" = "idle"
     loading = false
     calls: Call[] = []
-    // dont know why this doesnt complain
-    callDetail = {} as Call
-    updateQueueInterval = -1
-    refreshQueueCounter = 0
-    // whether to allow submits in post call
-    postCallEditEnabled = false
-
     @Mutation
-    setCallDetail(newCall: Call) {
-        this.callDetail = newCall
-    }
-    @Mutation
-    setPostCallEdit(newValue: boolean) {
-        this.postCallEditEnabled = newValue
-    }
-    @Mutation
-    setCallStatus(newStatus: "idle" | "calling" | "queue") {
+    setCallStatus(newStatus: "idle" | "queue" | "calling") {
         this.callStatus = newStatus
     }
     @Mutation
     setCalls(newCalls: Call[]) {
         this.calls = newCalls
-    }
-    @Mutation
-    setUpdateQueueInterval(newInterval: number) {
-        this.updateQueueInterval = newInterval
-    }
-    @Mutation
-    resetInterval() {
-        clearInterval(this.updateQueueInterval)
-        this.updateQueueInterval = -1
-        this.refreshQueueCounter = 0
-    }
-    @Mutation
-    increaseQueueCounter() {
-        this.refreshQueueCounter = this.refreshQueueCounter + 1
     }
     @Mutation
     setLoading(newLoading: boolean) {
@@ -116,13 +87,37 @@ export default class CallModule extends VuexModule {
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/single/${id}`)
             this.setLoading(false)
             const { data } = response.data
-            this.setCallDetail(data)
             return data
         } catch (error) {
             console.log(error)
             this.setLoading(false)
             return null
         }
+    }
+
+    @Action
+    async checkQueueStatus() {
+        this.setLoading(true)
+        try {
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/inQueue`)
+            const { data } = response.data
+            if (data.queue) {
+                this.setCallStatus("queue")
+            } else {
+                // check whether in a conference
+                const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/isCallActive`)
+                const { data } = response.data
+                if (data.callActive) {
+                    this.setCallStatus("calling")
+                } else {
+                    this.setCallStatus("idle")
+                }
+            }
+        } catch (error) {
+            console.log(error)
+            this.setCallStatus("idle")
+        }
+        this.setLoading(false)
     }
 
     @Action
@@ -135,24 +130,24 @@ export default class CallModule extends VuexModule {
             if (data.queue) {
                 // put user in queue
                 this.setCallStatus("queue")
-                const interval = setInterval(async () => {
-                    console.log("checking if still in queue")
-                    if (this.refreshQueueCounter === 5) {
-                        console.log("Queue timeout, removing user from queue")
-                        this.leaveCallQueue()
-                    } else {
-                        this.increaseQueueCounter()
-                        const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/stillInQueue`)
-                        const { data } = response.data
-                        if (data.queue === false) {
-                            // not in queue anymore, call started
-                            console.log("not in queue anymore, call must have started")
-                            this.setCallStatus("calling")
-                            this.resetInterval()
-                        }
-                    }
-                }, 5000)
-                this.setUpdateQueueInterval(interval)
+                // const interval = setInterval(async () => {
+                //     console.log("checking if still in queue")
+                //     if (this.refreshQueueCounter === 5) {
+                //         console.log("Queue timeout, removing user from queue")
+                //         this.leaveCallQueue()
+                //     } else {
+                //         this.increaseQueueCounter()
+                //         const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/stillInQueue`)
+                //         const { data } = response.data
+                //         if (data.queue === false) {
+                //             // not in queue anymore, call started
+                //             console.log("not in queue anymore, call must have started")
+                //             this.setCallStatus("calling")
+                //             this.resetInterval()
+                //         }
+                //     }
+                // }, 5000)
+                // this.setUpdateQueueInterval(interval)
             } else if (data.queue === false) {
                 // call is being initiated
                 this.setCallStatus("calling")
@@ -168,12 +163,13 @@ export default class CallModule extends VuexModule {
     async leaveCallQueue() {
         try {
             this.setLoading(true)
-            this.resetInterval()
-            this.setCallStatus("idle")
+            // this.resetInterval()
             await axios.post(`${process.env.VUE_APP_API_URL}/conference/leaveQueue`)
+            this.setCallStatus("idle")
             this.setLoading(false)
         } catch (error) {
             console.log(error)
+            this.setCallStatus("idle")
             this.setLoading(false)
         }
     }

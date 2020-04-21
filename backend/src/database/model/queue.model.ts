@@ -9,6 +9,7 @@ export default interface QueueUser extends Document {
     interests: string[]
     job: string
     language: string
+    isScheduled: boolean
 }
 
 export const schema = new Schema(
@@ -35,6 +36,10 @@ export const schema = new Schema(
         },
         language: {
             type: Schema.Types.String,
+            required: true,
+        },
+        isScheduled: {
+            type: Schema.Types.Boolean,
             required: true,
         },
     },

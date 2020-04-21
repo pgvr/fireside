@@ -65,7 +65,7 @@ router.post(
 )
 
 router.get(
-    "/stillInQueue",
+    "/inQueue",
     asyncHandler(async (req: ProtectedRequest, res) => {
         const { phone } = req.user
         const queueObj = await QueueRepo.getEntryByPhone(phone)
@@ -85,6 +85,7 @@ router.get(
             // call in progress
             return new SuccessResponse("Success", { callActive: true }).send(res)
         }
+
         // calls ordered desc, so first one must be the new one because the conference has ended
         const calls = await CallRepo.getCallsByPhone(phone)
         // call must be done since there is no conference anymore

@@ -7,22 +7,25 @@ import QueueUser from "../model/queue.model"
 import User from "../model/user.model"
 
 export default class ConferenceRepo {
-    public static async create(userOne: QueueUser, userTwo: User, isScheduled = false) {
+    public static async create(
+        userOne: { user: QueueUser; isScheduled: boolean },
+        userTwo: { user: User; isScheduled: boolean },
+    ) {
         // make sure users dont already have conf, remove if so
         await ConferenceModel.findOneAndDelete({
-            $or: [{ phoneOne: userOne.phone }, { phoneTwo: userOne.phone }],
+            $or: [{ "userOne.phone": userOne.user.phone }, { "userTwo.phone": userOne.user.phone }],
         }).exec()
         await ConferenceModel.findOneAndDelete({
-            $or: [{ phoneOne: userTwo.phone }, { phoneTwo: userTwo.phone }],
+            $or: [{ "userOne.phone": userTwo.user.phone }, { "userTwo.phone": userTwo.user.phone }],
         }).exec()
 
         let commonInterests: string[] = []
         // add city if it matches
-        if (userOne.city === userTwo.city) {
-            commonInterests.push(userTwo.city)
+        if (userOne.user.city === userTwo.user.city) {
+            commonInterests.push(userTwo.user.city)
         }
         // check all matches and add them
-        const intersection = userOne.interests.filter((x) => userTwo.interests.includes(x))
+        const intersection = userOne.user.interests.filter((x) => userTwo.user.interests.includes(x))
         if (intersection.length > 0) {
             commonInterests = [...commonInterests, ...intersection]
         }
@@ -33,11 +36,16 @@ export default class ConferenceRepo {
         const now = new Date()
 
         return ConferenceModel.create(<Conference>{
-            phoneOne: userOne.phone,
-            phoneTwo: userTwo.phone,
+            userOne: {
+                phone: userOne.user.phone,
+                isScheduled: userOne.isScheduled,
+            },
+            userTwo: {
+                phone: userTwo.user.phone,
+                isScheduled: userTwo.isScheduled,
+            },
             commonInterests,
             createdAt: now,
-            isScheduled,
         })
     }
 

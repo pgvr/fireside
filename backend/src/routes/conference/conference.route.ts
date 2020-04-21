@@ -7,7 +7,6 @@ import authentication from "../../auth/authentication"
 import { BadRequestError } from "../../core/ApiError"
 import { NotFoundResponse, SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
-import QueueUser from "../../database/model/queue.model"
 import ConferenceRepo from "../../database/repository/conference.repo"
 import QueueRepo from "../../database/repository/queue.repo"
 import UserRepo from "../../database/repository/user.repo"
@@ -33,22 +32,26 @@ router.post(
         if (!incomingParticipant) throw new BadRequestError("User not registered")
 
         // search db for match
-        let foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
+        const foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
 
         if (foundMatch) {
             // connect with match
             Logger.info("Match found, initiating...")
 
             // found match is coming from queue db collection, create a new object of it to remove _id, etc.
-            foundMatch = <QueueUser>{
-                phone: foundMatch.phone,
-                city: foundMatch.city,
-                interests: foundMatch.interests,
-                job: foundMatch.job,
-                language: foundMatch.language,
-            }
+            // foundMatch = <QueueUser>{
+            //     phone: foundMatch.phone,
+            //     city: foundMatch.city,
+            //     interests: foundMatch.interests,
+            //     job: foundMatch.job,
+            //     language: foundMatch.language,
+            // }
             // Call being initiated, create conference in db to keep track
-            await ConferenceRepo.create(foundMatch, incomingParticipant, false)
+            // for this route the incoming participant is never scheduled
+            await ConferenceRepo.create(
+                { user: foundMatch, isScheduled: foundMatch.isScheduled },
+                { user: incomingParticipant, isScheduled: false },
+            )
 
             const conferenceXml = buildConference(
                 "Welcome to your fireside chat. Enjoy!",
@@ -81,7 +84,8 @@ router.post(
             return new SuccessResponse("User is already in queue", { queue: true }).send(res)
         }
         Logger.info("Adding to queue")
-        await QueueRepo.addToQueue(incomingParticipant)
+        // again for this route incoming is never scheduled
+        await QueueRepo.addToQueue(incomingParticipant, false)
         return new SuccessResponse("No match found. Putting in db.", { queue: true }).send(res)
     }),
 )

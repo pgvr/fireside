@@ -27,7 +27,7 @@ router.post(
             // update call with length and status
             Logger.info("Conference Ended")
             const conference = await ConferenceRepo.removeConference(confUpdate.ConferenceSid)
-            await CallRepo.create([conference.phoneOne, conference.phoneTwo], conference)
+            await CallRepo.create(conference)
         }
         return new SuccessResponse("Success", null).send(res)
     }),

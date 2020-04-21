@@ -1,13 +1,11 @@
 // eslint-disable-next-line import/no-unresolved
-import { ProtectedRequest } from "app-request"
 import express from "express"
 import { Types } from "mongoose"
 import twilio from "twilio"
 import { localApiKey } from "../../config"
 import { AuthFailureError, BadRequestError } from "../../core/ApiError"
-import { NotFoundResponse, SuccessResponse } from "../../core/ApiResponse"
+import { SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
-import QueueUser from "../../database/model/queue.model"
 import ConferenceRepo from "../../database/repository/conference.repo"
 import QueueRepo from "../../database/repository/queue.repo"
 import UserRepo from "../../database/repository/user.repo"
@@ -46,22 +44,27 @@ router.post(
         if (!incomingParticipant) throw new BadRequestError("User not registered")
 
         // search db for match
-        let foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
+        const foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
 
         if (foundMatch) {
             // connect with match
             Logger.info("Scheduled Match found, initiating...")
 
             // found match is coming from queue db collection, create a new object of it to remove _id, etc.
-            foundMatch = <QueueUser>{
-                phone: foundMatch.phone,
-                city: foundMatch.city,
-                interests: foundMatch.interests,
-                job: foundMatch.job,
-                language: foundMatch.language,
-            }
+            // foundMatch = <QueueUser>{
+            //     phone: foundMatch.phone,
+            //     city: foundMatch.city,
+            //     interests: foundMatch.interests,
+            //     job: foundMatch.job,
+            //     language: foundMatch.language,
+            //     isScheduled: foundMatch.isScheduled,
+            // }
             // Call being initiated, create conference in db to keep track
-            await ConferenceRepo.create(foundMatch, incomingParticipant, true)
+            // Incoming participant for this route is always from schedule
+            await ConferenceRepo.create(
+                { user: foundMatch, isScheduled: foundMatch.isScheduled },
+                { user: incomingParticipant, isScheduled: true },
+            )
 
             const conferenceXml = buildConference(
                 "Welcome to your fireside chat. Enjoy!",
@@ -94,23 +97,9 @@ router.post(
             return new SuccessResponse("User is already in queue", { queue: true }).send(res)
         }
         Logger.info("Adding Schedule User to queue")
-        await QueueRepo.addToQueue(incomingParticipant)
+        // again for this route schedule is true
+        await QueueRepo.addToQueue(incomingParticipant, true)
         return new SuccessResponse("No match found. Putting in db.", { queue: true }).send(res)
-    }),
-)
-
-router.post(
-    "/leave",
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const incomingParticipant = await UserRepo.findByPhone(req.user.phone)
-
-        if (!incomingParticipant) throw new BadRequestError("User not registered")
-
-        const removed = await QueueRepo.removeFromQueue(incomingParticipant)
-        if (removed) {
-            return new SuccessResponse("Removed user from queue", removed).send(res)
-        }
-        return new NotFoundResponse("User not found in queue").send(res)
     }),
 )
 
