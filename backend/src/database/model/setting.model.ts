@@ -17,6 +17,7 @@ export const schema = new Schema(
         userId: {
             type: Schema.Types.ObjectId,
             required: true,
+            unique: true,
         },
         days: {
             type: [Schema.Types.Number],
