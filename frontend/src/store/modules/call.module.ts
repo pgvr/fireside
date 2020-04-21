@@ -42,6 +42,10 @@ export default class CallModule extends VuexModule {
         this.callDetail = newCall
     }
 
+    get CallDetail() {
+        return this.callDetail
+    }
+
     @Action
     async submitGuesses(payload: { callId: string; guesses: string[] }) {
         try {

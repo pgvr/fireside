@@ -4,7 +4,6 @@ import express from "express"
 import authentication from "../../auth/authentication"
 import { AuthFailureError } from "../../core/ApiError"
 import { SuccessMsgResponse, SuccessResponse } from "../../core/ApiResponse"
-import Logger from "../../core/Logger"
 import SettingRepo from "../../database/repository/setting.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import validator, { ValidationSource } from "../../helpers/validator"
@@ -45,8 +44,7 @@ router.post(
     validator(schema.setting, ValidationSource.BODY),
     asyncHandler(async (req: ProtectedRequest, res) => {
         const { userId, days, hours, numPerDay } = req.body
-        Logger.info(`userId: ${userId} - req.user._id: ${req.user._id}`)
-        if (userId !== req.user._id) throw new AuthFailureError("Incorrect userId")
+        if (userId !== req.user._id.toString()) throw new AuthFailureError("Incorrect userId")
         const setting: any = { userId, days, hours, numPerDay }
 
         await SettingRepo.update(setting)
