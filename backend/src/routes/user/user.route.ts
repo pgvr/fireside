@@ -39,11 +39,12 @@ router.post(
     "/update",
     validator(schema.update, ValidationSource.BODY),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const { user } = req.body
+        const { city, interests, job } = req.body
+        const user: any = { city, interests, job }
         user._id = req.user._id
 
-        await UserRepo.updateInfo(user)
-        return new SuccessResponse("Updated user: ", { user }).send(res)
+        const updatedUser = await UserRepo.updateInfo(user)
+        return new SuccessResponse("Updated user: ", updatedUser).send(res)
     }),
 )
 

@@ -5,6 +5,8 @@ export default {
         phone: Joi.string().required(),
     }),
     update: Joi.object().keys({
-        user: Joi.string().required(),
+        city: Joi.string().required(),
+        interests: Joi.array().required().items(Joi.string()).min(2),
+        job: Joi.string().required(),
     }),
 }
