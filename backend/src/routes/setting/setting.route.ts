@@ -2,7 +2,7 @@
 import { ProtectedRequest } from "app-request"
 import express from "express"
 import authentication from "../../auth/authentication"
-import { SuccessMsgResponse, SuccessResponse } from "../../core/ApiResponse"
+import { BadRequestResponse, SuccessResponse } from "../../core/ApiResponse"
 import SettingRepo from "../../database/repository/setting.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import validator, { ValidationSource } from "../../helpers/validator"
@@ -34,8 +34,8 @@ router.post(
         const setting: any = { days, hours, numPerDay }
         setting.userId = req.user._id
 
-        await SettingRepo.create(setting)
-        return new SuccessResponse("Created setting: ", { setting }).send(res)
+        const createdSetting = await SettingRepo.create(setting)
+        return new SuccessResponse("Created setting: ", createdSetting).send(res)
     }),
 )
 
@@ -48,16 +48,17 @@ router.post(
         const setting: any = { days, hours, numPerDay }
         setting.userId = req.user._id
 
-        await SettingRepo.update(setting)
-        return new SuccessResponse("Updated setting: ", { setting }).send(res)
+        const updatedSetting = await SettingRepo.update(setting)
+        return new SuccessResponse("Updated setting: ", updatedSetting).send(res)
     }),
 )
 
 router.delete(
     "/delete",
     asyncHandler(async (req: ProtectedRequest, res) => {
-        await SettingRepo.delete(req.user._id)
-        return new SuccessMsgResponse("Deleted setting").send(res)
+        const deletedSetting = await SettingRepo.delete(req.user._id)
+        if (!deletedSetting) return new BadRequestResponse()
+        return new SuccessResponse("Deleted setting", deletedSetting).send(res)
     }),
 )
 
