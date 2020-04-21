@@ -14,6 +14,7 @@
                             label="Verification Code"
                             id="smsCode"
                             autofocus
+                            type="tel"
                             required
                             @input="$v.code.$touch()"
                             @blur="$v.code.$touch()"
