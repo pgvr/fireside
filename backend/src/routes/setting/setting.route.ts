@@ -59,3 +59,5 @@ router.delete(
         return new SuccessMsgResponse("Deleted setting").send(res)
     }),
 )
+
+export default router
