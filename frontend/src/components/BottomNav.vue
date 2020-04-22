@@ -7,7 +7,13 @@
                 fixed
                 v-if="callStatus() === 'queue' || callStatus() === 'calling'"
             >
-                <v-btn max-width="100%" width="100%" style="font-size: initial;" text to="/call">
+                <v-btn
+                    max-width="100%"
+                    width="100%"
+                    style="font-size: initial; color: inherit !important;"
+                    text
+                    to="/call"
+                >
                     <span v-if="callStatus() === 'queue'">You are currently in queue</span>
                     <span v-if="callStatus() === 'calling'">You are currently in a call</span>
                 </v-btn>
