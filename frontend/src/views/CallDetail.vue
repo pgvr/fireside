@@ -5,46 +5,49 @@
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-layout>
         <v-layout column v-else>
+            <h1 class="display-1">Call Summary</h1>
+            <v-row no-gutters align="center" class="mb-4">
+                <div>{{ callCreation(call) }}</div>
+                <v-divider class="mx-4"></v-divider>
+                <div>{{ callDurationInMin(call) }} mins</div>
+            </v-row>
             <v-layout column v-if="allowEdit === true">
-                <p class="body-1">
-                    Which similarities did you discover during your fireside chat? (Hint: there are
-                    {{ call.commonInterests.length }})
-                </p>
+                <!-- <p class="body-1">
+                    
+                </p> -->
                 <form @submit.prevent="submit">
-                    <v-combobox
-                        v-model="guesses"
-                        :disabled="!allowEdit"
-                        chips
-                        clearable
-                        :loading="loading"
-                        @blur="$v.guesses.$touch()"
-                        :error-messages="guessesErrors()"
-                        label="Guess Interests"
-                        multiple
-                        prepend-icon="mdi-table-tennis"
-                    >
-                        <template v-slot:selection="{ attrs, item, select, selected }">
-                            <v-chip
-                                v-bind="attrs"
-                                :input-value="selected"
-                                close
-                                @click="select"
-                                @click:close="removeGuess(item)"
+                    <v-card>
+                        <v-card-title>
+                            Which common interests did you discover during your fireside chat? (Hint: there are
+                            {{ call.commonInterests.length }} 😉)
+                        </v-card-title>
+                        <v-card-text>
+                            <v-combobox
+                                v-model="guesses"
+                                :disabled="!allowEdit"
+                                chips
+                                clearable
+                                :deletable-chips="true"
+                                :delimiters="[' ', ',']"
+                                :loading="loading"
+                                @blur="$v.guesses.$touch()"
+                                :error-messages="guessesErrors()"
+                                label="Guess Interests"
+                                multiple
+                                prepend-icon="mdi-table-tennis"
                             >
-                                <strong>{{ item }}</strong>
-                            </v-chip>
-                        </template>
-                    </v-combobox>
-                    <v-btn :loading="stateLoading()" v-if="allowEdit" large color="primary" type="submit">Submit</v-btn>
+                            </v-combobox>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn :loading="stateLoading()" v-if="allowEdit" large color="primary" type="submit"
+                                >Submit</v-btn
+                            >
+                        </v-card-actions>
+                    </v-card>
                 </form>
             </v-layout>
             <v-layout column v-else-if="allowEdit === false">
-                <h1 class="display-1">Call Summary</h1>
-                <v-row no-gutters align="center" class="mb-4">
-                    <div>{{ callCreation(call) }}</div>
-                    <v-divider class="mx-4"></v-divider>
-                    <div>{{ callDurationInMin(call) }} mins</div>
-                </v-row>
                 <v-alert :type="correctGuesses.length > 0 ? 'success' : 'info'" border="left">
                     You discovered {{ correctGuesses.length }} out of {{ maxGuesses }} common interests.
                     <span v-if="correctGuesses.length > 0">Good job!</span><span v-else>You'll get 'em next time!</span>
@@ -67,7 +70,6 @@
                     <v-icon color="primary">mdi-fire</v-icon>
                 </v-row>
             </v-layout>
-            <v-spacer></v-spacer>
             <v-layout align-center column class="mt-12">
                 <v-card>
                     <v-card-title>Feedback</v-card-title>
@@ -125,7 +127,6 @@ const callState = getModule(CallModule)
 const validations = {
     guesses: {
         required,
-        maxAmount: (value: string[]) => value.length <= callState.CallDetail?.commonInterests.length,
     },
 }
 
@@ -169,7 +170,7 @@ export default class CallDetail extends Vue {
 
     async submit() {
         this.$v.$touch()
-        if (!this.$v.$invalid) {
+        if (!this.$v.$invalid && this.guesses.length <= this.maxGuesses) {
             const result = await callState.submitGuesses({
                 callId: this.$route.params.id,
                 guesses: this.guesses,
@@ -206,8 +207,10 @@ export default class CallDetail extends Vue {
         const errors: string[] = []
         if (!this.$v.guesses.$dirty) return errors
         !this.$v.guesses.required && errors.push("Interests are required.")
-        !this.$v.guesses.maxAmount && errors.push(`You only have ${this.maxGuesses} common interests`)
-
+        if (this.guesses.length > this.maxGuesses) {
+            errors.push(`You only have ${this.maxGuesses} common interests`)
+        }
+        // !this.$v.guesses.maxAmount && this.errorMessages.push(`You only have ${this.maxGuesses} common interests`)
         return errors
     }
 

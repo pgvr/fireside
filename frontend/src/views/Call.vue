@@ -9,10 +9,10 @@
                 Hang tight, we are setting up a call.
             </div>
             <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'calling'">
-                A call is on its way. Enjoy!
+                Enjoy your call!
             </div>
             <BonfireIcon
-                :loading="callStatus() === 'queue'"
+                :loading="callStatus() === 'queue' || callStatus() === 'calling'"
                 class="mb-8"
                 width="150"
                 height="150"

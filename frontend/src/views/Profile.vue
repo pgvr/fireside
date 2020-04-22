@@ -1,5 +1,5 @@
 <template>
-    <v-container style="margin-bottom: 56px">
+    <Layout>
         <AppBar />
         <v-layout column>
             <h1 class="display-1">Profile</h1>
@@ -29,8 +29,9 @@
                 ></v-text-field>
                 <v-combobox
                     v-model="interests"
-                    :items="interestSuggestions"
                     chips
+                    :deletable-chips="true"
+                    :delimiters="[' ', ',']"
                     clearable
                     @blur="$v.interests.$touch()"
                     :error-messages="interestErrors()"
@@ -39,17 +40,6 @@
                     multiple
                     prepend-icon="mdi-table-tennis"
                 >
-                    <template v-slot:selection="{ attrs, item, select, selected }">
-                        <v-chip
-                            v-bind="attrs"
-                            :input-value="selected"
-                            close
-                            @click="select"
-                            @click:close="removeInterest(item)"
-                        >
-                            <strong>{{ item }}</strong>
-                        </v-chip>
-                    </template>
                 </v-combobox>
                 <v-text-field
                     prepend-icon="mdi-briefcase"
@@ -160,7 +150,7 @@
             <v-btn style="margin-top: 800px" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
         <BottomNav />
-    </v-container>
+    </Layout>
 </template>
 
 <script lang="ts">
@@ -169,6 +159,7 @@ import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
 import { getModule } from "vuex-module-decorators"
 import BottomNav from "../components/BottomNav.vue"
+import Layout from "../components/Layout.vue"
 import AppBar from "../components/AppBar.vue"
 import UserModule from "@/store/modules/user.module"
 import SettingModule from "@/store/modules/setting.module"
@@ -186,12 +177,11 @@ const validations = {
 const userState = getModule(UserModule)
 const settingState = getModule(SettingModule)
 
-@Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar } })
+@Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar, Layout } })
 export default class Profile extends Vue {
     phone = userState.user.phone
     city = userState.user.city
     interests = userState.user.interests
-    interestSuggestions = ["Football", "Food"]
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]

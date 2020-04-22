@@ -82,7 +82,7 @@ export default class VerifyPhone extends Vue {
         ) {
             this.$router.push("/start")
         } else {
-            // verificationState.sendVerificationSms(userState.user.phone)
+            verificationState.sendVerificationSms(userState.user.phone)
         }
     }
 
