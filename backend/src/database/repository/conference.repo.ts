@@ -10,7 +10,7 @@ export default class ConferenceRepo {
     public static async create(
         userOne: { user: QueueUser; isScheduled: boolean },
         userTwo: { user: User; isScheduled: boolean },
-    ) {
+    ): Promise<Conference> {
         // make sure users dont already have conf, remove if so
         await ConferenceModel.findOneAndDelete({
             $or: [{ userOnePhone: userOne.user.phone }, { userTwoPhone: userOne.user.phone }],
@@ -45,7 +45,7 @@ export default class ConferenceRepo {
         })
     }
 
-    public static async updateStart(participants: ParticipantInstance[], conferenceId: string) {
+    public static async updateStart(participants: ParticipantInstance[], conferenceId: string): Promise<Conference> {
         const calls = []
         for (let i = 0; i < participants.length; i++) {
             const participant = participants[i]
@@ -62,14 +62,14 @@ export default class ConferenceRepo {
         return conference
     }
 
-    public static async removeConference(conferenceId: string) {
+    public static async removeConference(conferenceId: string): Promise<Conference> {
         const conference = ConferenceModel.findOneAndDelete({
             conferenceId,
         })
         return conference
     }
 
-    public static async getConferenceForPhone(phone: string) {
+    public static async getConferenceForPhone(phone: string): Promise<Conference> {
         return ConferenceModel.findOne({
             $or: [{ userOnePhone: phone }, { userTwoPhone: phone }],
         }).exec()

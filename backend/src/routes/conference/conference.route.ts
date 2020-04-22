@@ -31,6 +31,10 @@ router.post(
 
         if (!incomingParticipant) throw new BadRequestError("User not registered")
 
+        const conference = await ConferenceRepo.getConferenceForPhone(req.user.phone)
+
+        if (conference) throw new BadRequestError("User already in a conference")
+
         // search db for match
         const foundMatch = await QueueRepo.findMatchingParticipant(incomingParticipant)
 
