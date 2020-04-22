@@ -1,8 +1,8 @@
 <template>
     <v-container
         ><AppBar />
-        <v-layout column v-if="loading">
-            Loading...
+        <v-layout column v-if="loading()">
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-layout>
         <v-layout column v-else>
             <v-layout column v-if="allowEdit === true">
@@ -16,7 +16,7 @@
                         :disabled="!allowEdit"
                         chips
                         clearable
-                        :loading="loading"
+                        :loading="loading()"
                         @blur="$v.guesses.$touch()"
                         :error-messages="guessesErrors()"
                         label="Guess Interests"
@@ -100,14 +100,15 @@ const validations = {
 export default class CallDetail extends Vue {
     guesses: string[] = []
     rating = 0
-    loading = true
+    loading() {
+        return callState.loading
+    }
     allowEdit!: boolean
     maxGuesses = 0
     call!: Call
     correctGuesses!: string[]
 
     async created() {
-        this.loading = true
         const call = (await callState.getCall(this.$route.params.id)) as Call
         if (call) {
             this.call = call
@@ -116,7 +117,6 @@ export default class CallDetail extends Vue {
             this.allowEdit = call.guessedInterests.length === 0
             this.maxGuesses = call.commonInterests.length
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
-            this.loading = false
         } else {
             this.$router.push("/home")
         }
@@ -143,7 +143,6 @@ export default class CallDetail extends Vue {
 
     async showSubmitResult() {
         this.allowEdit = false
-        this.loading = true
         const call = (await callState.getCall(this.$route.params.id)) as Call
         if (call) {
             this.call = call
@@ -152,7 +151,6 @@ export default class CallDetail extends Vue {
             this.allowEdit = call.guessedInterests.length === 0
             this.maxGuesses = call.commonInterests.length
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
-            this.loading = false
         }
     }
 
