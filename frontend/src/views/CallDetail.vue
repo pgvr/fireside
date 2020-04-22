@@ -1,7 +1,7 @@
 <template>
     <v-container
         ><AppBar />
-        <v-layout column v-if="loading()">
+        <v-layout column v-if="loading">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-layout>
         <v-layout column v-else>
@@ -16,7 +16,7 @@
                         :disabled="!allowEdit"
                         chips
                         clearable
-                        :loading="loading()"
+                        :loading="loading"
                         @blur="$v.guesses.$touch()"
                         :error-messages="guessesErrors()"
                         label="Guess Interests"
@@ -35,7 +35,7 @@
                             </v-chip>
                         </template>
                     </v-combobox>
-                    <v-btn v-if="allowEdit" large color="primary" type="submit">Submit</v-btn>
+                    <v-btn :loading="stateLoading()" v-if="allowEdit" large color="primary" type="submit">Submit</v-btn>
                 </form>
             </v-layout>
             <v-layout column v-else-if="allowEdit === false">
@@ -100,15 +100,17 @@ const validations = {
 export default class CallDetail extends Vue {
     guesses: string[] = []
     rating = 0
-    loading() {
+    stateLoading() {
         return callState.loading
     }
+    loading = true
     allowEdit!: boolean
     maxGuesses = 0
     call!: Call
     correctGuesses!: string[]
 
     async created() {
+        this.loading = true
         const call = (await callState.getCall(this.$route.params.id)) as Call
         if (call) {
             this.call = call
@@ -120,6 +122,7 @@ export default class CallDetail extends Vue {
         } else {
             this.$router.push("/home")
         }
+        this.loading = false
     }
 
     async submit() {
@@ -142,6 +145,7 @@ export default class CallDetail extends Vue {
     }
 
     async showSubmitResult() {
+        this.loading = true
         this.allowEdit = false
         const call = (await callState.getCall(this.$route.params.id)) as Call
         if (call) {
@@ -152,6 +156,7 @@ export default class CallDetail extends Vue {
             this.maxGuesses = call.commonInterests.length
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
         }
+        this.loading = false
     }
 
     guessesErrors() {
