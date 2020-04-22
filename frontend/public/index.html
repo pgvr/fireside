@@ -1,23 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+        <link rel="manifest" href="/manifest.json" />
+        <title><%= htmlWebpackPlugin.options.title %></title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet" />
 
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-</head>
+        <!-- Android  -->
+        <meta name="theme-color" content="#ff5722" />
+        <meta name="mobile-web-app-capable" content="yes" />
 
-<body>
-    <noscript>
-        <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript
-            enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-</body>
+        <!-- iOS -->
+        <meta name="apple-mobile-web-app-title" content="Fireside" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
+        <!-- Windows  -->
+        <meta name="msapplication-navbutton-color" content="#ff5722" />
+        <meta name="msapplication-TileColor" content="#121212" />
+        <meta name="msapplication-TileImage" content="msapplication-icon-144x144.png" />
+        <meta name="msapplication-config" content="browserconfig.xml" />
+
+        <!-- Pinned Sites  -->
+        <meta name="application-name" content="Fireside" />
+        <meta name="msapplication-tooltip" content="Fireside Phone Calls" />
+        <meta name="msapplication-starturl" content="/" />
+
+        <!-- Tap highlighting  -->
+        <meta name="msapplication-tap-highlight" content="no" />
+
+        <!-- Main Link Tags  -->
+        <link href="/img/icons/favicon-16x16.png" rel="icon" type="image/png" sizes="16x16" />
+        <link href="/img/icons/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32" />
+
+        <!-- iOS  -->
+        <link href="/img/icons/apple-touch-icon-60x60.png" rel="apple-touch-icon" />
+        <link href="/img/icons/apple-touch-icon-76x76.png" rel="apple-touch-icon" sizes="76x76" />
+        <link href="/img/icons/apple-touch-icon-120x120.png" rel="apple-touch-icon" sizes="120x120" />
+        <link href="/img/icons/apple-touch-icon-152x152.png" rel="apple-touch-icon" sizes="152x152" />
+
+        <!-- Startup Image  -->
+        <link href="/img/icons/apple-touch-icon.png" rel="apple-touch-startup-image" />
+
+        <!-- Pinned Tab  -->
+        <link href="/img/camping.svg" rel="mask-icon" size="any" color="red" />
+
+        <!-- Android  -->
+        <link href="/img/icons/android-chrome-192x192.png" rel="icon" sizes="192x192" />
+
+        <!-- Others -->
+        <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    </head>
+
+    <body>
+        <noscript>
+            <strong
+                >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript
+                enabled. Please enable it to continue.</strong
+            >
+        </noscript>
+        <div id="app"></div>
+        <!-- built files will be auto injected -->
+    </body>
 </html>
