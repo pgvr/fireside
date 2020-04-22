@@ -36,7 +36,9 @@ export default class App extends Vue {
     created() {
         // fetch initial data
         // module import doesnt work for some reason
-        store.dispatch("Call/checkQueueStatus")
+        if (store.getters["User/isLoggedIn"]) {
+            store.dispatch("Call/checkQueueStatus")
+        }
     }
 }
 </script>
