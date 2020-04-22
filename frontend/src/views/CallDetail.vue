@@ -125,7 +125,6 @@ const callState = getModule(CallModule)
 const validations = {
     guesses: {
         required,
-        maxAmount: (value: string[]) => value.length <= callState.CallDetail?.commonInterests.length,
     },
 }
 
@@ -206,8 +205,10 @@ export default class CallDetail extends Vue {
         const errors: string[] = []
         if (!this.$v.guesses.$dirty) return errors
         !this.$v.guesses.required && errors.push("Interests are required.")
-        !this.$v.guesses.maxAmount && errors.push(`You only have ${this.maxGuesses} common interests`)
-
+        if (this.guesses.length > this.maxGuesses) {
+            errors.push(`You only have ${this.maxGuesses} common interests`)
+        }
+        // !this.$v.guesses.maxAmount && this.errorMessages.push(`You only have ${this.maxGuesses} common interests`)
         return errors
     }
 
