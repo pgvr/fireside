@@ -6,16 +6,22 @@ export default class SettingRepo {
         return SettingModel.findOne({ userId }).lean<Setting>().exec()
     }
 
-    public static async create(setting: Setting): Promise<Setting> {
-        const now = new Date()
-        setting.createdAt = now
-        setting.updatedAt = now
-        return SettingModel.create(setting)
-    }
+    // public static async create(setting: Setting): Promise<Setting> {
+    //     const now = new Date()
+    //     setting.updatedAt = now
+    //     return SettingModel.create(setting)
+    // }
 
-    public static async update(setting: Setting): Promise<Setting> {
+    public static async update(setting: Setting): Promise<any> {
         setting.updatedAt = new Date()
-        return SettingModel.updateOne({ userId: setting.userId }, { $set: { ...setting } }).exec()
+        // Return updated object, not the original query
+        return SettingModel.findOneAndUpdate(
+            { userId: setting.userId },
+            { $set: { ...setting } },
+            { new: true, upsert: true },
+        )
+            .lean()
+            .exec()
     }
 
     public static async delete(userId: Types.ObjectId): Promise<Setting> {

@@ -9,7 +9,6 @@ export default interface Setting extends Document {
     startTime: string
     endTime: string
     numPerDay: number
-    createdAt: Date
     updatedAt: Date
 }
 
@@ -27,21 +26,17 @@ export const schema = new Schema(
             required: true,
         },
         startTime: {
-            type: [Schema.Types.String],
+            type: Schema.Types.String,
             required: true,
         },
         endTime: {
-            type: [Schema.Types.String],
+            type: Schema.Types.String,
             required: true,
         },
         numPerDay: {
             type: Schema.Types.Number,
             required: true,
             min: 1,
-        },
-        createdAt: {
-            type: Schema.Types.Date,
-            required: true,
         },
         updatedAt: {
             type: Schema.Types.Date,

@@ -57,16 +57,23 @@ export default class SettingModule extends VuexModule {
     @Action
     async getSetting() {
         try {
+            this.setLoading(true)
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/setting/me`)
+            const { data } = response.data
+            this.setSetting({ ...data })
+            this.setLoading(false)
             return response.data.data
         } catch (error) {
             console.log(error)
+            this.setLoading(false)
+            return null
         }
     }
 
     @Action
     async updateSetting(payload: { days: number[]; startTime: string; endTime: string; numPerDay: number }) {
         try {
+            this.setLoading(true)
             console.log("Updating setting")
             const body = {
                 days: payload.days,
@@ -76,13 +83,14 @@ export default class SettingModule extends VuexModule {
             }
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/setting/update`, body)
             console.log(response)
-
             this.setDays(response.data.data.days)
             this.setStartTime(response.data.data.startTime)
             this.setEndTime(response.data.data.endTime)
             this.setNumPerDay(response.data.data.numPerDay)
+            this.setLoading(false)
         } catch (error) {
             console.log(error)
+            this.setLoading(false)
         }
     }
 
