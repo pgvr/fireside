@@ -47,7 +47,7 @@ export default class UserRepo {
 
     public static updateInfo(user: User): Promise<any> {
         user.updatedAt = new Date()
-        return UserModel.updateOne({ _id: user._id }, { $set: { ...user } })
+        return UserModel.findByIdAndUpdate({ _id: user._id }, { $set: { ...user } }, { new: true })
             .lean()
             .exec()
     }

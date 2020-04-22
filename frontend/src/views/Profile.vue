@@ -169,13 +169,7 @@ export default class Profile extends Vue {
 
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            const updateUser = {
-                city: this.city,
-                interests: this.interests,
-                job: this.job,
-            } as Partial<User>
-
-            userState.updateUser(updateUser)
+            await userState.updateUser({ city: this.city, interests: this.interests, job: this.job })
         }
     }
 }

@@ -161,16 +161,16 @@ export default class UserModule extends VuexModule {
     }
 
     @Action
-    async updateUser(user: Partial<User>) {
+    async updateUser(payload: { city: string; interests: string[]; job: string }) {
         try {
             console.log("Updating user")
-            const body = { user: user }
+            const body = { city: payload.city, interests: payload.interests, job: payload.job }
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/user/update`, body)
             console.log(response)
 
-            this.setCity(response.data.data.user.city)
-            this.setInterests(response.data.data.user.interests)
-            this.setJob(response.data.data.user.job)
+            this.setCity(response.data.data.city)
+            this.setInterests(response.data.data.interests)
+            this.setJob(response.data.data.job)
         } catch (error) {
             console.log(error)
         }
