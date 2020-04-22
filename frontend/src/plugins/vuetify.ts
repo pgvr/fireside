@@ -14,6 +14,9 @@ export default new Vuetify({
                 primary: colors.deepOrange.base,
                 accent: colors.yellow.base,
             },
+            light: {
+                primary: colors.deepOrange.base,
+            },
         },
     },
 })

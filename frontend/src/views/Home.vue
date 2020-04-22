@@ -5,7 +5,7 @@
             <v-layout justify="center">
                 <h1 class="display-1 pr-2">Your Sparks:</h1>
                 <v-progress-circular v-if="userLoading()" indeterminate color="primary"></v-progress-circular>
-                <h1 class="display-1" v-else>{{ userSparks() }}</h1>
+                <h1 class="display-1" v-else>{{ userSparks() }} <v-icon color="primary" large>mdi-fire</v-icon></h1>
             </v-layout>
             <v-layout class="mt-5">
                 <h2 class="title">Past Fireside Chats</h2>

@@ -1,7 +1,7 @@
 <template>
     <v-container
         ><AppBar />
-        <v-layout column v-if="loading">
+        <v-layout align-center column v-if="loading">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-layout>
         <v-layout column v-else>
@@ -39,28 +39,51 @@
                 </form>
             </v-layout>
             <v-layout column v-else-if="allowEdit === false">
-                <p class="body-1">
-                    You discovered {{ correctGuesses.length }} out of {{ maxGuesses }} similarities.
+                <h1 class="display-1">Call Summary</h1>
+                <v-row no-gutters align="center" class="mb-4">
+                    <div>{{ callCreation(call) }}</div>
+                    <v-divider class="mx-4"></v-divider>
+                    <div>{{ callDurationInMin(call) }} mins</div>
+                </v-row>
+                <v-alert :type="correctGuesses.length > 0 ? 'success' : 'info'" border="left">
+                    You discovered {{ correctGuesses.length }} out of {{ maxGuesses }} common interests.
                     <span v-if="correctGuesses.length > 0">Good job!</span><span v-else>You'll get 'em next time!</span>
-                </p>
-                <div v-if="call.firstCall">First Call: +100</div>
-                <div v-else>Call Completed: +30</div>
-                <div v-for="interest in correctGuesses" :key="interest">
-                    <div>{{ interest }}: +50</div>
-                </div>
-                <div>Total: {{ call.points }}</div>
+                </v-alert>
+                <v-row no-gutters>
+                    <v-chip class="row-chip" color="success" v-if="call.firstCall"
+                        >First Call:<strong>+100</strong></v-chip
+                    >
+                    <v-chip class="row-chip" color="success" v-else>Call Completed:<strong>+30</strong></v-chip>
+                    <v-chip class="row-chip" color="secondary" v-for="interest in correctGuesses" :key="interest">
+                        {{ interest }}: <strong>+50</strong>
+                    </v-chip>
+                    <v-chip class="row-chip" color="warning" v-for="interest in wrongGuesses" :key="interest">
+                        {{ interest }}: <strong>+0</strong>
+                    </v-chip>
+                </v-row>
+                <v-divider class="my-4"></v-divider>
+                <v-row no-gutters>
+                    <div class="font-weight-bold">Total: {{ call.points }}</div>
+                    <v-icon color="primary">mdi-fire</v-icon>
+                </v-row>
             </v-layout>
-            <v-layout column>
-                <p class="body-1" v-if="rating === 0">Help us improve our service by rating the call.</p>
-                <p class="body-1" v-if="rating !== 0">Thank you for rating the call 😊</p>
-                <v-rating
-                    :readonly="rating !== 0"
-                    @input="rateCall"
-                    :value="rating"
-                    length="5"
-                    empty-icon="mdi-star-outline"
-                    full-icon="mdi-star"
-                ></v-rating>
+            <v-spacer></v-spacer>
+            <v-layout align-center column class="mt-12">
+                <v-card>
+                    <v-card-title>Feedback</v-card-title>
+                    <v-card-text class="text--primary">
+                        <p class="body-1" v-if="rating === 0">Help us improve our service by rating the call.</p>
+                        <p class="body-1" v-if="rating !== 0">Thank you for rating the call 😊</p>
+                        <v-rating
+                            :readonly="rating !== 0"
+                            @input="rateCall"
+                            :value="rating"
+                            length="5"
+                            empty-icon="mdi-star-outline"
+                            full-icon="mdi-star"
+                        ></v-rating>
+                    </v-card-text>
+                </v-card>
                 <v-layout row wrap>
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on }">
@@ -78,6 +101,15 @@
     </v-container>
 </template>
 
+<style scoped>
+.row-chip {
+    margin: 4px;
+}
+strong {
+    margin-left: 4px;
+}
+</style>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
 import { getModule } from "vuex-module-decorators"
@@ -86,6 +118,7 @@ import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
+import moment from "moment"
 
 const callState = getModule(CallModule)
 
@@ -103,11 +136,19 @@ export default class CallDetail extends Vue {
     stateLoading() {
         return callState.loading
     }
+    callCreation(call: Call) {
+        return moment(call.createdAt).format("HH:MM ⌚ D. MMMM YYYY")
+    }
+    callDurationInMin(call: Call) {
+        const minutes = moment(call.completedAt).diff(moment(call.createdAt), "minutes")
+        return minutes
+    }
     loading = true
     allowEdit!: boolean
     maxGuesses = 0
     call!: Call
     correctGuesses!: string[]
+    wrongGuesses!: string[]
 
     async created() {
         this.loading = true
@@ -119,6 +160,7 @@ export default class CallDetail extends Vue {
             this.allowEdit = call.guessedInterests.length === 0
             this.maxGuesses = call.commonInterests.length
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
+            this.wrongGuesses = call.commonInterests.filter(x => !call.guessedInterests.includes(x))
         } else {
             this.$router.push("/home")
         }
@@ -155,6 +197,7 @@ export default class CallDetail extends Vue {
             this.allowEdit = call.guessedInterests.length === 0
             this.maxGuesses = call.commonInterests.length
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
+            this.wrongGuesses = call.commonInterests.filter(x => !call.guessedInterests.includes(x))
         }
         this.loading = false
     }
