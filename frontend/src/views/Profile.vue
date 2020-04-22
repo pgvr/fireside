@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <Layout>
         <AppBar />
         <v-layout column>
             <h1 class="display-1">Your Profile</h1>
@@ -82,7 +82,7 @@
             <v-btn @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
         <BottomNav />
-    </v-container>
+    </Layout>
 </template>
 
 <script lang="ts">
@@ -91,6 +91,7 @@ import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
 import { getModule } from "vuex-module-decorators"
 import BottomNav from "../components/BottomNav.vue"
+import Layout from "../components/Layout.vue"
 import AppBar from "../components/AppBar.vue"
 import UserModule, { User } from "@/store/modules/user.module"
 
@@ -106,7 +107,7 @@ const validations = {
 
 const userState = getModule(UserModule)
 
-@Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar } })
+@Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar, Layout } })
 export default class Profile extends Vue {
     phone = userState.user.phone
     city = userState.user.city
