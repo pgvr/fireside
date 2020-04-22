@@ -12,9 +12,6 @@
                 <div>{{ callDurationInMin(call) }} mins</div>
             </v-row>
             <v-layout column v-if="allowEdit === true">
-                <!-- <p class="body-1">
-                    
-                </p> -->
                 <form @submit.prevent="submit">
                     <v-card>
                         <v-card-title>
