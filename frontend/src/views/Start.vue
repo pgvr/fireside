@@ -31,8 +31,9 @@
                         ></v-text-field>
                         <v-combobox
                             v-model="interests"
-                            :items="interestSuggestions"
                             chips
+                            :deletable-chips="true"
+                            :delimiters="[' ', ',']"
                             clearable
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
@@ -40,17 +41,6 @@
                             multiple
                             prepend-icon="mdi-table-tennis"
                         >
-                            <template v-slot:selection="{ attrs, item, select, selected }">
-                                <v-chip
-                                    v-bind="attrs"
-                                    :input-value="selected"
-                                    close
-                                    @click="select"
-                                    @click:close="removeInterest(item)"
-                                >
-                                    <strong>{{ item }}</strong>
-                                </v-chip>
-                            </template>
                         </v-combobox>
                         <v-text-field
                             prepend-icon="mdi-briefcase"
@@ -122,7 +112,6 @@ export default class Start extends Vue {
     phone = ""
     city = ""
     interests: string[] = []
-    interestSuggestions = ["Football", "Food"]
     job = ""
     language = "English"
     languages = ["English"]

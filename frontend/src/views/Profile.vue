@@ -29,8 +29,9 @@
                 ></v-text-field>
                 <v-combobox
                     v-model="interests"
-                    :items="interestSuggestions"
                     chips
+                    :deletable-chips="true"
+                    :delimiters="[' ', ',']"
                     clearable
                     @blur="$v.interests.$touch()"
                     :error-messages="interestErrors()"
@@ -39,17 +40,6 @@
                     multiple
                     prepend-icon="mdi-table-tennis"
                 >
-                    <template v-slot:selection="{ attrs, item, select, selected }">
-                        <v-chip
-                            v-bind="attrs"
-                            :input-value="selected"
-                            close
-                            @click="select"
-                            @click:close="removeInterest(item)"
-                        >
-                            <strong>{{ item }}</strong>
-                        </v-chip>
-                    </template>
                 </v-combobox>
                 <v-text-field
                     prepend-icon="mdi-briefcase"
@@ -93,7 +83,7 @@ import { getModule } from "vuex-module-decorators"
 import BottomNav from "../components/BottomNav.vue"
 import Layout from "../components/Layout.vue"
 import AppBar from "../components/AppBar.vue"
-import UserModule, { User } from "@/store/modules/user.module"
+import UserModule from "@/store/modules/user.module"
 
 const validations = {
     phone: { required },
@@ -112,7 +102,6 @@ export default class Profile extends Vue {
     phone = userState.user.phone
     city = userState.user.city
     interests = userState.user.interests
-    interestSuggestions = ["Football", "Food"]
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]
