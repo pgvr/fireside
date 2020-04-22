@@ -16,7 +16,6 @@ const router = express.Router()
 router.use("/", authentication)
 /*-------------------------------------------------------------------------*/
 
-// TODO: un-copypaste
 router.get(
     "/me",
     asyncHandler(async (req: ProtectedRequest, res) => {
