@@ -6,7 +6,8 @@ export const COLLECTION_NAME = "settings"
 export default interface Setting extends Document {
     userId: Types.ObjectId
     days: number[]
-    hours: number[]
+    startTime: string
+    endTime: string
     numPerDay: number
     createdAt: Date
     updatedAt: Date
@@ -25,10 +26,12 @@ export const schema = new Schema(
             max: 6,
             required: true,
         },
-        hours: {
-            type: [Schema.Types.Number],
-            min: 0,
-            max: 23,
+        startTime: {
+            type: [Schema.Types.String],
+            required: true,
+        },
+        endTime: {
+            type: [Schema.Types.String],
             required: true,
         },
         numPerDay: {

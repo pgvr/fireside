@@ -43,9 +43,9 @@ router.post(
     "/update",
     validator(schema.setting, ValidationSource.BODY),
     asyncHandler(async (req: ProtectedRequest, res) => {
-        const { days, hours, numPerDay } = req.body
+        const { days, startTime, endTime, numPerDay } = req.body
 
-        const setting: any = { days, hours, numPerDay }
+        const setting: any = { days, startTime, endTime, numPerDay }
         setting.userId = req.user._id
 
         const updatedSetting = await SettingRepo.update(setting)

@@ -1,9 +1,9 @@
 <template>
-    <v-container>
+    <v-container style="margin-bottom: 56px">
         <AppBar />
         <v-layout column>
-            <h1 class="display-1">Your Profile</h1>
-            <v-form @submit.prevent="update()">
+            <h1 class="display-1">Profile</h1>
+            <v-form @submit.prevent="updateUser()">
                 <v-text-field
                     prepend-icon="mdi-phone"
                     v-model="phone"
@@ -76,10 +76,88 @@
                     </template>
                     <span>We only support English for now</span>
                 </v-tooltip>
-
                 <v-btn large type="submit" color="primary">Update</v-btn>
             </v-form>
-            <v-btn @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
+            <h1 class="display-1 mt-12">Scheduled Call Settings</h1>
+            <v-row justify="center">
+                <v-btn-toggle v-model="daysToggles" dense color="success" background-color="gray" multiple light>
+                    <v-btn small :value="1">Mon</v-btn>
+                    <v-btn small :value="2">Tue</v-btn>
+                    <v-btn small :value="3">Wed</v-btn>
+                    <v-btn small :value="4">Thu</v-btn>
+                    <v-btn small :value="5">Fri</v-btn>
+                    <v-btn small :value="6">Sat</v-btn>
+                    <v-btn small :value="0">Sun</v-btn>
+                </v-btn-toggle>
+            </v-row>
+            <v-row no-gutters>
+                <v-col cols="5">
+                    <v-dialog
+                        ref="startDialog"
+                        v-model="settingStartModal"
+                        :return-value.sync="settingStartTime"
+                        persistent
+                        width="290px"
+                    >
+                        <template v-slot:activator="{ on }">
+                            <v-text-field
+                                v-model="settingStartTime"
+                                label="Start Time"
+                                prepend-icon="mdi-clock-outline"
+                                readonly
+                                v-on="on"
+                            ></v-text-field>
+                        </template>
+                        <v-time-picker v-if="settingStartModal" v-model="settingStartTime" format="24hr">
+                            <v-spacer></v-spacer>
+                            <v-btn text color="primary" @click="settingStartModal = false">Cancel</v-btn>
+                            <v-btn text color="primary" @click="$refs.startDialog.save(settingStartTime)">OK</v-btn>
+                        </v-time-picker>
+                    </v-dialog>
+                </v-col>
+                <v-col cols="2"></v-col>
+                <v-col cols="5">
+                    <v-dialog
+                        ref="endDialog"
+                        v-model="settingEndModal"
+                        :return-value.sync="settingEndTime"
+                        persistent
+                        width="290px"
+                    >
+                        <template v-slot:activator="{ on }">
+                            <v-text-field
+                                v-model="settingEndTime"
+                                label="End Time"
+                                prepend-icon="mdi-clock-outline"
+                                readonly
+                                v-on="on"
+                            ></v-text-field>
+                        </template>
+                        <v-time-picker v-if="settingEndModal" v-model="settingEndTime" format="24hr">
+                            <v-spacer></v-spacer>
+                            <v-btn text color="primary" @click="settingEndModal = false">Cancel</v-btn>
+                            <v-btn text color="primary" @click="$refs.endDialog.save(settingEndTime)">OK</v-btn>
+                        </v-time-picker>
+                    </v-dialog>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="2"></v-col>
+                <v-col cols="8">
+                    <v-text-field
+                        v-model.number="numPerDay"
+                        label="Number of calls per day"
+                        append-outer-icon="mdi-plus"
+                        @click:append-outer="increment"
+                        prepend-icon="mdi-minus"
+                        @click:prepend="decrement"
+                    >
+                    </v-text-field>
+                </v-col>
+                <v-col cols="2"></v-col>
+            </v-row>
+            <v-btn class="mt-12" @click="updateScheduleSetting">Update</v-btn>
+            <v-btn style="margin-top: 800px" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
         <BottomNav />
     </v-container>
@@ -92,7 +170,8 @@ import { validationMixin } from "vuelidate"
 import { getModule } from "vuex-module-decorators"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
-import UserModule, { User } from "@/store/modules/user.module"
+import UserModule from "@/store/modules/user.module"
+import SettingModule from "@/store/modules/setting.module"
 
 const validations = {
     phone: { required },
@@ -105,6 +184,7 @@ const validations = {
 }
 
 const userState = getModule(UserModule)
+const settingState = getModule(SettingModule)
 
 @Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar } })
 export default class Profile extends Vue {
@@ -115,6 +195,12 @@ export default class Profile extends Vue {
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]
+    daysToggles = []
+    settingStartModal = false
+    settingStartTime = ""
+    settingEndModal = false
+    settingEndTime = ""
+    numPerDay = 1
 
     async created() {
         if (!userState.user._id) {
@@ -125,6 +211,13 @@ export default class Profile extends Vue {
             this.job = userState.user.job
             this.language = userState.user.language
         }
+    }
+
+    increment() {
+        this.numPerDay += 1
+    }
+    decrement() {
+        if (this.numPerDay > 1) this.numPerDay -= 1
     }
 
     userStateLoading() {
@@ -165,13 +258,30 @@ export default class Profile extends Vue {
         this.interests.splice(index, 1)
     }
 
-    async update() {
+    async updateUser() {
         console.log("update user info")
 
         this.$v.$touch()
         if (!this.$v.$invalid) {
             await userState.updateUser({ city: this.city, interests: this.interests, job: this.job })
         }
+    }
+    async updateScheduleSetting() {
+        console.log("update scheduled call info")
+        const localOffsetHours = new Date().getTimezoneOffset() / 60
+        const startTimes = this.settingStartTime.split(":")
+        const endTimes = this.settingEndTime.split(":")
+
+        const startTimeUTC = `${parseInt(startTimes[0]) + localOffsetHours}:${startTimes[1]}`
+        const endTimeUTC = `${parseInt(endTimes[0]) + localOffsetHours}:${endTimes[1]}`
+        console.log(startTimeUTC + " " + endTimeUTC)
+
+        await settingState.updateSetting({
+            days: this.daysToggles,
+            startTime: startTimeUTC,
+            endTime: endTimeUTC,
+            numPerDay: this.numPerDay,
+        })
     }
 
     logout() {
