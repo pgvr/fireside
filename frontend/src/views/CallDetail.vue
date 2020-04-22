@@ -67,7 +67,6 @@
                     <v-icon color="primary">mdi-fire</v-icon>
                 </v-row>
             </v-layout>
-            <v-spacer></v-spacer>
             <v-layout align-center column class="mt-12">
                 <v-card>
                     <v-card-title>Feedback</v-card-title>
@@ -168,7 +167,7 @@ export default class CallDetail extends Vue {
 
     async submit() {
         this.$v.$touch()
-        if (!this.$v.$invalid) {
+        if (!this.$v.$invalid && this.guesses.length <= this.maxGuesses) {
             const result = await callState.submitGuesses({
                 callId: this.$route.params.id,
                 guesses: this.guesses,
