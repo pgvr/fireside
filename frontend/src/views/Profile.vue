@@ -79,6 +79,7 @@
 
                 <v-btn large type="submit" color="primary">Update</v-btn>
             </v-form>
+            <v-btn @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
         <BottomNav />
     </v-container>
@@ -171,6 +172,10 @@ export default class Profile extends Vue {
         if (!this.$v.$invalid) {
             await userState.updateUser({ city: this.city, interests: this.interests, job: this.job })
         }
+    }
+
+    logout() {
+        userState.logout()
     }
 }
 </script>

@@ -15,6 +15,5 @@ export default new Vuetify({
                 accent: colors.yellow.base,
             },
         },
-        dark: true,
     },
 })
