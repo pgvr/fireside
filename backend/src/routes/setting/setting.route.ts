@@ -26,18 +26,18 @@ router.get(
     }),
 )
 
-router.post(
-    "/create",
-    validator(schema.setting, ValidationSource.BODY),
-    asyncHandler(async (req: ProtectedRequest, res) => {
-        const { days, hours, numPerDay } = req.body
-        const setting: any = { days, hours, numPerDay }
-        setting.userId = req.user._id
+// router.post(
+//     "/create",
+//     validator(schema.setting, ValidationSource.BODY),
+//     asyncHandler(async (req: ProtectedRequest, res) => {
+//         const { days, hours, numPerDay } = req.body
+//         const setting: any = { days, hours, numPerDay }
+//         setting.userId = req.user._id
 
-        const createdSetting = await SettingRepo.create(setting)
-        return new SuccessResponse("Created setting: ", createdSetting).send(res)
-    }),
-)
+//         const createdSetting = await SettingRepo.create(setting)
+//         return new SuccessResponse("Created setting: ", createdSetting).send(res)
+//     }),
+// )
 
 router.post(
     "/update",
