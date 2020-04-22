@@ -2,7 +2,7 @@
     <v-container
         ><AppBar />
         <v-layout column v-if="loading">
-            Loading...
+            <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-layout>
         <v-layout column v-else>
             <v-layout column v-if="allowEdit === true">
@@ -35,7 +35,7 @@
                             </v-chip>
                         </template>
                     </v-combobox>
-                    <v-btn v-if="allowEdit" large color="primary" type="submit">Submit</v-btn>
+                    <v-btn :loading="stateLoading()" v-if="allowEdit" large color="primary" type="submit">Submit</v-btn>
                 </form>
             </v-layout>
             <v-layout column v-else-if="allowEdit === false">
@@ -100,6 +100,9 @@ const validations = {
 export default class CallDetail extends Vue {
     guesses: string[] = []
     rating = 0
+    stateLoading() {
+        return callState.loading
+    }
     loading = true
     allowEdit!: boolean
     maxGuesses = 0
@@ -116,10 +119,10 @@ export default class CallDetail extends Vue {
             this.allowEdit = call.guessedInterests.length === 0
             this.maxGuesses = call.commonInterests.length
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
-            this.loading = false
         } else {
             this.$router.push("/home")
         }
+        this.loading = false
     }
 
     async submit() {
@@ -142,8 +145,8 @@ export default class CallDetail extends Vue {
     }
 
     async showSubmitResult() {
-        this.allowEdit = false
         this.loading = true
+        this.allowEdit = false
         const call = (await callState.getCall(this.$route.params.id)) as Call
         if (call) {
             this.call = call
@@ -152,8 +155,8 @@ export default class CallDetail extends Vue {
             this.allowEdit = call.guessedInterests.length === 0
             this.maxGuesses = call.commonInterests.length
             this.correctGuesses = call.commonInterests.filter(x => call.guessedInterests.includes(x))
-            this.loading = false
         }
+        this.loading = false
     }
 
     guessesErrors() {
