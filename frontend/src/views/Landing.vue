@@ -5,13 +5,13 @@
             <h1 class="display-3 mt-4 mb-8">Fireside</h1>
             <v-card style="width: 100%;" max-width="500">
                 <v-card-text>
-                    <div>Abous Us</div>
+                    <div>About Us</div>
                     <p class="display-1 text--primary">
                         What is Fireside?
                     </p>
                     <!-- <p>adjective</p> -->
                     <p>
-                        Our goal for this App is to motivate people to start using their phones for talking again.
+                        Our goal for this app is to motivate people to start using their phones for talking again.
                         Whether you want to meet new people, broaden your social horizon or have someone to talk to in
                         trying times. We will match you with a stranger based on common interests and set up a call.
                     </p>

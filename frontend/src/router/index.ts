@@ -22,7 +22,7 @@ const routes: Array<RouteConfig> = [
         component: Landing,
         meta: {
             requiresAuth: false,
-            title: "Fireside | Welcome To Fireside",
+            title: "Fireside | Welcome to Fireside",
         },
     },
     {

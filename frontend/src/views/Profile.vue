@@ -79,9 +79,9 @@
             <v-card class="mx-auto mt-8" max-width="500" width="100%">
                 <v-card-title>Scheduled Calls</v-card-title>
                 <v-card-text>
-                    Don't want to sit in the queue until we can find a match for you? Set up scheduled calls and we'll
-                    automagically initiate calls for you in your selected time frame. Set it, forget it and get matched
-                    with friendly strangers. 😊
+                    Don't want to sit in the queue until we can find a match for you? Set up scheduled calls and our
+                    schedule-wizard 🧙‍♂️ will automagically initiate calls for you in your selected time frame. Set it,
+                    forget it and get matched with friendly strangers. 😊
                     <template v-if="settingExists">
                         <h1 class="body-2 mt-8">Selected days</h1>
                         <v-row justify="center" class="mb-4">
