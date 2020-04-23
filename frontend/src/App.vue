@@ -9,29 +9,31 @@
                     Close
                 </v-btn>
             </v-snackbar>
+            <!-- sw update snackbar -->
+            <v-snackbar v-model="snackWithButtons" :timeout="30000">
+                An Update Is Available
+                <v-spacer />
+                <v-btn text color="primary" @click.stop="refreshApp">
+                    Refresh
+                </v-btn>
+                <v-btn icon @click="snackWithButtons = false">
+                    <v-icon>close</v-icon>
+                </v-btn>
+            </v-snackbar>
         </v-content>
     </v-app>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import { getModule } from "vuex-module-decorators"
-import UiModule from "@/store/modules/ui.module"
 import store from "./store"
-
-const uiState = getModule(UiModule)
 
 @Component
 export default class App extends Vue {
-    showSnackbar() {
-        return uiState.showSnackbar
-    }
-    snackbarMessage() {
-        return uiState.snackbarMessage
-    }
-    updateSnackbar(value: boolean) {
-        uiState.setShowSnackbar(value)
-    }
+    refreshing = false
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    registration: any
+    snackWithButtons = false
 
     created() {
         // fetch initial data
@@ -39,6 +41,34 @@ export default class App extends Vue {
         if (store.getters["User/isLoggedIn"]) {
             store.dispatch("Call/checkQueueStatus")
         }
+
+        // Listen for swUpdated event and display refresh snackbar as required.
+        document.addEventListener("swUpdated", this.showRefreshUI, { once: true })
+        // Refresh all open app tabs when a new service worker is installed.
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+            if (this.refreshing) return
+            this.refreshing = true
+            window.location.reload()
+        })
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    showRefreshUI(e: any) {
+        // Display a snackbar inviting the user to refresh/reload the app due
+        // to an app update being available.
+        // The new service worker is installed, but not yet active.
+        // Store the ServiceWorkerRegistration instance for later use.
+        this.registration = e.detail
+        this.snackWithButtons = true
+    }
+
+    refreshApp() {
+        this.snackWithButtons = false
+        // Protect against missing registration.waiting.
+        if (!this.registration || !this.registration.waiting) {
+            return
+        }
+        this.registration.waiting.postMessage("skipWaiting")
     }
 }
 </script>
