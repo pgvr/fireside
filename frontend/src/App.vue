@@ -29,7 +29,17 @@ import { Vue, Component } from "vue-property-decorator"
 import store from "./store"
 import { getModule } from "vuex-module-decorators"
 import UiModule from "./store/modules/ui.module"
+import CallModule from "./store/modules/call.module"
+import UserModule from "./store/modules/user.module"
+import VerificationModule from "./store/modules/verification.module"
+import SettingModule from "./store/modules/setting.module"
+// Register all state modules
 const uiState = getModule(UiModule)
+getModule(CallModule)
+getModule(UserModule)
+getModule(VerificationModule)
+getModule(SettingModule)
+
 @Component
 export default class App extends Vue {
     refreshing = false

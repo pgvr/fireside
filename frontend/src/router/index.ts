@@ -2,15 +2,7 @@ import UserModule from "@/store/modules/user.module"
 import Vue from "vue"
 import VueRouter, { RouteConfig } from "vue-router"
 import { getModule } from "vuex-module-decorators"
-import Call from "../views/Call.vue"
-import CallDetail from "../views/CallDetail.vue"
-import Home from "../views/Home.vue"
 import Landing from "../views/Landing.vue"
-import Login from "../views/Login.vue"
-import NotFound from "../views/NotFound.vue"
-import Profile from "../views/Profile.vue"
-import Start from "../views/Start.vue"
-import VerifyPhone from "../views/VerifyPhone.vue"
 
 const userState = getModule(UserModule)
 Vue.use(VueRouter)
@@ -28,7 +20,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/home",
         name: "Home",
-        component: Home,
+        component: () => import(/* webpackChunkName: "home" */ "../views/Home.vue"),
         meta: {
             requiresAuth: true,
             title: "Fireside | Home",
@@ -37,7 +29,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/start",
         name: "Start",
-        component: Start,
+        component: () => import(/* webpackChunkName: "start" */ "../views/Start.vue"),
         meta: {
             requiresAuth: false,
             title: "Fireside | Get Started",
@@ -46,7 +38,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/verify",
         name: "Verify Phone",
-        component: VerifyPhone,
+        component: () => import(/* webpackChunkName: "verify-phone" */ "../views/VerifyPhone.vue"),
         meta: {
             requiresAuth: false,
             title: "Fireside | Verify Your Phone",
@@ -55,7 +47,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/login",
         name: "Login",
-        component: Login,
+        component: () => import(/* webpackChunkName: "login" */ "../views/Login.vue"),
         meta: {
             requiresAuth: false,
             title: "Fireside | Login",
@@ -64,7 +56,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/profile",
         name: "Profile",
-        component: Profile,
+        component: () => import(/* webpackChunkName: "profile" */ "../views/Profile.vue"),
         meta: {
             requiresAuth: true,
             title: "Fireside | Profile",
@@ -73,7 +65,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/call",
         name: "Call",
-        component: Call,
+        component: () => import(/* webpackChunkName: "call" */ "../views/Call.vue"),
         meta: {
             requiresAuth: true,
             title: "Fireside | Chat",
@@ -82,7 +74,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/detail/:id",
         name: "Call Detail",
-        component: CallDetail,
+        component: () => import(/* webpackChunkName: "call-detail" */ "../views/CallDetail.vue"),
         meta: {
             requiresAuth: true,
             title: "Fireside | Chat Detail",
@@ -91,7 +83,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "*",
         name: "404",
-        component: NotFound,
+        component: () => import(/* webpackChunkName: "not-found" */ "../views/NotFound.vue"),
         meta: {
             title: "Fireside | Not Found",
         },
