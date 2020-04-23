@@ -161,20 +161,16 @@
                         </v-row>
                     </template>
                 </v-card-text>
-                <v-card-actions v-if="!settingExists">
-                    <v-col align="center">
-                        <v-btn v-if="!settingExists" @click="settingExists = true" class="mt-4"
-                            >Set up scheduled calls</v-btn
-                        >
-                        <v-btn v-if="settingExists" @click="updateScheduleSetting">Set up scheduled calls</v-btn>
+                <v-card-actions>
+                    <v-btn v-if="!settingExists && !settingCreated" @click="settingExists = true"
+                        >Set up scheduled calls</v-btn
+                    >
+                    <v-btn v-if="settingExists && !settingCreated" @click="updateScheduleSetting"
+                        >Set up scheduled calls</v-btn
+                    >
 
-                        <v-btn v-if="settingCreated" @click="updateScheduleSetting" class="mb-2"
-                            >Update scheduled call settings</v-btn
-                        >
-                        <v-btn v-if="settingCreated" @click="deleteScheduleSetting" class="mt-2"
-                            >Disable scheduled calls</v-btn
-                        >
-                    </v-col>
+                    <v-btn v-if="settingCreated" @click="updateScheduleSetting">Update scheduled call settings</v-btn>
+                    <v-btn v-if="settingCreated" @click="deleteScheduleSetting">Disable scheduled calls</v-btn>
                 </v-card-actions>
             </v-card>
             <v-btn style="margin-top: 800px" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
@@ -222,10 +218,6 @@ export default class Profile extends Vue {
     settingEndModal = false
     settingExists = false
     settingCreated = false
-
-    get getSettingExists() {
-        return this.settingExists
-    }
 
     userId = ""
     days: number[] = []
