@@ -3,7 +3,7 @@
         <AppBar />
         <v-layout column align-center>
             <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'idle'">
-                Ready to have a Chat?
+                Ready to have a chat?
             </div>
             <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'queue'">
                 Hang tight, we are setting up a call.
