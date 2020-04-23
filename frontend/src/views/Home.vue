@@ -11,7 +11,7 @@
                         <v-card-title>Ready to have a chat?</v-card-title>
                         <v-card-text>
                             Pass the time by talking to someone you have never talked to before. Be kind, be curious and
-                            make the best out of the current situation. 😊
+                            make the best out of the current situation. 😊 Test Update Text
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
