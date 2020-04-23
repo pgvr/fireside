@@ -2,7 +2,7 @@
     <v-container>
         <transition name="slide">
             <v-bottom-navigation
-                background-color="primary"
+                background-color="grey darken-1"
                 style="bottom: 56px;align-items:center;"
                 fixed
                 v-if="callStatus() === 'queue' || callStatus() === 'calling'"
@@ -10,7 +10,7 @@
                 <v-btn
                     max-width="100%"
                     width="100%"
-                    style="font-size: initial; color: inherit !important;"
+                    style="font-size: initial; color: white !important;"
                     text
                     to="/call"
                 >
