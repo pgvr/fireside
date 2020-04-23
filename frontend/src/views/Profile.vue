@@ -70,7 +70,9 @@
             </v-form>
 
             <h1 class="display-1 mt-12">Scheduled Call Settings</h1>
-            <v-layout v-if="!settingExists"><v-btn @click="settingExists = true">Create Setting</v-btn></v-layout>
+            <v-row v-if="!settingExists" justify="center"
+                ><v-btn @click="settingExists = true" class="mt-4">Set up scheduled calls</v-btn></v-row
+            >
             <v-layout column v-else>
                 <v-row justify="center">
                     <v-btn-toggle v-model="days" dense color="success" background-color="gray" multiple>
@@ -98,6 +100,7 @@
                                     label="Start Time"
                                     prepend-icon="mdi-clock-outline"
                                     readonly
+                                    :error-messages="startTimeErrors"
                                     v-on="on"
                                 ></v-text-field>
                             </template>
@@ -122,6 +125,7 @@
                                     label="End Time"
                                     prepend-icon="mdi-clock-outline"
                                     readonly
+                                    :error-messages="endTimeErrors"
                                     v-on="on"
                                 ></v-text-field>
                             </template>
@@ -148,13 +152,13 @@
                     </v-col>
                     <v-col cols="2"></v-col>
                 </v-row>
-                <v-row v-if="!settingCreated">
-                    <v-btn @click="updateScheduleSetting">Add</v-btn>
+                <v-row v-if="!settingCreated" justify="center">
+                    <v-btn @click="updateScheduleSetting">Set up scheduled calls</v-btn>
                 </v-row>
-                <v-row v-else>
-                    <v-btn @click="updateScheduleSetting">Update</v-btn>
-                    <v-btn @click="deleteScheduleSetting">Delete Setting</v-btn>
-                </v-row>
+                <v-col v-else align="center">
+                    <v-btn @click="updateScheduleSetting" class="mb-2">Update scheduled call settings</v-btn>
+                    <v-btn @click="deleteScheduleSetting" class="mt-2">Disable scheduled calls</v-btn>
+                </v-col>
             </v-layout>
             <v-btn style="margin-top: 800px" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
@@ -207,6 +211,11 @@ export default class Profile extends Vue {
     startTime = ""
     endTime = ""
     numPerDay = 1
+
+    // Setting validation
+    startTimeErrors: string[] = []
+    endTimeErrors: string[] = []
+    daysErrors: string[] = []
 
     async created() {
         if (!userState.user._id) {
@@ -300,7 +309,32 @@ export default class Profile extends Vue {
             await userState.updateUser({ city: this.city, interests: this.interests, job: this.job })
         }
     }
+
+    checkSettings() {
+        this.startTimeErrors = []
+        this.endTimeErrors = []
+
+        if (this.days.length) this.daysErrors.push("Please select at least one day")
+        if (this.startTime === "") this.startTimeErrors.push("Start time is required")
+        if (this.endTime === "") this.endTimeErrors.push("End time is required")
+
+        const startTimes = this.startTime.split(":")
+        const endTimes = this.endTime.split(":")
+
+        const sT = new Date()
+        const eT = new Date()
+        sT.setHours(parseInt(startTimes[0]), parseInt(startTimes[1]))
+        eT.setHours(parseInt(endTimes[0]), parseInt(endTimes[1]))
+
+        if (sT > eT) this.endTimeErrors.push("End time must be after start time")
+
+        if (this.startTimeErrors[0] || this.endTimeErrors[0]) return false
+        return true
+    }
+
     async updateScheduleSetting() {
+        if (!this.checkSettings()) return
+
         console.log("update scheduled call info")
         // Convert local time from browser to UTC time for DB
         const localOffsetHours = new Date().getTimezoneOffset() / 60
@@ -319,7 +353,7 @@ export default class Profile extends Vue {
         this.settingCreated = true
     }
 
-    async deleteScheduleSetting(){
+    async deleteScheduleSetting() {
         console.log("delete scheduled call setting")
         await settingState.deleteSetting()
         this.settingExists = false
