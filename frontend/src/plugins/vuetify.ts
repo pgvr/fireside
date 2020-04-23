@@ -12,10 +12,13 @@ export default new Vuetify({
         themes: {
             dark: {
                 primary: colors.deepOrange.base,
+                secondary: colors.orange.darken1,
                 accent: colors.yellow.base,
             },
             light: {
                 primary: colors.deepOrange.base,
+                secondary: colors.orange.darken1,
+                accent: colors.yellow.base,
             },
         },
     },
