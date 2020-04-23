@@ -3,20 +3,20 @@
         <v-content>
             <router-view />
             <!-- Global Snackbar managed via ui state -->
-            <v-snackbar class="mb-8" @input="updateSnackbar" :value="showSnackbar()">
+            <v-snackbar style="margin-bottom: 60px;" @input="updateSnackbar" :value="showSnackbar()">
                 {{ snackbarMessage() }}
                 <v-btn color="pink" text @click="updateSnackbar(false)">
                     Close
                 </v-btn>
             </v-snackbar>
             <!-- sw update snackbar -->
-            <v-snackbar v-model="snackWithButtons" :timeout="30000">
+            <v-snackbar style="margin-bottom: 60px;" v-model="snackWithButtons" :timeout="30000">
                 An Update Is Available
                 <v-spacer />
                 <v-btn text color="primary" @click.stop="refreshApp">
                     Refresh
                 </v-btn>
-                <v-btn icon @click="snackWithButtons = false">
+                <v-btn color="white" icon @click="snackWithButtons = false">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-snackbar>
@@ -29,16 +29,7 @@ import { Vue, Component } from "vue-property-decorator"
 import store from "./store"
 import { getModule } from "vuex-module-decorators"
 import UiModule from "./store/modules/ui.module"
-import CallModule from "./store/modules/call.module"
-import UserModule from "./store/modules/user.module"
-import VerificationModule from "./store/modules/verification.module"
-import SettingModule from "./store/modules/setting.module"
-// Register all state modules
 const uiState = getModule(UiModule)
-getModule(CallModule)
-getModule(UserModule)
-getModule(VerificationModule)
-getModule(SettingModule)
 
 @Component
 export default class App extends Vue {
