@@ -165,7 +165,7 @@ import BottomNav from "../components/BottomNav.vue"
 import Layout from "../components/Layout.vue"
 import AppBar from "../components/AppBar.vue"
 import UserModule from "@/store/modules/user.module"
-import SettingModule from "@/store/modules/setting.module"
+import SettingModule, { Setting } from "@/store/modules/setting.module"
 
 const validations = {
     phone: { required },
@@ -213,19 +213,11 @@ export default class Profile extends Vue {
         if (!settingState.setting._id) {
             const set = await settingState.getSetting()
             if (set) {
-                this.userId = set.userId
-                this.days = set.days
-                this.startTime = set.startTime
-                this.endTime = set.endTime
-                this.numPerDay = set.numPerDay
+                this.updateLocalSetting(set)
                 this.settingExists = true
             }
         } else {
-            this.userId = settingState.setting.userId
-            this.days = settingState.setting.days
-            this.startTime = settingState.setting.startTime
-            this.endTime = settingState.setting.endTime
-            this.numPerDay = settingState.setting.numPerDay
+            this.updateLocalSetting(settingState.setting)
             this.settingExists = true
         }
     }
@@ -235,6 +227,22 @@ export default class Profile extends Vue {
     }
     decrement() {
         if (this.numPerDay > 1) this.numPerDay -= 1
+    }
+
+    updateLocalSetting(setting: Setting) {
+        this.userId = setting.userId
+        this.days = setting.days
+
+        // Convert UTC time from DB back to local time
+        const localOffsetHours = new Date().getTimezoneOffset() / 60
+        const startTimesUTC = setting.startTime.split(":")
+        const endTimesUTC = setting.endTime.split(":")
+        const startTimeLocal = `${parseInt(startTimesUTC[0]) - localOffsetHours}:${startTimesUTC[1]}`
+        const endTimeLocal = `${parseInt(endTimesUTC[0]) - localOffsetHours}:${endTimesUTC[1]}`
+        this.startTime = startTimeLocal
+
+        this.endTime = endTimeLocal
+        this.numPerDay = setting.numPerDay
     }
 
     userStateLoading() {
@@ -285,13 +293,13 @@ export default class Profile extends Vue {
     }
     async updateScheduleSetting() {
         console.log("update scheduled call info")
+        // Convert local time from browser to UTC time for DB
         const localOffsetHours = new Date().getTimezoneOffset() / 60
         const startTimes = this.startTime.split(":")
         const endTimes = this.endTime.split(":")
 
         const startTimeUTC = `${parseInt(startTimes[0]) + localOffsetHours}:${startTimes[1]}`
         const endTimeUTC = `${parseInt(endTimes[0]) + localOffsetHours}:${endTimes[1]}`
-        console.log(startTimeUTC + " " + endTimeUTC)
 
         await settingState.updateSetting({
             days: this.days,
