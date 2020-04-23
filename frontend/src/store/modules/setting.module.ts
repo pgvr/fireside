@@ -98,10 +98,12 @@ export default class SettingModule extends VuexModule {
     async deleteSetting() {
         try {
             console.log("Deleting setting")
+            this.setLoading(true)
             const response = await axios.delete(`${process.env.VUE_APP_API_URL}/setting/delete`)
-            console.log(response)
+            this.setLoading(false)
         } catch (error) {
             console.log(error)
+            this.setLoading(false)
         }
     }
 }
