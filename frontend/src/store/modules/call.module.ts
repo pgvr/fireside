@@ -53,6 +53,17 @@ export default class CallModule extends VuexModule {
             const body = { callId: payload.callId, submittedInterests: payload.guesses }
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/calls/submit`, body)
             const { data } = response.data
+            // update call in array to show checkmark in overview without network refresh
+            const callsCopy = [...this.calls]
+            for (let i = 0; i < callsCopy.length; i++) {
+                const call = callsCopy[i]
+                if (call._id === payload.callId) {
+                    call.guessedInterests = payload.guesses
+                    call.points = data.points
+                    break
+                }
+            }
+            this.setCalls(callsCopy)
             this.setLoading(false)
             return data
         } catch (error) {
@@ -140,24 +151,6 @@ export default class CallModule extends VuexModule {
             if (data.queue) {
                 // put user in queue
                 this.setCallStatus("queue")
-                // const interval = setInterval(async () => {
-                //     console.log("checking if still in queue")
-                //     if (this.refreshQueueCounter === 5) {
-                //         console.log("Queue timeout, removing user from queue")
-                //         this.leaveCallQueue()
-                //     } else {
-                //         this.increaseQueueCounter()
-                //         const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/stillInQueue`)
-                //         const { data } = response.data
-                //         if (data.queue === false) {
-                //             // not in queue anymore, call started
-                //             console.log("not in queue anymore, call must have started")
-                //             this.setCallStatus("calling")
-                //             this.resetInterval()
-                //         }
-                //     }
-                // }, 5000)
-                // this.setUpdateQueueInterval(interval)
             } else if (data.queue === false) {
                 // call is being initiated
                 this.setCallStatus("calling")
@@ -193,13 +186,12 @@ export default class CallModule extends VuexModule {
             const { data } = response.data
             if (data.callActive) {
                 // dont allow to complete because call is still active
-                console.log("call still active")
                 uiState.showSnackbarMessage("Wait for your call to finish")
             } else {
                 // bring user to post call screen
-                console.log("call finished, navigate to post call")
                 const { call } = data
-                console.log(call)
+                // add new call to list
+                this.setCalls([call, ...this.calls])
                 router.push(`/detail/${call._id}`)
                 this.setCallStatus("idle")
             }
