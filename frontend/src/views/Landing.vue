@@ -14,6 +14,7 @@
                         Our goal for this app is to motivate people to start using their phones for talking again.
                         Whether you want to meet new people, broaden your social horizon or have someone to talk to in
                         trying times. We will match you with a stranger based on common interests and set up a call.
+                        Guess your common interests correctly after your call and earn sparks.
                     </p>
                     <div class="body-1 text--primary">
                         😊 Have fun

@@ -2,9 +2,12 @@
     <Layout>
         <AppBar />
         <v-layout column align-center>
+            <v-row no-gutters justify="center" class="mb-4">
+                <h1 class="display-1">Profile</h1>
+            </v-row>
             <v-form @submit.prevent="updateUser()">
                 <v-card class="mx-auto" max-width="500">
-                    <v-card-title>Profile</v-card-title>
+                    <v-card-title>Your Information</v-card-title>
                     <v-card-text>
                         <v-text-field
                             prepend-icon="mdi-phone"
@@ -38,7 +41,7 @@
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
                             :loading="userStateLoading()"
-                            label="Your favorite hobbies"
+                            label="Your favorite hobbies or interests"
                             multiple
                             prepend-icon="mdi-table-tennis"
                         >
@@ -79,13 +82,15 @@
             <v-card class="mx-auto mt-8" max-width="500" width="100%">
                 <v-card-title>Scheduled Calls</v-card-title>
                 <v-card-text>
-                    Don't want to sit in the queue until we can find a match for you? Set up scheduled calls and our
-                    schedule-wizard 🧙‍♂️ will automagically initiate calls for you in your selected time frame. Set it,
-                    forget it and get matched with friendly strangers. 😊
+                    <p>
+                        Don't want to sit in the queue until we can find a match for you? Set up scheduled calls and our
+                        schedule-wizard 🧙‍♂️ will automagically initiate calls for you in your selected time frame. Set
+                        it, forget it and get matched with friendly strangers. 😊
+                    </p>
                     <template v-if="settingExists">
-                        <h1 class="body-2 mt-8">Selected days</h1>
+                        <h1 class="body-2 ">Selected days</h1>
                         <v-row justify="center" class="mb-4">
-                            <v-btn-toggle v-model="days" dense color="info" background-color="gray" multiple>
+                            <v-btn-toggle v-model="days" dense color="secondary" background-color="gray" multiple>
                                 <v-btn small :value="1">Mon</v-btn>
                                 <v-btn small :value="2">Tue</v-btn>
                                 <v-btn small :value="3">Wed</v-btn>
@@ -160,14 +165,15 @@
                             ticks="always"
                             tick-size="2"
                             thumb-label="always"
-                            track-color="blue lighten-5"
-                            track-fill-color="info"
-                            thumb-color="info"
+                            track-color="orange lighten-5"
+                            track-fill-color="secondary"
+                            thumb-color="secondary"
                             thumb-size="24"
                             hide-details="true"
                         ></v-slider>
                     </template>
                 </v-card-text>
+
                 <v-card-actions>
                     <v-btn v-if="!settingExists && !settingCreated" @click="settingExists = true"
                         >Set up scheduled calls</v-btn
