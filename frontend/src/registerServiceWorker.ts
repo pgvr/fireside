@@ -1,9 +1,5 @@
 /* eslint-disable no-console */
-
-import UiModule from "@/store/modules/ui.module"
 import { register } from "register-service-worker"
-import { getModule } from "vuex-module-decorators"
-const uiState = getModule(UiModule)
 
 if (process.env.NODE_ENV === "production") {
     register(`${process.env.BASE_URL}service-worker.js`, {
