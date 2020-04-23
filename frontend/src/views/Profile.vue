@@ -4,8 +4,8 @@
         <v-layout column align-center>
             <v-form @submit.prevent="updateUser()">
                 <v-card class="mx-auto" max-width="500">
+                    <v-card-title>Profile</v-card-title>
                     <v-card-text>
-                        <h1 class="title text--primary">Profile</h1>
                         <v-text-field
                             prepend-icon="mdi-phone"
                             v-model="phone"
@@ -70,17 +70,22 @@
                         </v-tooltip>
                     </v-card-text>
                     <v-card-actions>
+                        <v-spacer></v-spacer>
                         <v-btn large type="submit" color="primary">Update</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-form>
 
-            <v-card class="mx-auto mt-8" max-width="500">
+            <v-card class="mx-auto mt-8" max-width="500" width="100%">
+                <v-card-title>Scheduled Calls</v-card-title>
                 <v-card-text>
-                    <h1 class="title text--primary">Scheduled Call Settings</h1>
+                    Don't want to sit in the queue until we can find a match for you? Set up scheduled calls and we'll
+                    automagically initiate calls for you in your selected time frame. Set it, forget it and get matched
+                    with friendly strangers. 😊
                     <template v-if="settingExists">
-                        <v-row justify="center">
-                            <v-btn-toggle v-model="days" dense color="success" background-color="gray" multiple>
+                        <h1 class="body-2 mt-8">Selected days</h1>
+                        <v-row justify="center" class="mb-4">
+                            <v-btn-toggle v-model="days" dense color="info" background-color="gray" multiple>
                                 <v-btn small :value="1">Mon</v-btn>
                                 <v-btn small :value="2">Tue</v-btn>
                                 <v-btn small :value="3">Wed</v-btn>
@@ -90,6 +95,9 @@
                                 <v-btn small :value="0">Sun</v-btn>
                             </v-btn-toggle>
                         </v-row>
+                        <v-row v-if="daysErrors[0]" justify="center">
+                            <h1 class="caption error--text">{{ daysErrors[0] }}</h1></v-row
+                        >
                         <v-row no-gutters>
                             <v-col cols="6" class="pr-2">
                                 <v-dialog
@@ -144,36 +152,38 @@
                                 </v-dialog>
                             </v-col>
                         </v-row>
-                        <v-row>
-                            <v-col cols="2"></v-col>
-                            <v-col cols="8">
-                                <v-text-field
-                                    v-model="numPerDay"
-                                    label="Number of calls per day"
-                                    append-outer-icon="mdi-plus"
-                                    @click:append-outer="increment"
-                                    prepend-icon="mdi-minus"
-                                    @click:prepend="decrement"
-                                >
-                                </v-text-field>
-                            </v-col>
-                            <v-col cols="2"></v-col>
-                        </v-row>
+                        <h1 class="body-2">Maximum calls per day</h1>
+                        <v-slider
+                            v-model="numPerDay"
+                            min="1"
+                            max="10"
+                            ticks="always"
+                            tick-size="2"
+                            thumb-label="always"
+                            track-color="blue lighten-5"
+                            track-fill-color="info"
+                            thumb-color="info"
+                            thumb-size="24"
+                            hide-details="true"
+                        ></v-slider>
                     </template>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn v-if="!settingExists && !settingCreated" @click="settingExists = true"
                         >Set up scheduled calls</v-btn
                     >
-                    <v-btn v-if="settingExists && !settingCreated" @click="updateScheduleSetting"
+                    <v-btn large v-if="settingExists && !settingCreated" @click="updateScheduleSetting" color="primary"
                         >Set up scheduled calls</v-btn
                     >
 
-                    <v-btn v-if="settingCreated" @click="updateScheduleSetting">Update scheduled call settings</v-btn>
-                    <v-btn v-if="settingCreated" @click="deleteScheduleSetting">Disable scheduled calls</v-btn>
+                    <v-btn small v-if="settingCreated" @click="deleteScheduleSetting"
+                        >Disable<v-icon small>mdi-delete</v-icon></v-btn
+                    >
+                    <v-spacer></v-spacer>
+                    <v-btn large v-if="settingCreated" @click="updateScheduleSetting" color="primary">Update</v-btn>
                 </v-card-actions>
             </v-card>
-            <v-btn style="margin-top: 800px" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
+            <v-btn class="mt-12" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
         <BottomNav />
     </Layout>
@@ -241,7 +251,7 @@ export default class Profile extends Vue {
         }
         if (!settingState.setting._id) {
             const set = await settingState.getSetting()
-            if (set) {
+            if (set && set._id) {
                 this.updateLocalSetting(set)
                 this.settingExists = true
                 this.settingCreated = true
@@ -324,10 +334,11 @@ export default class Profile extends Vue {
     }
 
     checkSettings() {
+        this.daysErrors = []
         this.startTimeErrors = []
         this.endTimeErrors = []
 
-        if (this.days.length) this.daysErrors.push("Please select at least one day")
+        if (this.days.length === 0) this.daysErrors.push("Please select at least one day")
         if (this.startTime === "") this.startTimeErrors.push("Start time is required")
         if (this.endTime === "") this.endTimeErrors.push("End time is required")
 
@@ -368,7 +379,6 @@ export default class Profile extends Vue {
 
     async deleteScheduleSetting() {
         console.log("delete scheduled call setting")
-        await settingState.deleteSetting()
         this.settingExists = false
         this.settingCreated = false
 
@@ -377,6 +387,7 @@ export default class Profile extends Vue {
         this.startTime = ""
         this.endTime = ""
         this.numPerDay = 1
+        await settingState.deleteSetting()
     }
 
     logout() {
