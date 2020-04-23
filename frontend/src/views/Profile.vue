@@ -149,11 +149,11 @@
                     <v-col cols="2"></v-col>
                 </v-row>
                 <v-row v-if="!settingCreated">
-                    <v-btn class="mt-12" @click="updateScheduleSetting">Add</v-btn>
+                    <v-btn @click="updateScheduleSetting">Add</v-btn>
                 </v-row>
                 <v-row v-else>
-                    <v-btn class="mt-12" @click="updateScheduleSetting">Update</v-btn>
-                    <v-btn class="mt-12" @click="deleteScheduleSetting">Delete Setting</v-btn>
+                    <v-btn @click="updateScheduleSetting">Update</v-btn>
+                    <v-btn @click="deleteScheduleSetting">Delete Setting</v-btn>
                 </v-row>
             </v-layout>
             <v-btn style="margin-top: 800px" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
