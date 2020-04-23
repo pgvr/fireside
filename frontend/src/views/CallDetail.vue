@@ -73,14 +73,16 @@
                     <v-card-text class="text--primary">
                         <p class="body-1" v-if="rating === 0">Help us improve our service by rating the call.</p>
                         <p class="body-1" v-if="rating !== 0">Thank you for rating the call 😊</p>
-                        <v-rating
-                            :readonly="rating !== 0"
-                            @input="rateCall"
-                            :value="rating"
-                            length="5"
-                            empty-icon="mdi-star-outline"
-                            full-icon="mdi-star"
-                        ></v-rating>
+                        <v-row justify="center">
+                            <v-rating
+                                :readonly="rating !== 0"
+                                @input="rateCall"
+                                :value="rating"
+                                length="5"
+                                empty-icon="mdi-star-outline"
+                                full-icon="mdi-star"
+                            ></v-rating
+                        ></v-row>
                     </v-card-text>
                 </v-card>
                 <v-layout row wrap>
