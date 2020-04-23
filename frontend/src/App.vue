@@ -27,7 +27,9 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
 import store from "./store"
-
+import { getModule } from "vuex-module-decorators"
+import UiModule from "./store/modules/ui.module"
+const uiState = getModule(UiModule)
 @Component
 export default class App extends Vue {
     refreshing = false
@@ -69,6 +71,16 @@ export default class App extends Vue {
             return
         }
         this.registration.waiting.postMessage("skipWaiting")
+    }
+
+    showSnackbar() {
+        return uiState.showSnackbar
+    }
+    snackbarMessage() {
+        return uiState.snackbarMessage
+    }
+    updateSnackbar(value: boolean) {
+        uiState.setShowSnackbar(value)
     }
 }
 </script>
