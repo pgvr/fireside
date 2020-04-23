@@ -4,11 +4,11 @@ Welcome to Fireside, a project inspired by the [Twilio](https://www.twilio.com/)
 You can find the app [here](https://fireside.netlify.app/)
 
 ## About Fireside
-Fireside connects strangers via phone calls based on common interests. As boredom, loneliness and social isolation have risen during these testing times we thought a good, old-fashioned phone call could be a good distraction.
+Fireside connects strangers via phone calls based on common interests. As boredom, loneliness and social isolation have risen during these trying times, we thought a good, old-fashioned phone call could be a good distraction.
 
-To make it more fun you can try to guess those common interests after the call to gather "sparks". That way you have a goal that can act as a talking point should it ever (it probably will) feel awkward.
+To make it more fun you can try to guess those common interests after the call to gather "sparks". That way you have a goal that can act as a talking point should it ever feel awkward (it probably will 😉).
 
-Tldr:
+tl;dr:
 
 😊 Have fun
 ⏺ Step outside your comfort zone
