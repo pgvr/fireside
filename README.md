@@ -8,6 +8,12 @@ Fireside connects strangers via phone calls based on common interests. As boredo
 
 To make it more fun you can try to guess those common interests after the call to gather "sparks". That way you have a goal that can act as a talking point should it ever (it probably will) feel awkward.
 
+Tldr:
+
+😊 Have fun
+⏺ Step outside your comfort zone
+👫 Make friends
+
 ## How to run
 ### Frontend
 Change into the `frontend` folder and run `npm install`.
