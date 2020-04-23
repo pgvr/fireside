@@ -24,6 +24,10 @@ export default class SettingModule extends VuexModule {
     }
 
     @Mutation
+    setId(_id: string) {
+        this.setting._id = _id
+    }
+    @Mutation
     setUserId(userId: string) {
         this.setting.userId = userId
     }
@@ -99,6 +103,11 @@ export default class SettingModule extends VuexModule {
         try {
             console.log("Deleting setting")
             this.setLoading(true)
+            this.setId("")
+            this.setDays([])
+            this.setStartTime("")
+            this.setEndTime("")
+            this.setNumPerDay(1)
             const response = await axios.delete(`${process.env.VUE_APP_API_URL}/setting/delete`)
             this.setLoading(false)
         } catch (error) {

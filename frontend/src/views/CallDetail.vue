@@ -1,6 +1,6 @@
 <template>
-    <v-container
-        ><AppBar />
+    <Layout>
+        <AppBar />
         <v-layout align-center column v-if="loading">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-layout>
@@ -99,7 +99,7 @@
         </v-layout>
 
         <BottomNav />
-    </v-container>
+    </Layout>
 </template>
 
 <style scoped>
@@ -117,6 +117,7 @@ import { getModule } from "vuex-module-decorators"
 import CallModule, { Call } from "@/store/modules/call.module"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
+import Layout from "../components/Layout.vue"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
 import moment from "moment"
@@ -129,7 +130,7 @@ const validations = {
     },
 }
 
-@Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar } })
+@Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar, Layout } })
 export default class CallDetail extends Vue {
     guesses: string[] = []
     rating = 0

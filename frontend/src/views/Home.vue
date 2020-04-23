@@ -3,7 +3,7 @@
         <AppBar />
         <v-layout column>
             <v-row no-gutters justify="center" class="mb-4">
-                <h1 class="display-1">Welcome To Fireside</h1>
+                <h1 class="display-1">Welcome to Fireside</h1>
             </v-row>
             <v-row no-gutters class="mb-8">
                 <v-col cols="12" sm="6" class="mt-4 pr-sm-2">
@@ -20,7 +20,7 @@
                     </v-card>
                 </v-col>
                 <v-col cols="12" sm="6" class="mt-4 pl-sm-2">
-                    <v-card class="grow mx-auto" max-width="500" color="info">
+                    <v-card class="grow mx-auto" max-width="500" color="secondary">
                         <v-card-title
                             ><span class="mr-2">Current Sparks:</span>
                             <v-progress-circular v-if="userLoading()" indeterminate></v-progress-circular>

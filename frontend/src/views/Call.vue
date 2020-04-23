@@ -1,9 +1,9 @@
 <template>
-    <v-container>
+    <Layout>
         <AppBar />
         <v-layout column align-center>
             <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'idle'">
-                Ready to have a Chat?
+                Ready to have a chat?
             </div>
             <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'queue'">
                 Hang tight, we are setting up a call.
@@ -41,8 +41,8 @@
                 <v-btn
                     v-if="callStatus() === 'queue'"
                     :loading="callStateLoading()"
-                    color="error"
-                    class="mt-4"
+                    color="red accent-4"
+                    class="mt-4 white--text"
                     @click="leaveQueue()"
                     >Leave Queue</v-btn
                 >
@@ -54,13 +54,19 @@
                     @click="completeCall()"
                     >Complete Call</v-btn
                 >
-                <v-btn :loading="callStateLoading()" color="secondary" class="mt-4" @click="refreshCallStatus()"
+                <v-btn
+                    :loading="callStateLoading()"
+                    color="gray lighten-5"
+                    outlined
+                    depressed
+                    class="mt-4"
+                    @click="refreshCallStatus()"
                     >Refresh Call Status</v-btn
                 >
             </v-layout>
         </v-layout>
         <BottomNav />
-    </v-container>
+    </Layout>
 </template>
 
 <script lang="ts">
@@ -69,11 +75,12 @@ import { getModule } from "vuex-module-decorators"
 import CallModule from "@/store/modules/call.module"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
+import Layout from "../components/Layout.vue"
 import BonfireIcon from "../components/BonfireIcon.vue"
 
 const callState = getModule(CallModule)
 
-@Component({ components: { BottomNav, AppBar, BonfireIcon } })
+@Component({ components: { BottomNav, AppBar, BonfireIcon, Layout } })
 export default class Call extends Vue {
     callStatus() {
         return callState.callStatus

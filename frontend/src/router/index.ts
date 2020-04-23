@@ -22,7 +22,7 @@ const routes: Array<RouteConfig> = [
         component: Landing,
         meta: {
             requiresAuth: false,
-            title: "Fireside | Welcome To Fireside",
+            title: "Fireside | Welcome to Fireside",
         },
     },
     {
@@ -110,6 +110,9 @@ const router = new VueRouter({
     mode: "history",
     base: process.env.BASE_URL,
     routes,
+    scrollBehavior() {
+        return { x: 0, y: 0 }
+    },
 })
 
 router.beforeEach((to, from, next) => {

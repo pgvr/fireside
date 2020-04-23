@@ -37,7 +37,7 @@
                             clearable
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
-                            label="Your favorite hobbies"
+                            label="Your favorite hobbies or interests"
                             multiple
                             prepend-icon="mdi-table-tennis"
                         >
