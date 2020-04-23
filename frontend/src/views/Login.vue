@@ -13,6 +13,7 @@
                             label="Phone"
                             type="tel"
                             required
+                            autofocus
                             :error-messages="phoneErrors()"
                             @input="$v.phone.$touch()"
                             @blur="$v.phone.$touch()"
