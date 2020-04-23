@@ -69,9 +69,9 @@
                 <v-btn large type="submit" color="primary">Update</v-btn>
             </v-form>
 
+            <h1 class="display-1 mt-12">Scheduled Call Settings</h1>
             <v-layout v-if="!settingExists"><v-btn @click="settingExists = true">Create Setting</v-btn></v-layout>
             <v-layout column v-else>
-                <h1 class="display-1 mt-12">Scheduled Call Settings</h1>
                 <v-row justify="center">
                     <v-btn-toggle v-model="days" dense color="success" background-color="gray" multiple>
                         <v-btn small :value="1">Mon</v-btn>
@@ -148,7 +148,13 @@
                     </v-col>
                     <v-col cols="2"></v-col>
                 </v-row>
-                <v-btn class="mt-12" @click="updateScheduleSetting">Update</v-btn>
+                <v-row v-if="!settingCreated">
+                    <v-btn class="mt-12" @click="updateScheduleSetting">Add</v-btn>
+                </v-row>
+                <v-row v-else>
+                    <v-btn class="mt-12" @click="updateScheduleSetting">Update</v-btn>
+                    <v-btn class="mt-12" @click="deleteScheduleSetting">Delete Setting</v-btn>
+                </v-row>
             </v-layout>
             <v-btn style="margin-top: 800px" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
@@ -194,6 +200,7 @@ export default class Profile extends Vue {
     settingStartModal = false
     settingEndModal = false
     settingExists = false
+    settingCreated = false
 
     userId = ""
     days: number[] = []
@@ -215,10 +222,12 @@ export default class Profile extends Vue {
             if (set) {
                 this.updateLocalSetting(set)
                 this.settingExists = true
+                this.settingCreated = true
             }
         } else {
             this.updateLocalSetting(settingState.setting)
             this.settingExists = true
+            this.settingCreated = true
         }
     }
 
@@ -307,6 +316,20 @@ export default class Profile extends Vue {
             endTime: endTimeUTC,
             numPerDay: this.numPerDay,
         })
+        this.settingCreated = true
+    }
+
+    async deleteScheduleSetting(){
+        console.log("delete scheduled call setting")
+        await settingState.deleteSetting()
+        this.settingExists = false
+        this.settingCreated = false
+
+        this.userId = ""
+        this.days = []
+        this.startTime = ""
+        this.endTime = ""
+        this.numPerDay = 1
     }
 
     logout() {
