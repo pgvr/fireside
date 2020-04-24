@@ -4,6 +4,7 @@ import twilio from "twilio"
 import { createTokens } from "../../auth/auth.utils"
 import { BadRequestError } from "../../core/ApiError"
 import { AuthFailureResponse, SuccessResponse } from "../../core/ApiResponse"
+import createCustomToken from "../../database/firebase"
 import User from "../../database/model/user.model"
 import KeystoreRepo from "../../database/repository/keystore.repo"
 import UserRepo from "../../database/repository/user.repo"
@@ -39,7 +40,8 @@ router.post(
 
             const { user: createdUser } = await UserRepo.create(user, accessTokenKey, refreshTokenKey)
             const tokens = await createTokens(createdUser, accessTokenKey, refreshTokenKey)
-            return new SuccessResponse("Phone number verified.", { createdUser, tokens }).send(res)
+            const firebaseToken = await createCustomToken(user._id.toString())
+            return new SuccessResponse("Phone number verified.", { createdUser, tokens, firebaseToken }).send(res)
         }
         return new AuthFailureResponse("Invalid SMS Token").send(res)
     }),
@@ -62,7 +64,8 @@ router.post(
             // eslint-disable-next-line no-underscore-dangle
             await KeystoreRepo.create(user._id, accessTokenKey, refreshTokenKey)
             const tokens = await createTokens(user, accessTokenKey, refreshTokenKey)
-            return new SuccessResponse("Phone number verified.", { user, tokens }).send(res)
+            const firebaseToken = await createCustomToken(user._id.toString())
+            return new SuccessResponse("Phone number verified.", { user, tokens, firebaseToken }).send(res)
         }
         return new AuthFailureResponse("Invalid SMS Token").send(res)
     }),

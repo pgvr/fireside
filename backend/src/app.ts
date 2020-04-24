@@ -5,6 +5,7 @@ import { corsUrl, environment } from "./config"
 import { ApiError, InternalError, NotFoundError } from "./core/ApiError"
 import Logger from "./core/Logger"
 import "./database"
+import "./database/firebase"
 import routes from "./routes"
 
 process.on("uncaughtException", (e) => {

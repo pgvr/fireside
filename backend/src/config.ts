@@ -19,6 +19,10 @@ export const baseUrl = process.env.NODE_ENV === "production" ? process.env.BASE_
 
 export const localApiKey = process.env.API_KEY
 
+export const firebasePrivateKey = process.env.FIREBASE_PRIVATE_KEY
+export const firebaseClientMail = process.env.FIREBASE_CLIENT_MAIL
+export const firebaseProjectId = process.env.FIREBASE_PROJECT_ID
+
 export const tokenInfo = {
     accessTokenValidityDays: Number(process.env.ACCESS_TOKEN_VALIDITY_DAYS),
     refreshTokenValidityDays: Number(process.env.REFRESH_TOKEN_VALIDITY_DAYS),
