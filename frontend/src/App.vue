@@ -24,6 +24,14 @@
     </v-app>
 </template>
 
+<style>
+/* Fix weird card default style breaking words apart */
+.v-card__text,
+.v-card__title {
+    word-break: normal; /* maybe !important  */
+}
+</style>
+
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
 import store from "./store"
