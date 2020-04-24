@@ -68,7 +68,7 @@
                 </v-row>
             </v-layout>
             <v-layout align-center column class="mt-12">
-                <v-card>
+                <v-card style="width: 100%;" max-width="500">
                     <v-card-title>Feedback</v-card-title>
                     <v-card-text class="text--primary">
                         <p class="body-1" v-if="rating === 0">Help us improve our service by rating the call.</p>
