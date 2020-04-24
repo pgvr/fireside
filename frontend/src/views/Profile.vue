@@ -18,7 +18,7 @@
                             hint="Please prepend your country code. E.g. +49157..."
                             required
                             :error-messages="phoneErrors()"
-                            :loading="userStateLoading()"
+                            :loading="UserModuleLoading()"
                             @input="$v.phone.$touch()"
                             @blur="$v.phone.$touch()"
                         ></v-text-field>
@@ -28,7 +28,7 @@
                             @input="$v.city.$touch()"
                             @blur="$v.city.$touch()"
                             :error-messages="cityErrors()"
-                            :loading="userStateLoading()"
+                            :loading="UserModuleLoading()"
                             label="City"
                             type="text"
                             required
@@ -42,7 +42,7 @@
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
                             :items="suggestions"
-                            :loading="userStateLoading()"
+                            :loading="UserModuleLoading()"
                             label="Your favorite hobbies or interests"
                             multiple
                             prepend-icon="mdi-table-tennis"
@@ -55,7 +55,7 @@
                             @input="$v.job.$touch()"
                             @blur="$v.job.$touch()"
                             :error-messages="jobErrors()"
-                            :loading="userStateLoading()"
+                            :loading="UserModuleLoading()"
                             type="text"
                             required
                         ></v-text-field>
@@ -201,7 +201,6 @@
 import { Vue, Component } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
-import { getModule } from "vuex-module-decorators"
 import BottomNav from "../components/BottomNav.vue"
 import Layout from "../components/Layout.vue"
 import AppBar from "../components/AppBar.vue"
@@ -218,17 +217,14 @@ const validations = {
     job: { required },
 }
 
-const userState = getModule(UserModule)
-const settingState = getModule(SettingModule)
-
 @Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar, Layout } })
 export default class Profile extends Vue {
     // User
-    phone = userState.user.phone
-    city = userState.user.city
-    interests = userState.user.interests
-    job = userState.user.job
-    language = userState.user.language
+    phone = UserModule.user.phone
+    city = UserModule.user.city
+    interests = UserModule.user.interests
+    job = UserModule.user.job
+    language = UserModule.user.language
     languages = ["English"]
     suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
 
@@ -250,23 +246,23 @@ export default class Profile extends Vue {
     daysErrors: string[] = []
 
     async created() {
-        if (!userState.user._id) {
-            await userState.getUser()
-            this.phone = userState.user.phone
-            this.city = userState.user.city
-            this.interests = userState.user.interests
-            this.job = userState.user.job
-            this.language = userState.user.language
+        if (!UserModule.user._id) {
+            await UserModule.getUser()
+            this.phone = UserModule.user.phone
+            this.city = UserModule.user.city
+            this.interests = UserModule.user.interests
+            this.job = UserModule.user.job
+            this.language = UserModule.user.language
         }
-        if (!settingState.setting._id) {
-            const set = await settingState.getSetting()
+        if (!SettingModule.setting._id) {
+            const set = await SettingModule.getSetting()
             if (set && set._id) {
                 this.updateLocalSetting(set)
                 this.settingExists = true
                 this.settingCreated = true
             }
         } else {
-            this.updateLocalSetting(settingState.setting)
+            this.updateLocalSetting(SettingModule.setting)
             this.settingExists = true
             this.settingCreated = true
         }
@@ -295,8 +291,8 @@ export default class Profile extends Vue {
         this.numPerDay = setting.numPerDay
     }
 
-    userStateLoading() {
-        return userState.loading
+    UserModuleLoading() {
+        return UserModule.loading
     }
 
     phoneErrors() {
@@ -338,7 +334,7 @@ export default class Profile extends Vue {
 
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            await userState.updateUser({ city: this.city, interests: this.interests, job: this.job })
+            await UserModule.updateUser({ city: this.city, interests: this.interests, job: this.job })
         }
     }
 
@@ -377,7 +373,7 @@ export default class Profile extends Vue {
         const startTimeUTC = `${parseInt(startTimes[0]) + localOffsetHours}:${startTimes[1]}`
         const endTimeUTC = `${parseInt(endTimes[0]) + localOffsetHours}:${endTimes[1]}`
 
-        await settingState.updateSetting({
+        await SettingModule.updateSetting({
             days: this.days,
             startTime: startTimeUTC,
             endTime: endTimeUTC,
@@ -396,11 +392,11 @@ export default class Profile extends Vue {
         this.startTime = ""
         this.endTime = ""
         this.numPerDay = 1
-        await settingState.deleteSetting()
+        await SettingModule.deleteSetting()
     }
 
     logout() {
-        userState.logout()
+        UserModule.logout()
     }
 }
 </script>

@@ -3,7 +3,6 @@ import store from "@/store"
 import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
 import UiModule from "./ui.module"
-const uiState = getModule(UiModule)
 
 export interface User {
     _id: string
@@ -21,7 +20,7 @@ export interface Tokens {
 }
 
 @Module({ name: "User", store, dynamic: true, namespaced: true })
-export default class UserModule extends VuexModule {
+class UserModule extends VuexModule {
     status: "loading" | "success" | "error" | "" = ""
     accessToken = localStorage.getItem("token") || ""
     refreshToken = localStorage.getItem("refreshToken") || ""
@@ -102,7 +101,7 @@ export default class UserModule extends VuexModule {
         delete axios.defaults.headers.common["Authorization"]
         localStorage.removeItem("token")
         localStorage.removeItem("refreshToken")
-        uiState.showSnackbarMessage("Plase log in again")
+        UiModule.showSnackbarMessage("Plase log in again")
         router.push("/login")
     }
 
@@ -134,6 +133,8 @@ export default class UserModule extends VuexModule {
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/user/me`)
             const { data } = response.data
             this.setUser(data.user)
+            console.log(data.user._id)
+            store.dispatch("init", { userId: data.user._id })
             this.setLoading(false)
         } catch (error) {
             console.log(error)
@@ -176,3 +177,5 @@ export default class UserModule extends VuexModule {
         }
     }
 }
+
+export default getModule(UserModule)

@@ -41,7 +41,6 @@ import { validationMixin } from "vuelidate"
 import UserModule from "@/store/modules/user.module"
 import UiModule from "@/store/modules/ui.module"
 import VerificationModule from "@/store/modules/verification.module"
-import { getModule } from "vuex-module-decorators"
 import BonfireIcon from "../components/BonfireIcon.vue"
 
 const validations = {
@@ -54,13 +53,9 @@ const validations = {
     },
 }
 
-const userState = getModule(UserModule)
-const uiState = getModule(UiModule)
-const verificationState = getModule(VerificationModule)
-
 @Component({ mixins: [validationMixin], validations, components: { BonfireIcon } })
 export default class Login extends Vue {
-    phone = userState.user.phone
+    phone = UserModule.user.phone
 
     phoneErrors() {
         const errors: string[] = []
@@ -73,13 +68,13 @@ export default class Login extends Vue {
     async login() {
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            const userExists = await userState.doesUserExist(this.phone)
+            const userExists = await UserModule.doesUserExist(this.phone)
             if (userExists) {
-                userState.setPhone(this.phone)
-                verificationState.setShouldLogin(true)
+                UserModule.setPhone(this.phone)
+                VerificationModule.setShouldLogin(true)
                 this.$router.push("/verify")
             } else if (userExists === false) {
-                uiState.showSnackbarMessage("There is no account for this number")
+                UiModule.showSnackbarMessage("There is no account for this number")
             }
         }
     }

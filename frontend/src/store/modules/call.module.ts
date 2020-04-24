@@ -4,8 +4,6 @@ import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
 import UiModule from "./ui.module"
 
-const uiState = getModule(UiModule)
-
 export interface Call {
     _id: string
     conferenceId: string
@@ -20,7 +18,7 @@ export interface Call {
 }
 
 @Module({ name: "Call", store, dynamic: true, namespaced: true })
-export default class CallModule extends VuexModule {
+class CallModule extends VuexModule {
     callStatus: "idle" | "queue" | "calling" = "idle"
     loading = false
     callDetail!: Call
@@ -186,7 +184,7 @@ export default class CallModule extends VuexModule {
             const { data } = response.data
             if (data.callActive) {
                 // dont allow to complete because call is still active
-                uiState.showSnackbarMessage("Wait for your call to finish")
+                UiModule.showSnackbarMessage("Wait for your call to finish")
             } else {
                 // bring user to post call screen
                 const { call } = data
@@ -201,3 +199,5 @@ export default class CallModule extends VuexModule {
         }
     }
 }
+
+export default getModule(CallModule)

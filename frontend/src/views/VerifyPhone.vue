@@ -38,15 +38,11 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import { getModule } from "vuex-module-decorators"
 import UserModule from "@/store/modules/user.module"
 import VerificationModule from "@/store/modules/verification.module"
 import BonfireIcon from "../components/BonfireIcon.vue"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
-
-const userState = getModule(UserModule)
-const verificationState = getModule(VerificationModule)
 
 const validations = {
     code: { required },
@@ -56,10 +52,10 @@ const validations = {
 export default class VerifyPhone extends Vue {
     code = ""
     loading() {
-        return verificationState.loading
+        return VerificationModule.loading
     }
     phone() {
-        return userState.user.phone
+        return UserModule.user.phone
     }
     codeErrors() {
         const errors: string[] = []
@@ -69,32 +65,32 @@ export default class VerifyPhone extends Vue {
     }
 
     created() {
-        if (verificationState.shouldLogin && !userState.user.phone) {
+        if (VerificationModule.shouldLogin && !UserModule.user.phone) {
             // login requires phone, disallow
             this.$router.push("/login")
         } else if (
-            !verificationState.shouldLogin &&
-            (!userState.user.phone ||
-                !userState.user.city ||
-                userState.user.interests.length === 0 ||
-                !userState.user.job ||
-                !userState.user.language)
+            !VerificationModule.shouldLogin &&
+            (!UserModule.user.phone ||
+                !UserModule.user.city ||
+                UserModule.user.interests.length === 0 ||
+                !UserModule.user.job ||
+                !UserModule.user.language)
         ) {
             this.$router.push("/start")
         } else {
-            verificationState.sendVerificationSms(userState.user.phone)
+            VerificationModule.sendVerificationSms(UserModule.user.phone)
         }
     }
 
     submit() {
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            verificationState.verifyCode(this.code)
+            VerificationModule.verifyCode(this.code)
         }
     }
 
     sendCode() {
-        verificationState.sendVerificationSms(userState.user.phone)
+        VerificationModule.sendVerificationSms(UserModule.user.phone)
     }
 }
 </script>

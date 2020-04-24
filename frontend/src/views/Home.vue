@@ -5,6 +5,12 @@
             <v-row no-gutters justify="center" class="mb-4">
                 <h1 class="display-1">Welcome to Fireside</h1>
             </v-row>
+            <v-row no-gutters justify="center" class="mb-4">
+                <h1 class="display-1">Queue: {{ $store.state.queue }}</h1>
+            </v-row>
+            <v-row no-gutters justify="center" class="mb-4">
+                <h1 class="display-1">Conference: {{ $store.state.conference }}</h1>
+            </v-row>
             <v-row no-gutters class="mb-8">
                 <v-col cols="12" sm="6" class="mt-4 pr-sm-2">
                     <v-card class="grow mx-auto" max-width="500" color="primary">
@@ -93,34 +99,30 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import { getModule } from "vuex-module-decorators"
-import UserModule from "@/store/modules/user.module"
-import CallModule, { Call } from "@/store/modules/call.module"
+import UserModule from "../store/modules/user.module"
+import CallModule, { Call } from "../store/modules/call.module"
 import moment from "moment"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
 import BonfireIcon from "../components/BonfireIcon.vue"
 import Layout from "../components/Layout.vue"
 
-const userState = getModule(UserModule)
-const callState = getModule(CallModule)
-
 @Component({ components: { BottomNav, AppBar, BonfireIcon, Layout } })
 export default class Home extends Vue {
     phone() {
-        return userState.user?.phone
+        return UserModule.user?.phone
     }
     calls() {
-        return callState.calls
+        return CallModule.calls
     }
     userSparks() {
-        return userState.user?.points
+        return UserModule.user?.points
     }
     userLoading() {
-        return userState.loading
+        return UserModule.loading
     }
     callsLoading() {
-        return callState.loading
+        return CallModule.loading
     }
 
     goToDetail(call: Call) {
@@ -145,16 +147,16 @@ export default class Home extends Vue {
     }
 
     created() {
-        if (!userState.user._id) {
-            userState.getUser()
+        if (!UserModule.user._id) {
+            UserModule.getUser()
         }
-        if (callState.calls.length === 0) {
-            callState.getCalls()
+        if (CallModule.calls.length === 0) {
+            CallModule.getCalls()
         }
     }
 
     logout() {
-        userState.logout()
+        UserModule.logout()
     }
 }
 </script>

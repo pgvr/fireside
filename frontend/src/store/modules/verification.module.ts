@@ -5,11 +5,8 @@ import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-dec
 import UiModule from "./ui.module"
 import UserModule from "./user.module"
 
-const userState = getModule(UserModule)
-const uiState = getModule(UiModule)
-
 @Module({ name: "Verification", store, dynamic: true, namespaced: true })
-export default class VerificationModule extends VuexModule {
+class VerificationModule extends VuexModule {
     loading = false
     shouldLogin = false
 
@@ -37,12 +34,12 @@ export default class VerificationModule extends VuexModule {
             let response
             if (this.shouldLogin) {
                 // login
-                const body = { phone: userState.user.phone, code }
+                const body = { phone: UserModule.user.phone, code }
                 response = await Axios.post(`${process.env.VUE_APP_API_URL}/code/login`, body)
             } else {
                 // register
                 const body = {
-                    ...userState.user,
+                    ...UserModule.user,
                     code,
                 }
                 delete body._id
@@ -54,7 +51,7 @@ export default class VerificationModule extends VuexModule {
             localStorage.setItem("token", tokens.accessToken)
             localStorage.setItem("refreshToken", tokens.refreshToken)
             Axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
-            userState.authSuccess({ tokens, user })
+            UserModule.authSuccess({ tokens, user })
 
             router.push("/home")
 
@@ -63,10 +60,12 @@ export default class VerificationModule extends VuexModule {
         } catch (error) {
             console.log(error)
             this.setLoading(false)
-            userState.authError()
+            UserModule.authError()
             localStorage.removeItem("token")
             localStorage.removeItem("refreshToken")
-            uiState.showSnackbarMessage("Something went wrong. Please check the token and try again.")
+            UiModule.showSnackbarMessage("Something went wrong. Please check the token and try again.")
         }
     }
 }
+
+export default getModule(VerificationModule)

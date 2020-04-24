@@ -87,7 +87,6 @@
 import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
-import { getModule } from "vuex-module-decorators"
 import UserModule from "@/store/modules/user.module"
 import UiModule from "@/store/modules/ui.module"
 import VerificationModule from "@/store/modules/verification.module"
@@ -111,10 +110,6 @@ const validations = {
     job: { required },
 }
 
-const userState = getModule(UserModule)
-const verificationState = getModule(VerificationModule)
-const uiState = getModule(UiModule)
-
 @Component({ mixins: [validationMixin], validations, components: { AppBar, BonfireIcon } })
 export default class Start extends Vue {
     phone = ""
@@ -126,10 +121,10 @@ export default class Start extends Vue {
     suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
 
     navigate(route: string) {
-        userState.setPhone(this.phone)
-        userState.setCity(this.city)
-        userState.setInterests(this.interests)
-        userState.setJob(this.job)
+        UserModule.setPhone(this.phone)
+        UserModule.setCity(this.city)
+        UserModule.setInterests(this.interests)
+        UserModule.setJob(this.job)
         router.push(route)
     }
 
@@ -166,16 +161,16 @@ export default class Start extends Vue {
     async meet() {
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            const userExists = await userState.doesUserExist(this.phone)
+            const userExists = await UserModule.doesUserExist(this.phone)
             if (!userExists) {
-                userState.setPhone(this.phone)
-                userState.setCity(this.city)
-                userState.setInterests(this.interests)
-                userState.setJob(this.job)
-                verificationState.setShouldLogin(false)
+                UserModule.setPhone(this.phone)
+                UserModule.setCity(this.city)
+                UserModule.setInterests(this.interests)
+                UserModule.setJob(this.job)
+                VerificationModule.setShouldLogin(false)
                 this.$router.push("/verify")
             } else {
-                uiState.showSnackbarMessage("This number is already registered")
+                UiModule.showSnackbarMessage("This number is already registered")
             }
         }
     }

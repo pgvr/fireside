@@ -1,6 +1,6 @@
 import store from "@/store"
 import axios from "axios"
-import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
 
 export interface Setting {
     _id: string
@@ -12,7 +12,7 @@ export interface Setting {
 }
 
 @Module({ name: "Setting", store, dynamic: true, namespaced: true })
-export default class SettingModule extends VuexModule {
+class SettingModule extends VuexModule {
     loading = false
     setting: Setting = {
         _id: "",
@@ -108,7 +108,7 @@ export default class SettingModule extends VuexModule {
             this.setStartTime("")
             this.setEndTime("")
             this.setNumPerDay(1)
-            const response = await axios.delete(`${process.env.VUE_APP_API_URL}/setting/delete`)
+            await axios.delete(`${process.env.VUE_APP_API_URL}/setting/delete`)
             this.setLoading(false)
         } catch (error) {
             console.log(error)
@@ -116,3 +116,5 @@ export default class SettingModule extends VuexModule {
         }
     }
 }
+
+export default getModule(SettingModule)

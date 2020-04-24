@@ -76,39 +76,36 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
-import { getModule } from "vuex-module-decorators"
 import CallModule from "@/store/modules/call.module"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
 import Layout from "../components/Layout.vue"
 import BonfireIcon from "../components/BonfireIcon.vue"
 
-const callState = getModule(CallModule)
-
 @Component({ components: { BottomNav, AppBar, BonfireIcon, Layout } })
 export default class Call extends Vue {
     callStatus() {
-        return callState.callStatus
+        return CallModule.callStatus
     }
 
     refreshCallStatus() {
-        callState.checkQueueStatus()
+        CallModule.checkQueueStatus()
     }
 
     callStateLoading() {
-        return callState.loading
+        return CallModule.loading
     }
 
     startCall() {
-        callState.findConference()
+        CallModule.findConference()
     }
 
     completeCall() {
-        callState.completeCall()
+        CallModule.completeCall()
     }
 
     leaveQueue() {
-        callState.leaveCallQueue()
+        CallModule.leaveCallQueue()
     }
 }
 </script>

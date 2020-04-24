@@ -34,10 +34,9 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import store from "./store"
-import { getModule } from "vuex-module-decorators"
 import UiModule from "./store/modules/ui.module"
-const uiState = getModule(UiModule)
+import UserModule from "./store/modules/user.module"
+import CallModule from "./store/modules/call.module"
 
 @Component
 export default class App extends Vue {
@@ -49,8 +48,8 @@ export default class App extends Vue {
     created() {
         // fetch initial data
         // module import doesnt work for some reason
-        if (store.getters["User/isLoggedIn"]) {
-            store.dispatch("Call/checkQueueStatus")
+        if (UserModule.isLoggedIn) {
+            CallModule.checkQueueStatus()
         }
 
         // Listen for swUpdated event and display refresh snackbar as required.
@@ -83,13 +82,13 @@ export default class App extends Vue {
     }
 
     showSnackbar() {
-        return uiState.showSnackbar
+        return UiModule.showSnackbar
     }
     snackbarMessage() {
-        return uiState.snackbarMessage
+        return UiModule.snackbarMessage
     }
     updateSnackbar(value: boolean) {
-        uiState.setShowSnackbar(value)
+        UiModule.setShowSnackbar(value)
     }
 }
 </script>
