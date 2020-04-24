@@ -6,7 +6,7 @@
                 Ready to have a chat?
             </div>
             <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'queue'">
-                Hang tight, we are setting up a call.
+                Looking for a call...
             </div>
             <div class="display-1 mb-8" style="text-align:center;" v-if="callStatus() === 'calling'">
                 Enjoy your call!
@@ -20,15 +20,16 @@
             />
 
             <v-layout column>
-                <p
-                    v-if="(callStatus() === 'idle') | (callStatus() === 'queue')"
-                    class="body-1"
-                    style="text-align:center"
-                >
-                    Your phone will ring as soon as we find a likeminded person.
+                <p v-if="callStatus() === 'idle'" class="body-1" style="text-align:center">
+                    Please be aware that a phone number from the USA will facilitate the call and that this does NOT
+                    cost you anything.
                 </p>
                 <p v-if="callStatus() === 'queue'" class="body-1" style="text-align:center">
-                    Once your call is done, you can find it in the overview.
+                    Your phone will ring as soon as we find a likeminded person.<br />
+                    Once your call is done, you can find it in the overview 📱
+                </p>
+                <p v-if="callStatus() === 'calling'" class="body-1" style="text-align:center">
+                    Try to find out what you have in common and have fun 👍
                 </p>
                 <v-btn
                     v-if="callStatus() === 'idle'"
