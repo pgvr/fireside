@@ -15,6 +15,7 @@
                             label="Phone"
                             type="tel"
                             readonly
+                            hint="Please prepend your country code. E.g. +49157..."
                             required
                             :error-messages="phoneErrors()"
                             :loading="userStateLoading()"
@@ -40,6 +41,7 @@
                             clearable
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
+                            :items="suggestions"
                             :loading="userStateLoading()"
                             label="Your favorite hobbies or interests"
                             multiple
@@ -228,6 +230,7 @@ export default class Profile extends Vue {
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]
+    suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
 
     // Settings
     settingStartModal = false

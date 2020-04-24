@@ -14,6 +14,7 @@
                             v-model="phone"
                             label="Phone"
                             type="tel"
+                            hint="Please prepend your country code. E.g. +49157..."
                             required
                             :error-messages="phoneErrors()"
                             @input="$v.phone.$touch()"
@@ -39,6 +40,7 @@
                             :error-messages="interestErrors()"
                             label="Your favorite hobbies or interests"
                             multiple
+                            :items="suggestions"
                             prepend-icon="mdi-table-tennis"
                         >
                         </v-combobox>
@@ -94,7 +96,13 @@ import AppBar from "../components/AppBar.vue"
 import BonfireIcon from "../components/BonfireIcon.vue"
 
 const validations = {
-    phone: { required },
+    phone: {
+        required,
+        phoneWithCountry(value: string) {
+            if (value.match(/\+[0-9]+/)) return true
+            return false
+        },
+    },
     city: { required },
     interests: {
         required,
@@ -115,6 +123,7 @@ export default class Start extends Vue {
     job = ""
     language = "English"
     languages = ["English"]
+    suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
 
     navigate(route: string) {
         userState.setPhone(this.phone)
@@ -128,6 +137,7 @@ export default class Start extends Vue {
         const errors: string[] = []
         if (!this.$v.phone.$dirty) return errors
         !this.$v.phone.required && errors.push("Phone is required.")
+        !this.$v.phone.phoneWithCountry && errors.push("Make sure you add a '+' with your country code")
         return errors
     }
 

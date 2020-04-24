@@ -12,6 +12,7 @@
                             v-model="phone"
                             label="Phone"
                             type="tel"
+                            hint="Please prepend your country code. E.g. +49157..."
                             required
                             autofocus
                             :error-messages="phoneErrors()"
@@ -44,7 +45,13 @@ import { getModule } from "vuex-module-decorators"
 import BonfireIcon from "../components/BonfireIcon.vue"
 
 const validations = {
-    phone: { required },
+    phone: {
+        required,
+        phoneWithCountry(value: string) {
+            if (value.match(/\+[0-9]+/)) return true
+            return false
+        },
+    },
 }
 
 const userState = getModule(UserModule)
@@ -59,6 +66,7 @@ export default class Login extends Vue {
         const errors: string[] = []
         if (!this.$v.phone.$dirty) return errors
         !this.$v.phone.required && errors.push("Phone is required.")
+        !this.$v.phone.phoneWithCountry && errors.push("Make sure you add a '+' with your country code")
         return errors
     }
 
