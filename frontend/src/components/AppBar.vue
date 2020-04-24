@@ -8,6 +8,7 @@
             <v-switch
                 v-model="$vuetify.theme.dark"
                 inset
+                @change="themeChange"
                 prepend-icon="mdi-theme-light-dark"
                 hide-details="true"
             ></v-switch>
@@ -20,5 +21,10 @@ import { Vue, Component } from "vue-property-decorator"
 import BonfireIcon from "./BonfireIcon.vue"
 
 @Component({ components: { BonfireIcon } })
-export default class AppBar extends Vue {}
+export default class AppBar extends Vue {
+    themeChange(dark: boolean) {
+        console.log("theme changed, dark: " + dark)
+        localStorage.setItem("vuetifyTheme", dark ? "dark" : "light")
+    }
+}
 </script>
