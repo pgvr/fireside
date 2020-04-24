@@ -24,14 +24,12 @@
                         👫 Make friends
                     </div>
                 </v-card-text>
-                <!-- <v-card-actions>
-                    <v-btn text color="deep-purple accent-4">
-                        Learn More
-                    </v-btn>
-                </v-card-actions> -->
+                <v-card-actions>
+                    <v-btn large to="/login" color="secondary">Login</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn large to="/start" color="primary">Meet Now</v-btn>
+                </v-card-actions>
             </v-card>
-            <v-btn class="mt-4" large to="/start" color="primary">Meet Now</v-btn>
-            <v-btn class="mt-4" to="/login" color="secondary">Login</v-btn>
         </v-layout>
     </v-container>
 </template>
