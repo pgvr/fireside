@@ -1,10 +1,27 @@
 import Axios from "axios"
 import Vue from "vue"
+import VueGtag from "vue-gtag"
 import App from "./App.vue"
 import vuetify from "./plugins/vuetify"
 import "./registerServiceWorker"
 import router from "./router"
 import store from "./store"
+
+if (process.env.NODE_ENV !== "development") {
+    Vue.use(
+        VueGtag,
+        {
+            config: {
+                id: "UA-100079341-8",
+                params: {
+                    // eslint-disable-next-line @typescript-eslint/camelcase
+                    anonymize_ip: true,
+                },
+            },
+        },
+        router,
+    )
+}
 
 Vue.config.productionTip = false
 
