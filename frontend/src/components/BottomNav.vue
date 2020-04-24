@@ -62,7 +62,8 @@ import CallModule from "@/store/modules/call.module"
 @Component
 export default class BottomNav extends Vue {
     callStatus() {
-        return CallModule.callStatus
+        return this.$store.getters.callStatusFirebase
+        // return CallModule.callStatus
     }
     goToCall() {
         this.$router.push("/call")

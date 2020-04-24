@@ -10,7 +10,9 @@ admin.initializeApp({
     databaseURL: "https://fireside-70f44.firebaseio.com",
 })
 
-export default async function createCustomToken(uid: string) {
+const db = admin.firestore()
+export default db
+export async function createCustomToken(uid: string) {
     try {
         const token = await admin.auth().createCustomToken(uid)
         return token

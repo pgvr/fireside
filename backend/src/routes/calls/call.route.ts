@@ -4,7 +4,6 @@ import express, { Response } from "express"
 import authentication from "../../auth/authentication"
 import { BadRequestError } from "../../core/ApiError"
 import { SuccessResponse } from "../../core/ApiResponse"
-import Logger from "../../core/Logger"
 import CallRepo from "../../database/repository/call.repo"
 import ConferenceRepo from "../../database/repository/conference.repo"
 import QueueRepo from "../../database/repository/queue.repo"
@@ -41,7 +40,6 @@ router.post(
         const intersection = call.commonInterests.filter((x) =>
             submittedInterests.map((i) => i.toLowerCase()).includes(x.toLowerCase()),
         )
-        Logger.info(`Guessed correctly: ${intersection.join(" ")}`)
         // 50 points for each correct guess
         let points = intersection.length * 50
         const { firstCall } = call
@@ -112,7 +110,6 @@ router.post(
 
         if (call.phone !== phone) throw new BadRequestError("Call does not belong to token phone number")
         if (call.rating > 0) throw new BadRequestError("Call is already rated")
-        Logger.info(`Rating call with ${rating}`)
         const dbCall = await CallRepo.rateCall(callId, rating)
         return new SuccessResponse("Rated Call", dbCall).send(res)
     }),

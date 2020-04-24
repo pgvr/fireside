@@ -9,6 +9,17 @@ export default new Vuex.Store({
         queue: null,
         conference: null,
     },
+    getters: {
+        callStatusFirebase: state => {
+            if (state.queue) {
+                return "queue"
+            } else if (state.conference) {
+                return "calling"
+            } else {
+                return "idle"
+            }
+        },
+    },
     mutations: vuexfireMutations,
     actions: {
         bindRef: firestoreAction(function(context, payload) {

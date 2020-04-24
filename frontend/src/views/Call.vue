@@ -41,7 +41,7 @@
                     color="primary"
                     class="mt-4"
                     @click="startCall()"
-                    >Start Call</v-btn
+                    >Look for a call</v-btn
                 >
                 <v-btn
                     v-if="callStatus() === 'queue'"
@@ -59,14 +59,8 @@
                     @click="completeCall()"
                     >Complete Call</v-btn
                 >
-                <v-btn
-                    :loading="callStateLoading()"
-                    color="gray lighten-5"
-                    outlined
-                    depressed
-                    class="mt-4"
-                    @click="refreshCallStatus()"
-                    >Refresh Call Status</v-btn
+                <v-btn color="gray lighten-5" outlined depressed class="mt-4" @click="navigateToLatestCall()"
+                    >Navigate to latest call</v-btn
                 >
             </v-layout>
         </v-layout>
@@ -85,11 +79,12 @@ import BonfireIcon from "../components/BonfireIcon.vue"
 @Component({ components: { BottomNav, AppBar, BonfireIcon, Layout } })
 export default class Call extends Vue {
     callStatus() {
-        return CallModule.callStatus
+        return this.$store.getters.callStatusFirebase
     }
 
-    refreshCallStatus() {
-        CallModule.checkQueueStatus()
+    navigateToLatestCall() {
+        const latestId = CallModule.calls[0]._id
+        this.$router.push(`/detail/${latestId}`)
     }
 
     callStateLoading() {

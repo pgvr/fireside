@@ -27,9 +27,7 @@ router.use(
     validator(schema.auth, ValidationSource.HEADER),
     asyncHandler(async (req, res, next) => {
         const { apikey } = req.headers
-        Logger.info(`auth api key ${apikey} ${localApiKey}`)
         if (apikey && localApiKey && apikey !== localApiKey) throw new AuthFailureError("Wrong API Key")
-        Logger.info("api key success")
         return next()
     }),
 )

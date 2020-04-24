@@ -1,10 +1,11 @@
 /* eslint-disable no-await-in-loop */
 import { ParticipantInstance } from "twilio/lib/rest/api/v2010/account/conference/participant"
-import Logger from "../../core/Logger"
 import { getCall } from "../../helpers/conference.helper"
+import db from "../firebase"
 import Conference, { ConferenceModel } from "../model/conference.model"
 import QueueUser from "../model/queue.model"
 import User from "../model/user.model"
+import UserRepo from "./user.repo"
 
 export default class ConferenceRepo {
     public static async create(
@@ -30,11 +31,14 @@ export default class ConferenceRepo {
             commonInterests = [...commonInterests, ...intersection]
         }
 
-        Logger.info("Common Interests:")
-        Logger.info(commonInterests)
-
+        // userOne is from the Queue Collection, but we need id from users collection
+        const userOneFromUsers = await UserRepo.findByPhone(userOne.user.phone)
+        // create 2 entries, one for each user id in conferences
+        await Promise.all([
+            db.collection("conferences").doc(userOneFromUsers._id).create({ call: true }),
+            db.collection("conferences").doc(userTwo.user._id).create({ call: true }),
+        ])
         const now = new Date()
-
         return ConferenceModel.create(<Conference>{
             userOnePhone: userOne.user.phone,
             userOneIsScheduled: userOne.isScheduled,
@@ -63,9 +67,16 @@ export default class ConferenceRepo {
     }
 
     public static async removeConference(conferenceId: string): Promise<Conference> {
-        const conference = ConferenceModel.findOneAndDelete({
+        // remove both from firebase
+        const conference = await ConferenceModel.findOneAndDelete({
             conferenceId,
         })
+        const userOne = await UserRepo.findByPhone(conference.userOnePhone)
+        const userTwo = await UserRepo.findByPhone(conference.userTwoPhone)
+        await Promise.all([
+            db.collection("conferences").doc(userOne._id).delete(),
+            db.collection("conferences").doc(userTwo._id).delete(),
+        ])
         return conference
     }
 

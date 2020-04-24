@@ -10,7 +10,10 @@ import CallModule from "../store/modules/call.module"
 @Component
 export default class Layout extends Vue {
     get MarginBottom() {
-        return CallModule.callStatus === "queue" || CallModule.callStatus === "calling" ? "112px" : "56px"
+        return this.$store.getters.callStatusFirebase === "queue" ||
+            this.$store.getters.callStatusFirebase === "calling"
+            ? "112px"
+            : "56px"
     }
 }
 </script>

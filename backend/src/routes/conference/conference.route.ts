@@ -41,7 +41,6 @@ router.post(
         if (foundMatch) {
             // connect with match
             Logger.info("Match found, initiating...")
-
             // found match is coming from queue db collection, create a new object of it to remove _id, etc.
             // foundMatch = <QueueUser>{
             //     phone: foundMatch.phone,

@@ -48,9 +48,9 @@ export default class App extends Vue {
     created() {
         // fetch initial data
         // module import doesnt work for some reason
-        if (UserModule.isLoggedIn) {
-            CallModule.checkQueueStatus()
-        }
+        // if (UserModule.isLoggedIn) {
+        //     CallModule.checkQueueStatus()
+        // }
 
         // Listen for swUpdated event and display refresh snackbar as required.
         document.addEventListener("swUpdated", this.showRefreshUI, { once: true })

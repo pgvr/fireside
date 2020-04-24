@@ -1,8 +1,6 @@
-import router from "@/router"
 import store from "@/store"
 import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
-import UiModule from "./ui.module"
 
 export interface Call {
     _id: string
@@ -19,14 +17,14 @@ export interface Call {
 
 @Module({ name: "Call", store, dynamic: true, namespaced: true })
 class CallModule extends VuexModule {
-    callStatus: "idle" | "queue" | "calling" = "idle"
+    // callStatus: "idle" | "queue" | "calling" = "idle"
     loading = false
     callDetail!: Call
     calls: Call[] = []
-    @Mutation
-    setCallStatus(newStatus: "idle" | "queue" | "calling") {
-        this.callStatus = newStatus
-    }
+    // @Mutation
+    // setCallStatus(newStatus: "idle" | "queue" | "calling") {
+    //     this.callStatus = newStatus
+    // }
     @Mutation
     setCalls(newCalls: Call[]) {
         this.calls = newCalls
@@ -114,30 +112,30 @@ class CallModule extends VuexModule {
         }
     }
 
-    @Action
-    async checkQueueStatus() {
-        this.setLoading(true)
-        try {
-            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/inQueue`)
-            const { data } = response.data
-            if (data.queue) {
-                this.setCallStatus("queue")
-            } else {
-                // check whether in a conference
-                const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/isCallActive`)
-                const { data } = response.data
-                if (data.callActive) {
-                    this.setCallStatus("calling")
-                } else {
-                    this.setCallStatus("idle")
-                }
-            }
-        } catch (error) {
-            console.log(error)
-            this.setCallStatus("idle")
-        }
-        this.setLoading(false)
-    }
+    // @Action
+    // async checkQueueStatus() {
+    //     this.setLoading(true)
+    //     try {
+    //         const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/inQueue`)
+    //         const { data } = response.data
+    //         if (data.queue) {
+    //             this.setCallStatus("queue")
+    //         } else {
+    //             // check whether in a conference
+    //             const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/isCallActive`)
+    //             const { data } = response.data
+    //             if (data.callActive) {
+    //                 this.setCallStatus("calling")
+    //             } else {
+    //                 this.setCallStatus("idle")
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //         this.setCallStatus("idle")
+    //     }
+    //     this.setLoading(false)
+    // }
 
     @Action
     async findConference() {
@@ -148,14 +146,14 @@ class CallModule extends VuexModule {
             const { data } = response.data
             if (data.queue) {
                 // put user in queue
-                this.setCallStatus("queue")
+                // this.setCallStatus("queue")
             } else if (data.queue === false) {
                 // call is being initiated
-                this.setCallStatus("calling")
+                // this.setCallStatus("calling")
             }
         } catch (error) {
             console.log(error)
-            this.setCallStatus("idle")
+            // this.setCallStatus("idle")
             this.setLoading(false)
         }
     }
@@ -166,38 +164,38 @@ class CallModule extends VuexModule {
             this.setLoading(true)
             // this.resetInterval()
             await axios.post(`${process.env.VUE_APP_API_URL}/conference/leaveQueue`)
-            this.setCallStatus("idle")
+            // this.setCallStatus("idle")
             this.setLoading(false)
         } catch (error) {
             console.log(error)
-            this.setCallStatus("idle")
+            // this.setCallStatus("idle")
             this.setLoading(false)
         }
     }
 
-    @Action
-    async completeCall() {
-        try {
-            this.setLoading(true)
-            const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/isCallActive`)
-            this.setLoading(false)
-            const { data } = response.data
-            if (data.callActive) {
-                // dont allow to complete because call is still active
-                UiModule.showSnackbarMessage("Wait for your call to finish")
-            } else {
-                // bring user to post call screen
-                const { call } = data
-                // add new call to list
-                this.setCalls([call, ...this.calls])
-                router.push(`/detail/${call._id}`)
-                this.setCallStatus("idle")
-            }
-        } catch (error) {
-            console.log(error)
-            this.setLoading(false)
-        }
-    }
+    // @Action
+    // async completeCall() {
+    //     try {
+    //         this.setLoading(true)
+    //         const response = await axios.get(`${process.env.VUE_APP_API_URL}/calls/isCallActive`)
+    //         this.setLoading(false)
+    //         const { data } = response.data
+    //         if (data.callActive) {
+    //             // dont allow to complete because call is still active
+    //             UiModule.showSnackbarMessage("Wait for your call to finish")
+    //         } else {
+    //             // bring user to post call screen
+    //             const { call } = data
+    //             // add new call to list
+    //             this.setCalls([call, ...this.calls])
+    //             router.push(`/detail/${call._id}`)
+    //             this.setCallStatus("idle")
+    //         }
+    //     } catch (error) {
+    //         console.log(error)
+    //         this.setLoading(false)
+    //     }
+    // }
 }
 
 export default getModule(CallModule)

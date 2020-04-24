@@ -1,5 +1,4 @@
 /* eslint-disable no-await-in-loop */
-import Logger from "../../core/Logger"
 import Call, { CallModel } from "../model/call.model"
 import Conference from "../model/conference.model"
 
@@ -54,7 +53,6 @@ export default class CallRepo {
 
     public static async getCallsByPhone(phone: string): Promise<Call[]> {
         const calls = await CallModel.find({ phone }).sort({ createdAt: "descending" }).exec()
-        Logger.info(calls)
         return calls
     }
 
