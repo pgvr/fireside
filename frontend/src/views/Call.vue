@@ -20,15 +20,19 @@
             />
 
             <v-layout column>
-                <p v-if="callStatus() === 'idle'" class="body-1" style="text-align:center">
+                <p v-if="callStatus() === 'idle'" class="body-1" style="text-align:center;width:100%;max-width:500px;">
                     Please be aware that a phone number from the USA will facilitate the call and that this does NOT
                     cost you anything.
                 </p>
-                <p v-if="callStatus() === 'queue'" class="body-1" style="text-align:center">
+                <p v-if="callStatus() === 'queue'" class="body-1" style="text-align:center;width:100%;max-width:500px;">
                     Your phone will ring as soon as we find a likeminded person.<br />
                     Once your call is done, you can find it in the overview 📱
                 </p>
-                <p v-if="callStatus() === 'calling'" class="body-1" style="text-align:center">
+                <p
+                    v-if="callStatus() === 'calling'"
+                    class="body-1"
+                    style="text-align:center;width:100%;max-width:500px;"
+                >
                     Try to find out what you have in common and have fun 👍
                 </p>
                 <v-btn
