@@ -12,6 +12,7 @@ import QueueRepo from "../../database/repository/queue.repo"
 import UserRepo from "../../database/repository/user.repo"
 import asyncHandler from "../../helpers/asyncHandler"
 import { buildConference } from "../../helpers/conference.helper"
+import { baseUrl } from "../../config"
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID
 const authToken = process.env.TWILIO_AUTH_TOKEN
@@ -71,7 +72,7 @@ router.post(
                         to: number,
                         from: process.env.TWILIO_NUMBER,
                         // Callbacks to update status
-                        // statusCallback: "https://www.myapp.com/events",
+                        statusCallback: `${baseUrl}/webhook/callStatus`,
                         // statusCallbackEvent: ["initiated", "answered"],
                         // statusCallbackMethod: "POST",
                     })

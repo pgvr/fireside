@@ -35,6 +35,12 @@ export interface ConferenceUpdate {
     CallSid?: string
 }
 
+export interface CallUpdate {
+    Called: string
+    CallSid: string
+    CallStatus: string
+}
+
 // export interface Conference {
 //     friendlyName: string
 //     sid: string
