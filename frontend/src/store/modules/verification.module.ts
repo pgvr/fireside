@@ -54,8 +54,19 @@ export default class VerificationModule extends VuexModule {
             localStorage.setItem("token", tokens.accessToken)
             localStorage.setItem("refreshToken", tokens.refreshToken)
             Axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
+            Axios.interceptors.response.use(
+                response => {
+                    // Return a successful response back to the calling service
+                    return response
+                },
+                error => {
+                    if (error?.response?.status === 401) {
+                        store.commit("User/authExpired")
+                    }
+                    return Promise.reject(error)
+                },
+            )
             userState.authSuccess({ tokens, user })
-
             router.push("/home")
 
             // if not 200 it will go into catch
