@@ -40,7 +40,6 @@
                             :error-messages="interestErrors()"
                             label="Your favorite hobbies or interests"
                             multiple
-                            :items="suggestions"
                             prepend-icon="mdi-table-tennis"
                         >
                         </v-combobox>
@@ -123,7 +122,6 @@ export default class Start extends Vue {
     job = ""
     language = "English"
     languages = ["English"]
-    suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
 
     navigate(route: string) {
         userState.setPhone(this.phone)

@@ -5,7 +5,7 @@
             <v-row no-gutters justify="center" class="mb-4">
                 <h1 class="display-1">Profile</h1>
             </v-row>
-            <v-form @submit.prevent="updateUser()">
+            <v-form style="width:100%;" @submit.prevent="updateUser()">
                 <v-card class="mx-auto" max-width="500">
                     <v-card-title>Your Information</v-card-title>
                     <v-card-text>
@@ -41,7 +41,6 @@
                             clearable
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
-                            :items="suggestions"
                             :loading="userStateLoading()"
                             label="Your favorite hobbies or interests"
                             multiple
@@ -230,7 +229,6 @@ export default class Profile extends Vue {
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]
-    suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
 
     // Settings
     settingStartModal = false
