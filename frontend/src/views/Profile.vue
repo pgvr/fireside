@@ -190,7 +190,7 @@
                     <v-btn large v-if="settingCreated" @click="updateScheduleSetting" color="primary">Update</v-btn>
                 </v-card-actions>
             </v-card>
-            <v-btn class="mt-12" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
+            <v-btn :loading="userLoading()" class="mt-12" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
         </v-layout>
         <BottomNav />
     </Layout>
@@ -229,6 +229,9 @@ export default class Profile extends Vue {
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]
+    userLoading() {
+        return userState.loading
+    }
 
     // Settings
     settingStartModal = false
