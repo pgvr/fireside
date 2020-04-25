@@ -1,6 +1,9 @@
 import store from "@/store"
 import axios from "axios"
-import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import UiModule from "./ui.module"
+
+const uiState = getModule(UiModule)
 
 export interface Setting {
     _id: string
@@ -91,28 +94,28 @@ export default class SettingModule extends VuexModule {
             this.setStartTime(response.data.data.startTime)
             this.setEndTime(response.data.data.endTime)
             this.setNumPerDay(response.data.data.numPerDay)
-            this.setLoading(false)
+
+            uiState.showSnackbarMessage("Schedule Updated")
         } catch (error) {
             console.log(error)
-            this.setLoading(false)
         }
+        this.setLoading(false)
     }
 
     @Action
     async deleteSetting() {
         try {
-            console.log("Deleting setting")
             this.setLoading(true)
+            await axios.delete(`${process.env.VUE_APP_API_URL}/setting/delete`)
             this.setId("")
             this.setDays([])
             this.setStartTime("")
             this.setEndTime("")
             this.setNumPerDay(1)
-            const response = await axios.delete(`${process.env.VUE_APP_API_URL}/setting/delete`)
-            this.setLoading(false)
+            uiState.showSnackbarMessage("Schedule Deleted")
         } catch (error) {
             console.log(error)
-            this.setLoading(false)
         }
+        this.setLoading(false)
     }
 }

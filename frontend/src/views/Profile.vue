@@ -80,7 +80,7 @@
                 </v-card>
             </v-form>
 
-            <v-card class="mx-auto mt-8" max-width="500" width="100%">
+            <v-card :loading="settingStateLoading()" class="mx-auto mt-8" max-width="500" width="100%">
                 <v-card-title>Scheduled Calls</v-card-title>
                 <v-card-text>
                     <p>
@@ -179,18 +179,32 @@
                     <v-btn v-if="!settingExists && !settingCreated" @click="settingExists = true"
                         >Set up scheduled calls</v-btn
                     >
-                    <v-btn large v-if="settingExists && !settingCreated" @click="updateScheduleSetting" color="primary"
+                    <v-btn
+                        :loading="settingStateLoading()"
+                        large
+                        v-if="settingExists && !settingCreated"
+                        @click="updateScheduleSetting"
+                        color="primary"
                         >Set up scheduled calls</v-btn
                     >
 
-                    <v-btn small v-if="settingCreated" @click="deleteScheduleSetting"
+                    <v-btn :loading="settingStateLoading()" small v-if="settingCreated" @click="deleteScheduleSetting"
                         >Disable<v-icon small>mdi-delete</v-icon></v-btn
                     >
                     <v-spacer></v-spacer>
-                    <v-btn large v-if="settingCreated" @click="updateScheduleSetting" color="primary">Update</v-btn>
+                    <v-btn
+                        :loading="settingStateLoading()"
+                        large
+                        v-if="settingCreated"
+                        @click="updateScheduleSetting"
+                        color="primary"
+                        >Update</v-btn
+                    >
                 </v-card-actions>
             </v-card>
-            <v-btn :loading="userLoading()" class="mt-12" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
+            <v-btn :loading="userStateLoading()" class="mt-12" @click="logout"
+                >Logout<v-icon>mdi-account</v-icon></v-btn
+            >
         </v-layout>
         <BottomNav />
     </Layout>
@@ -229,8 +243,11 @@ export default class Profile extends Vue {
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]
-    userLoading() {
+    userStateLoading() {
         return userState.loading
+    }
+    settingStateLoading() {
+        return settingState.loading
     }
 
     // Settings
@@ -294,10 +311,6 @@ export default class Profile extends Vue {
 
         this.endTime = endTimeLocal
         this.numPerDay = setting.numPerDay
-    }
-
-    userStateLoading() {
-        return userState.loading
     }
 
     phoneErrors() {

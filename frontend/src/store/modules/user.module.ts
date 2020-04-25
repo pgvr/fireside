@@ -134,11 +134,10 @@ export default class UserModule extends VuexModule {
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/user/me`)
             const { data } = response.data
             this.setUser(data.user)
-            this.setLoading(false)
         } catch (error) {
             console.log(error)
-            this.setLoading(false)
         }
+        this.setLoading(false)
     }
 
     @Action
@@ -153,17 +152,17 @@ export default class UserModule extends VuexModule {
             this.resetAuth()
             delete axios.defaults.headers.common["Authorization"]
             router.push("/")
-            this.setLoading(false)
         } catch (error) {
             console.log(error)
-            this.setLoading(false)
         }
+        this.setLoading(false)
     }
 
     @Action
     async updateUser(payload: { city: string; interests: string[]; job: string }) {
         try {
             console.log("Updating user")
+            this.setLoading(true)
             const body = { city: payload.city, interests: payload.interests, job: payload.job }
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/user/update`, body)
             console.log(response)
@@ -171,8 +170,11 @@ export default class UserModule extends VuexModule {
             this.setCity(response.data.data.city)
             this.setInterests(response.data.data.interests)
             this.setJob(response.data.data.job)
+
+            uiState.showSnackbarMessage("Profile Updated")
         } catch (error) {
             console.log(error)
         }
+        this.setLoading(false)
     }
 }
