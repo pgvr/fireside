@@ -38,9 +38,9 @@
 import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
-import UserModule from "@/store/modules/user.module"
-import UiModule from "@/store/modules/ui.module"
-import VerificationModule from "@/store/modules/verification.module"
+import userModule from "@/store/modules/user.module"
+import uiModule from "@/store/modules/ui.module"
+import verificationModule from "@/store/modules/verification.module"
 import BonfireIcon from "../components/BonfireIcon.vue"
 
 const validations = {
@@ -55,7 +55,7 @@ const validations = {
 
 @Component({ mixins: [validationMixin], validations, components: { BonfireIcon } })
 export default class Login extends Vue {
-    phone = UserModule.user.phone
+    phone = userModule.user.phone
 
     phoneErrors() {
         const errors: string[] = []
@@ -68,13 +68,13 @@ export default class Login extends Vue {
     async login() {
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            const userExists = await UserModule.doesUserExist(this.phone)
+            const userExists = await userModule.doesUserExist(this.phone)
             if (userExists) {
-                UserModule.setPhone(this.phone)
-                VerificationModule.setShouldLogin(true)
+                userModule.setPhone(this.phone)
+                verificationModule.setShouldLogin(true)
                 this.$router.push("/verify")
             } else if (userExists === false) {
-                UiModule.showSnackbarMessage("There is no account for this number")
+                uiModule.showSnackbarMessage("There is no account for this number")
             }
         }
     }

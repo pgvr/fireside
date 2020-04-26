@@ -75,4 +75,8 @@ export default class UserRepo {
         const newPoints = (user.points || 0) + addPoints
         return UserModel.findOneAndUpdate({ phone }, { points: newPoints })
     }
+
+    public static async deleteUser(user: User): Promise<User> {
+        return UserModel.findByIdAndDelete(user._id).exec()
+    }
 }

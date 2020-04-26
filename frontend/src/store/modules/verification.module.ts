@@ -2,8 +2,8 @@ import router from "@/router"
 import store from "@/store"
 import Axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
-import UiModule from "./ui.module"
-import UserModule from "./user.module"
+import uiModule from "./ui.module"
+import userModule from "./user.module"
 
 @Module({ name: "Verification", store, dynamic: true, namespaced: true })
 class VerificationModule extends VuexModule {
@@ -34,12 +34,13 @@ class VerificationModule extends VuexModule {
             let response
             if (this.shouldLogin) {
                 // login
-                const body = { phone: UserModule.user.phone, code }
+                const body = { phone: userModule.user.phone, code }
                 response = await Axios.post(`${process.env.VUE_APP_API_URL}/code/login`, body)
             } else {
                 // register
+                console.log(userModule.user)
                 const body = {
-                    ...UserModule.user,
+                    ...userModule.user,
                     code,
                 }
                 delete body._id
@@ -51,8 +52,7 @@ class VerificationModule extends VuexModule {
             localStorage.setItem("token", tokens.accessToken)
             localStorage.setItem("refreshToken", tokens.refreshToken)
             Axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
-            UserModule.authSuccess({ tokens, user })
-
+            userModule.authSuccess({ tokens, user })
             router.push("/home")
 
             // if not 200 it will go into catch
@@ -60,10 +60,10 @@ class VerificationModule extends VuexModule {
         } catch (error) {
             console.log(error)
             this.setLoading(false)
-            UserModule.authError()
+            userModule.authError()
             localStorage.removeItem("token")
             localStorage.removeItem("refreshToken")
-            UiModule.showSnackbarMessage("Something went wrong. Please check the token and try again.")
+            uiModule.showSnackbarMessage("Something went wrong. Please check the token and try again.")
         }
     }
 }

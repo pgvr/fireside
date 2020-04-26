@@ -56,6 +56,11 @@ export default class CallRepo {
         return calls
     }
 
+    public static async deleteCallsForPhone(phone: string) {
+        const calls = await CallModel.deleteMany({ phone })
+        return calls
+    }
+
     public static async getCallById(id: string): Promise<Call> {
         return CallModel.findById(id).lean()
     }

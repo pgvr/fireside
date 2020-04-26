@@ -5,7 +5,7 @@
             <v-row no-gutters justify="center" class="mb-4">
                 <h1 class="display-1">Profile</h1>
             </v-row>
-            <v-form @submit.prevent="updateUser()">
+            <v-form style="width:100%;" @submit.prevent="updateUser()">
                 <v-card class="mx-auto" max-width="500">
                     <v-card-title>Your Information</v-card-title>
                     <v-card-text>
@@ -18,7 +18,7 @@
                             hint="Please prepend your country code. E.g. +49157..."
                             required
                             :error-messages="phoneErrors()"
-                            :loading="UserModuleLoading()"
+                            :loading="userModuleLoading()"
                             @input="$v.phone.$touch()"
                             @blur="$v.phone.$touch()"
                         ></v-text-field>
@@ -28,7 +28,7 @@
                             @input="$v.city.$touch()"
                             @blur="$v.city.$touch()"
                             :error-messages="cityErrors()"
-                            :loading="UserModuleLoading()"
+                            :loading="userModuleLoading()"
                             label="City"
                             type="text"
                             required
@@ -41,8 +41,7 @@
                             clearable
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
-                            :items="suggestions"
-                            :loading="UserModuleLoading()"
+                            :loading="userModuleLoading()"
                             label="Your favorite hobbies or interests"
                             multiple
                             prepend-icon="mdi-table-tennis"
@@ -55,7 +54,7 @@
                             @input="$v.job.$touch()"
                             @blur="$v.job.$touch()"
                             :error-messages="jobErrors()"
-                            :loading="UserModuleLoading()"
+                            :loading="userModuleLoading()"
                             type="text"
                             required
                         ></v-text-field>
@@ -81,7 +80,7 @@
                 </v-card>
             </v-form>
 
-            <v-card class="mx-auto mt-8" max-width="500" width="100%">
+            <v-card :loading="settingModuleLoading()" class="mx-auto mt-8" max-width="500" width="100%">
                 <v-card-title>Scheduled Calls</v-card-title>
                 <v-card-text>
                     <p>
@@ -89,113 +88,179 @@
                         schedule-wizard 🧙‍♂️ will automagically initiate calls for you in your selected time frame. Set
                         it, forget it and get matched with friendly strangers. 😊
                     </p>
-                    <template v-if="settingExists">
-                        <h1 class="body-2 ">Selected days</h1>
-                        <v-row justify="center" class="mb-4">
-                            <v-btn-toggle v-model="days" dense color="secondary" background-color="gray" multiple>
-                                <v-btn small :value="1">Mon</v-btn>
-                                <v-btn small :value="2">Tue</v-btn>
-                                <v-btn small :value="3">Wed</v-btn>
-                                <v-btn small :value="4">Thu</v-btn>
-                                <v-btn small :value="5">Fri</v-btn>
-                                <v-btn small :value="6">Sat</v-btn>
-                                <v-btn small :value="0">Sun</v-btn>
-                            </v-btn-toggle>
-                        </v-row>
-                        <v-row v-if="daysErrors[0]" justify="center">
-                            <h1 class="caption error--text">{{ daysErrors[0] }}</h1></v-row
-                        >
-                        <v-row no-gutters>
-                            <v-col cols="6" class="pr-2">
-                                <v-dialog
-                                    ref="startDialog"
-                                    v-model="settingStartModal"
-                                    :return-value.sync="startTime"
-                                    persistent
-                                    width="290px"
-                                >
-                                    <template v-slot:activator="{ on }">
-                                        <v-text-field
-                                            v-model="startTime"
-                                            label="Start Time"
-                                            prepend-icon="mdi-clock-outline"
-                                            readonly
-                                            :error-messages="startTimeErrors"
-                                            v-on="on"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-time-picker v-if="settingStartModal" v-model="startTime" format="24hr">
-                                        <v-spacer></v-spacer>
-                                        <v-btn text color="primary" @click="settingStartModal = false">Cancel</v-btn>
-                                        <v-btn text color="primary" @click="$refs.startDialog.save(startTime)"
-                                            >OK</v-btn
-                                        >
-                                    </v-time-picker>
-                                </v-dialog>
-                            </v-col>
-                            <v-col cols="6" class="pl-2">
-                                <v-dialog
-                                    ref="endDialog"
-                                    v-model="settingEndModal"
-                                    :return-value.sync="endTime"
-                                    persistent
-                                    width="290px"
-                                >
-                                    <template v-slot:activator="{ on }">
-                                        <v-text-field
-                                            v-model="endTime"
-                                            label="End Time"
-                                            prepend-icon="mdi-clock-outline"
-                                            readonly
-                                            :error-messages="endTimeErrors"
-                                            v-on="on"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-time-picker v-if="settingEndModal" v-model="endTime" format="24hr">
-                                        <v-spacer></v-spacer>
-                                        <v-btn text color="primary" @click="settingEndModal = false">Cancel</v-btn>
-                                        <v-btn text color="primary" @click="$refs.endDialog.save(endTime)">OK</v-btn>
-                                    </v-time-picker>
-                                </v-dialog>
-                            </v-col>
-                        </v-row>
-                        <h1 class="body-2">Maximum calls per day</h1>
-                        <v-slider
-                            v-model="numPerDay"
-                            min="1"
-                            max="10"
-                            ticks="always"
-                            tick-size="2"
-                            thumb-label="always"
-                            track-color="orange lighten-5"
-                            track-fill-color="secondary"
-                            thumb-color="secondary"
-                            thumb-size="24"
-                            hide-details="true"
-                        ></v-slider>
-                    </template>
+                    <transition name="slide">
+                        <div v-if="settingExists">
+                            <h1 class="body-2 ">Selected days</h1>
+                            <v-row justify="center" class="mb-4">
+                                <v-btn-toggle v-model="days" dense color="secondary" background-color="gray" multiple>
+                                    <v-btn small :value="1">Mon</v-btn>
+                                    <v-btn small :value="2">Tue</v-btn>
+                                    <v-btn small :value="3">Wed</v-btn>
+                                    <v-btn small :value="4">Thu</v-btn>
+                                    <v-btn small :value="5">Fri</v-btn>
+                                    <v-btn small :value="6">Sat</v-btn>
+                                    <v-btn small :value="0">Sun</v-btn>
+                                </v-btn-toggle>
+                            </v-row>
+                            <v-row v-if="daysErrors[0]" justify="center">
+                                <h1 class="caption error--text">{{ daysErrors[0] }}</h1></v-row
+                            >
+                            <v-row no-gutters>
+                                <v-col cols="6" class="pr-2">
+                                    <v-dialog
+                                        ref="startDialog"
+                                        v-model="settingStartModal"
+                                        :return-value.sync="startTime"
+                                        persistent
+                                        width="290px"
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field
+                                                v-model="startTime"
+                                                label="Start Time"
+                                                prepend-icon="mdi-clock-outline"
+                                                readonly
+                                                :error-messages="startTimeErrors"
+                                                v-on="on"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-time-picker v-if="settingStartModal" v-model="startTime" format="24hr">
+                                            <v-spacer></v-spacer>
+                                            <v-btn text color="primary" @click="settingStartModal = false"
+                                                >Cancel</v-btn
+                                            >
+                                            <v-btn text color="primary" @click="$refs.startDialog.save(startTime)"
+                                                >OK</v-btn
+                                            >
+                                        </v-time-picker>
+                                    </v-dialog>
+                                </v-col>
+                                <v-col cols="6" class="pl-2">
+                                    <v-dialog
+                                        ref="endDialog"
+                                        v-model="settingEndModal"
+                                        :return-value.sync="endTime"
+                                        persistent
+                                        width="290px"
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field
+                                                v-model="endTime"
+                                                label="End Time"
+                                                prepend-icon="mdi-clock-outline"
+                                                readonly
+                                                :error-messages="endTimeErrors"
+                                                v-on="on"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-time-picker v-if="settingEndModal" v-model="endTime" format="24hr">
+                                            <v-spacer></v-spacer>
+                                            <v-btn text color="primary" @click="settingEndModal = false">Cancel</v-btn>
+                                            <v-btn text color="primary" @click="$refs.endDialog.save(endTime)"
+                                                >OK</v-btn
+                                            >
+                                        </v-time-picker>
+                                    </v-dialog>
+                                </v-col>
+                            </v-row>
+                            <h1 class="body-2">Maximum calls per day</h1>
+                            <v-slider
+                                class="mt-8"
+                                v-model="numPerDay"
+                                min="1"
+                                max="10"
+                                ticks="always"
+                                tick-size="2"
+                                thumb-label="always"
+                                track-color="orange lighten-5"
+                                track-fill-color="secondary"
+                                thumb-color="secondary"
+                                thumb-size="24"
+                                hide-details="true"
+                            ></v-slider>
+                        </div>
+                    </transition>
                 </v-card-text>
 
                 <v-card-actions>
-                    <v-btn v-if="!settingExists && !settingCreated" @click="settingExists = true"
-                        >Set up scheduled calls</v-btn
-                    >
-                    <v-btn large v-if="settingExists && !settingCreated" @click="updateScheduleSetting" color="primary"
-                        >Set up scheduled calls</v-btn
-                    >
-
-                    <v-btn small v-if="settingCreated" @click="deleteScheduleSetting"
+                    <v-btn
+                        :loading="settingModuleLoading()"
+                        text
+                        large
+                        v-if="settingCreated"
+                        @click="deleteScheduleSetting"
                         >Disable<v-icon small>mdi-delete</v-icon></v-btn
                     >
                     <v-spacer></v-spacer>
-                    <v-btn large v-if="settingCreated" @click="updateScheduleSetting" color="primary">Update</v-btn>
+                    <v-btn v-if="!settingExists && !settingCreated" @click="settingExists = true"
+                        >Set up scheduled calls</v-btn
+                    >
+                    <v-btn
+                        :loading="settingModuleLoading()"
+                        large
+                        v-if="settingExists && !settingCreated"
+                        @click="updateScheduleSetting"
+                        color="primary"
+                        >Set up scheduled calls</v-btn
+                    >
+
+                    <v-btn
+                        :loading="settingModuleLoading()"
+                        large
+                        v-if="settingCreated"
+                        @click="updateScheduleSetting"
+                        color="primary"
+                        >Update</v-btn
+                    >
                 </v-card-actions>
             </v-card>
-            <v-btn class="mt-12" @click="logout">Logout<v-icon>mdi-account</v-icon></v-btn>
+            <v-row no-gutters style="width:100%;max-width:500px;" class="mt-8" justify="space-between">
+                <v-dialog v-model="showDeleteDialog" width="500">
+                    <template v-slot:activator="{ on }">
+                        <v-btn v-on="on" :loading="userModuleLoading()" color="error" @click="showDeleteDialog = true"
+                            >Delete account</v-btn
+                        >
+                    </template>
+
+                    <v-card>
+                        <v-card-title>
+                            Are you sure?
+                        </v-card-title>
+
+                        <v-card-text>
+                            You are about to delete your account. This erases everything and cannot be undone.
+                        </v-card-text>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" text @click="deleteEverything">
+                                Delete Me
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+
+                <v-btn :loading="userModuleLoading()" @click="logout">Logout<v-icon>mdi-logout</v-icon></v-btn>
+            </v-row>
         </v-layout>
         <BottomNav />
     </Layout>
 </template>
+
+<style scoped>
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.3s ease-out;
+    /* just bigger than the container */
+    max-height: 300px;
+}
+
+.slide-enter,
+.slide-leave-to {
+    opacity: 0;
+    max-height: 0px;
+}
+</style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
@@ -204,8 +269,8 @@ import { validationMixin } from "vuelidate"
 import BottomNav from "../components/BottomNav.vue"
 import Layout from "../components/Layout.vue"
 import AppBar from "../components/AppBar.vue"
-import UserModule from "@/store/modules/user.module"
-import SettingModule, { Setting } from "@/store/modules/setting.module"
+import userModule from "@/store/modules/user.module"
+import settingModule, { Setting } from "@/store/modules/setting.module"
 
 const validations = {
     phone: { required },
@@ -220,13 +285,21 @@ const validations = {
 @Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar, Layout } })
 export default class Profile extends Vue {
     // User
-    phone = UserModule.user.phone
-    city = UserModule.user.city
-    interests = UserModule.user.interests
-    job = UserModule.user.job
-    language = UserModule.user.language
+    phone = userModule.user.phone
+    city = userModule.user.city
+    interests = userModule.user.interests
+    job = userModule.user.job
+    language = userModule.user.language
     languages = ["English"]
-    suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
+
+    showDeleteDialog = false
+
+    userModuleLoading() {
+        return userModule.loading
+    }
+    settingModuleLoading() {
+        return settingModule.loading
+    }
 
     // Settings
     settingStartModal = false
@@ -246,23 +319,23 @@ export default class Profile extends Vue {
     daysErrors: string[] = []
 
     async created() {
-        if (!UserModule.user._id) {
-            await UserModule.getUser()
-            this.phone = UserModule.user.phone
-            this.city = UserModule.user.city
-            this.interests = UserModule.user.interests
-            this.job = UserModule.user.job
-            this.language = UserModule.user.language
+        if (!userModule.user._id) {
+            await userModule.getUser()
+            this.phone = userModule.user.phone
+            this.city = userModule.user.city
+            this.interests = userModule.user.interests
+            this.job = userModule.user.job
+            this.language = userModule.user.language
         }
-        if (!SettingModule.setting._id) {
-            const set = await SettingModule.getSetting()
+        if (!settingModule.setting._id) {
+            const set = await settingModule.getSetting()
             if (set && set._id) {
                 this.updateLocalSetting(set)
                 this.settingExists = true
                 this.settingCreated = true
             }
         } else {
-            this.updateLocalSetting(SettingModule.setting)
+            this.updateLocalSetting(settingModule.setting)
             this.settingExists = true
             this.settingCreated = true
         }
@@ -289,10 +362,6 @@ export default class Profile extends Vue {
 
         this.endTime = endTimeLocal
         this.numPerDay = setting.numPerDay
-    }
-
-    UserModuleLoading() {
-        return UserModule.loading
     }
 
     phoneErrors() {
@@ -334,7 +403,7 @@ export default class Profile extends Vue {
 
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            await UserModule.updateUser({ city: this.city, interests: this.interests, job: this.job })
+            await userModule.updateUser({ city: this.city, interests: this.interests, job: this.job })
         }
     }
 
@@ -373,7 +442,7 @@ export default class Profile extends Vue {
         const startTimeUTC = `${parseInt(startTimes[0]) + localOffsetHours}:${startTimes[1]}`
         const endTimeUTC = `${parseInt(endTimes[0]) + localOffsetHours}:${endTimes[1]}`
 
-        await SettingModule.updateSetting({
+        await settingModule.updateSetting({
             days: this.days,
             startTime: startTimeUTC,
             endTime: endTimeUTC,
@@ -384,6 +453,7 @@ export default class Profile extends Vue {
 
     async deleteScheduleSetting() {
         console.log("delete scheduled call setting")
+        await settingModule.deleteSetting()
         this.settingExists = false
         this.settingCreated = false
 
@@ -392,11 +462,15 @@ export default class Profile extends Vue {
         this.startTime = ""
         this.endTime = ""
         this.numPerDay = 1
-        await SettingModule.deleteSetting()
     }
 
     logout() {
-        UserModule.logout()
+        userModule.logout()
+    }
+
+    deleteEverything() {
+        this.showDeleteDialog = false
+        userModule.deleteEverything()
     }
 }
 </script>

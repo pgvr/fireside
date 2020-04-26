@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import CallModule from "../store/modules/call.module"
 @Component
 export default class Layout extends Vue {
     get MarginBottom() {

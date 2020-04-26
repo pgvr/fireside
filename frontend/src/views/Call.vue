@@ -70,11 +70,11 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
-import CallModule from "@/store/modules/call.module"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
 import Layout from "../components/Layout.vue"
 import BonfireIcon from "../components/BonfireIcon.vue"
+import callModule from "../store/modules/call.module"
 
 @Component({ components: { BottomNav, AppBar, BonfireIcon, Layout } })
 export default class Call extends Vue {
@@ -82,25 +82,24 @@ export default class Call extends Vue {
         return this.$store.getters.callStatusFirebase
     }
 
-    navigateToLatestCall() {
-        const latestId = CallModule.calls[0]._id
-        this.$router.push(`/detail/${latestId}`)
-    }
+    // refreshCallStatus() {
+    //     callModule.checkQueueStatus()
+    // }
 
     callStateLoading() {
-        return CallModule.loading
+        return callModule.loading
     }
 
     startCall() {
-        CallModule.findConference()
+        callModule.findConference()
     }
 
-    completeCall() {
-        CallModule.completeCall()
-    }
+    // completeCall() {
+    //     callModule.completeCall()
+    // }
 
     leaveQueue() {
-        CallModule.leaveCallQueue()
+        callModule.leaveCallQueue()
     }
 }
 </script>

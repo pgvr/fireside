@@ -99,8 +99,8 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import UserModule from "../store/modules/user.module"
-import CallModule, { Call } from "../store/modules/call.module"
+import userModule from "@/store/modules/user.module"
+import callModule, { Call } from "@/store/modules/call.module"
 import moment from "moment"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
@@ -110,19 +110,19 @@ import Layout from "../components/Layout.vue"
 @Component({ components: { BottomNav, AppBar, BonfireIcon, Layout } })
 export default class Home extends Vue {
     phone() {
-        return UserModule.user?.phone
+        return userModule.user?.phone
     }
     calls() {
-        return CallModule.calls
+        return callModule.calls
     }
     userSparks() {
-        return UserModule.user?.points
+        return userModule.user?.points
     }
     userLoading() {
-        return UserModule.loading
+        return userModule.loading
     }
     callsLoading() {
-        return CallModule.loading
+        return callModule.loading
     }
 
     goToDetail(call: Call) {
@@ -147,16 +147,16 @@ export default class Home extends Vue {
     }
 
     created() {
-        if (!UserModule.user._id) {
-            UserModule.getUser()
+        if (!userModule.user._id) {
+            userModule.getUser()
         }
-        if (CallModule.calls.length === 0) {
-            CallModule.getCalls()
+        if (callModule.calls.length === 0) {
+            callModule.getCalls()
         }
     }
 
     logout() {
-        UserModule.logout()
+        userModule.logout()
     }
 }
 </script>

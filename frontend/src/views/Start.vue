@@ -40,7 +40,6 @@
                             :error-messages="interestErrors()"
                             label="Your favorite hobbies or interests"
                             multiple
-                            :items="suggestions"
                             prepend-icon="mdi-table-tennis"
                         >
                         </v-combobox>
@@ -87,9 +86,9 @@
 import { Component, Vue } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
-import UserModule from "@/store/modules/user.module"
-import UiModule from "@/store/modules/ui.module"
-import VerificationModule from "@/store/modules/verification.module"
+import userModule from "@/store/modules/user.module"
+import uiModule from "@/store/modules/ui.module"
+import verificationModule from "@/store/modules/verification.module"
 import router from "@/router"
 import AppBar from "../components/AppBar.vue"
 import BonfireIcon from "../components/BonfireIcon.vue"
@@ -118,13 +117,12 @@ export default class Start extends Vue {
     job = ""
     language = "English"
     languages = ["English"]
-    suggestions = ["Music", "Food", "Coding", "Sport", "Fishing", "Gardening"]
 
     navigate(route: string) {
-        UserModule.setPhone(this.phone)
-        UserModule.setCity(this.city)
-        UserModule.setInterests(this.interests)
-        UserModule.setJob(this.job)
+        userModule.setPhone(this.phone)
+        userModule.setCity(this.city)
+        userModule.setInterests(this.interests)
+        userModule.setJob(this.job)
         router.push(route)
     }
 
@@ -161,16 +159,16 @@ export default class Start extends Vue {
     async meet() {
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            const userExists = await UserModule.doesUserExist(this.phone)
+            const userExists = await userModule.doesUserExist(this.phone)
             if (!userExists) {
-                UserModule.setPhone(this.phone)
-                UserModule.setCity(this.city)
-                UserModule.setInterests(this.interests)
-                UserModule.setJob(this.job)
-                VerificationModule.setShouldLogin(false)
+                userModule.setPhone(this.phone)
+                userModule.setCity(this.city)
+                userModule.setInterests(this.interests)
+                userModule.setJob(this.job)
+                verificationModule.setShouldLogin(false)
                 this.$router.push("/verify")
             } else {
-                UiModule.showSnackbarMessage("This number is already registered")
+                uiModule.showSnackbarMessage("This number is already registered")
             }
         }
     }

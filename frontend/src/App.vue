@@ -13,8 +13,8 @@
             <v-snackbar style="margin-bottom: 60px;" v-model="snackWithButtons" :timeout="30000">
                 An Update Is Available
                 <v-spacer />
-                <v-btn text color="primary" @click.stop="refreshApp">
-                    Refresh
+                <v-btn depressed color="primary" @click.stop="refreshApp">
+                    Update
                 </v-btn>
                 <v-btn color="white" icon @click="snackWithButtons = false">
                     <v-icon>mdi-close</v-icon>
@@ -34,9 +34,8 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import UiModule from "./store/modules/ui.module"
-import UserModule from "./store/modules/user.module"
-import CallModule from "./store/modules/call.module"
+import store from "./store"
+import uiModule from "./store/modules/ui.module"
 
 @Component
 export default class App extends Vue {
@@ -82,13 +81,13 @@ export default class App extends Vue {
     }
 
     showSnackbar() {
-        return UiModule.showSnackbar
+        return uiModule.showSnackbar
     }
     snackbarMessage() {
-        return UiModule.snackbarMessage
+        return uiModule.snackbarMessage
     }
     updateSnackbar(value: boolean) {
-        UiModule.setShowSnackbar(value)
+        uiModule.setShowSnackbar(value)
     }
 }
 </script>

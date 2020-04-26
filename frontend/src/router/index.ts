@@ -1,4 +1,4 @@
-import UserModule from "@/store/modules/user.module"
+import userModule from "@/store/modules/user.module"
 import Vue from "vue"
 import VueRouter, { RouteConfig } from "vue-router"
 import Call from "../views/Call.vue"
@@ -117,7 +117,7 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title || "Fireside"
     if (to.matched.some(record => record.meta.requiresAuth)) {
         console.log("This route requires auth.")
-        if (UserModule.isLoggedIn) {
+        if (userModule.isLoggedIn) {
             console.log("User logged in, allowing navigation.")
             next()
             return
@@ -126,7 +126,7 @@ router.beforeEach((to, from, next) => {
         next("/login")
     } else if (to.matched.some(record => record.meta.requiresAuth === false)) {
         console.log("This route is for logged out users.")
-        if (UserModule.isLoggedIn) {
+        if (userModule.isLoggedIn) {
             console.log("User logged in, redirect to home.")
             next("/home")
             return

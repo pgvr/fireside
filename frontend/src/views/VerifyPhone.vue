@@ -38,8 +38,8 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import UserModule from "@/store/modules/user.module"
-import VerificationModule from "@/store/modules/verification.module"
+import userModule from "@/store/modules/user.module"
+import verificationModule from "@/store/modules/verification.module"
 import BonfireIcon from "../components/BonfireIcon.vue"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
@@ -52,10 +52,10 @@ const validations = {
 export default class VerifyPhone extends Vue {
     code = ""
     loading() {
-        return VerificationModule.loading
+        return verificationModule.loading
     }
     phone() {
-        return UserModule.user.phone
+        return userModule.user.phone
     }
     codeErrors() {
         const errors: string[] = []
@@ -65,32 +65,32 @@ export default class VerifyPhone extends Vue {
     }
 
     created() {
-        if (VerificationModule.shouldLogin && !UserModule.user.phone) {
+        if (verificationModule.shouldLogin && !userModule.user.phone) {
             // login requires phone, disallow
             this.$router.push("/login")
         } else if (
-            !VerificationModule.shouldLogin &&
-            (!UserModule.user.phone ||
-                !UserModule.user.city ||
-                UserModule.user.interests.length === 0 ||
-                !UserModule.user.job ||
-                !UserModule.user.language)
+            !verificationModule.shouldLogin &&
+            (!userModule.user.phone ||
+                !userModule.user.city ||
+                userModule.user.interests.length === 0 ||
+                !userModule.user.job ||
+                !userModule.user.language)
         ) {
             this.$router.push("/start")
         } else {
-            VerificationModule.sendVerificationSms(UserModule.user.phone)
+            verificationModule.sendVerificationSms(userModule.user.phone)
         }
     }
 
     submit() {
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            VerificationModule.verifyCode(this.code)
+            verificationModule.verifyCode(this.code)
         }
     }
 
     sendCode() {
-        VerificationModule.sendVerificationSms(UserModule.user.phone)
+        verificationModule.sendVerificationSms(userModule.user.phone)
     }
 }
 </script>

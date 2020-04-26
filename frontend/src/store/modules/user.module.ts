@@ -2,7 +2,7 @@ import router from "@/router"
 import store from "@/store"
 import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
-import UiModule from "./ui.module"
+import uiModule from "./ui.module"
 
 export interface User {
     _id: string
@@ -91,6 +91,15 @@ class UserModule extends VuexModule {
         this.status = ""
         this.accessToken = ""
         this.refreshToken = ""
+        this.user = {
+            _id: "",
+            phone: "",
+            city: "",
+            interests: [],
+            job: "",
+            language: "English",
+            points: 0,
+        }
     }
 
     @Mutation
@@ -101,7 +110,7 @@ class UserModule extends VuexModule {
         delete axios.defaults.headers.common["Authorization"]
         localStorage.removeItem("token")
         localStorage.removeItem("refreshToken")
-        UiModule.showSnackbarMessage("Plase log in again")
+        uiModule.showSnackbarMessage("Please log in again")
         router.push("/login")
     }
 
@@ -135,11 +144,10 @@ class UserModule extends VuexModule {
             this.setUser(data.user)
             console.log(data.user._id)
             store.dispatch("init", { userId: data.user._id })
-            this.setLoading(false)
         } catch (error) {
             console.log(error)
-            this.setLoading(false)
         }
+        this.setLoading(false)
     }
 
     @Action
@@ -154,17 +162,17 @@ class UserModule extends VuexModule {
             this.resetAuth()
             delete axios.defaults.headers.common["Authorization"]
             router.push("/")
-            this.setLoading(false)
         } catch (error) {
             console.log(error)
-            this.setLoading(false)
         }
+        this.setLoading(false)
     }
 
     @Action
     async updateUser(payload: { city: string; interests: string[]; job: string }) {
         try {
             console.log("Updating user")
+            this.setLoading(true)
             const body = { city: payload.city, interests: payload.interests, job: payload.job }
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/user/update`, body)
             console.log(response)
@@ -172,9 +180,29 @@ class UserModule extends VuexModule {
             this.setCity(response.data.data.city)
             this.setInterests(response.data.data.interests)
             this.setJob(response.data.data.job)
+
+            uiModule.showSnackbarMessage("Profile Updated")
         } catch (error) {
             console.log(error)
         }
+        this.setLoading(false)
+    }
+
+    @Action
+    async deleteEverything() {
+        this.setLoading(true)
+        try {
+            await axios.post(`${process.env.VUE_APP_API_URL}/user/deleteEverything`)
+            // logout behavior
+            localStorage.removeItem("token")
+            localStorage.removeItem("refreshToken")
+            this.resetAuth()
+            delete axios.defaults.headers.common["Authorization"]
+            router.push("/")
+        } catch (error) {
+            console.log(error)
+        }
+        this.setLoading(false)
     }
 }
 

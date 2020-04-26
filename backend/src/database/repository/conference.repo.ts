@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import { Types } from "mongoose"
 import { ParticipantInstance } from "twilio/lib/rest/api/v2010/account/conference/participant"
 import { getCall } from "../../helpers/conference.helper"
 import db from "../firebase"
@@ -78,6 +79,10 @@ export default class ConferenceRepo {
             db.collection("conferences").doc(userTwo._id).delete(),
         ])
         return conference
+    }
+
+    public static async removeConferenceById(id: Types.ObjectId): Promise<Conference> {
+        return ConferenceModel.findByIdAndDelete(id)
     }
 
     public static async getConferenceForPhone(phone: string): Promise<Conference> {

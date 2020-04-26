@@ -37,7 +37,8 @@ Axios.interceptors.response.use(
         return response
     },
     error => {
-        if (error?.response?.status === 401) {
+        const accessToken = localStorage.getItem("token")
+        if (error?.response?.status === 401 && accessToken) {
             store.commit("User/authExpired")
         }
         return Promise.reject(error)
