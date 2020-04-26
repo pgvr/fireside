@@ -102,7 +102,7 @@ export default class UserModule extends VuexModule {
         delete axios.defaults.headers.common["Authorization"]
         localStorage.removeItem("token")
         localStorage.removeItem("refreshToken")
-        uiState.showSnackbarMessage("Plase log in again")
+        uiState.showSnackbarMessage("Please log in again")
         router.push("/login")
     }
 

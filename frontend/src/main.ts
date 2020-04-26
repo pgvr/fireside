@@ -29,19 +29,21 @@ const token = localStorage.getItem("token")
 if (token) {
     console.log("found access token in local storage")
     Axios.defaults.headers.common["Authorization"] = "Bearer " + token
-    Axios.interceptors.response.use(
-        response => {
-            // Return a successful response back to the calling service
-            return response
-        },
-        error => {
-            if (error?.response?.status === 401) {
-                store.commit("User/authExpired")
-            }
-            return Promise.reject(error)
-        },
-    )
 }
+
+Axios.interceptors.response.use(
+    response => {
+        // Return a successful response back to the calling service
+        return response
+    },
+    error => {
+        const accessToken = localStorage.getItem("token")
+        if (error?.response?.status === 401 && accessToken) {
+            store.commit("User/authExpired")
+        }
+        return Promise.reject(error)
+    },
+)
 
 new Vue({
     router,
