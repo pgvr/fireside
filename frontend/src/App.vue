@@ -13,8 +13,8 @@
             <v-snackbar style="margin-bottom: 60px;" v-model="snackWithButtons" :timeout="30000">
                 An Update Is Available
                 <v-spacer />
-                <v-btn text color="primary" @click.stop="refreshApp">
-                    Refresh
+                <v-btn depressed color="primary" @click.stop="refreshApp">
+                    Update
                 </v-btn>
                 <v-btn color="white" icon @click="snackWithButtons = false">
                     <v-icon>mdi-close</v-icon>

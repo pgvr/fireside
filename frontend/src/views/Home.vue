@@ -145,9 +145,13 @@ export default class Home extends Vue {
     }
 
     created() {
+        console.log("home")
+        console.log(userState)
         if (!userState.user._id) {
             userState.getUser()
         }
+        console.log("home")
+        console.log(callState)
         if (callState.calls.length === 0) {
             callState.getCalls()
         }

@@ -177,4 +177,21 @@ export default class UserModule extends VuexModule {
         }
         this.setLoading(false)
     }
+
+    @Action
+    async deleteEverything() {
+        this.setLoading(true)
+        try {
+            await axios.post(`${process.env.VUE_APP_API_URL}/user/deleteEverything`)
+            // logout behavior
+            localStorage.removeItem("token")
+            localStorage.removeItem("refreshToken")
+            this.resetAuth()
+            delete axios.defaults.headers.common["Authorization"]
+            router.push("/")
+        } catch (error) {
+            console.log(error)
+        }
+        this.setLoading(false)
+    }
 }

@@ -205,6 +205,36 @@
             <v-btn :loading="userStateLoading()" class="mt-12" @click="logout"
                 >Logout<v-icon>mdi-account</v-icon></v-btn
             >
+
+            <v-dialog v-model="showDeleteDialog" width="500">
+                <template v-slot:activator="{ on }">
+                    <v-btn
+                        v-on="on"
+                        :loading="userStateLoading()"
+                        color="error"
+                        class="mt-12"
+                        @click="showDeleteDialog = true"
+                        >Delete account<v-icon>mdi-delete</v-icon></v-btn
+                    >
+                </template>
+
+                <v-card>
+                    <v-card-title>
+                        Are you sure?
+                    </v-card-title>
+
+                    <v-card-text>
+                        You are about to delete your account. This erases everything and cannot be undone.
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" text @click="deleteEverything">
+                            Delete Me
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-layout>
         <BottomNav />
     </Layout>
@@ -243,6 +273,9 @@ export default class Profile extends Vue {
     job = userState.user.job
     language = userState.user.language
     languages = ["English"]
+
+    showDeleteDialog = false
+
     userStateLoading() {
         return userState.loading
     }
@@ -268,6 +301,8 @@ export default class Profile extends Vue {
     daysErrors: string[] = []
 
     async created() {
+        console.log("profile")
+        console.log(userState)
         if (!userState.user._id) {
             await userState.getUser()
             this.phone = userState.user.phone
@@ -276,6 +311,8 @@ export default class Profile extends Vue {
             this.job = userState.user.job
             this.language = userState.user.language
         }
+        console.log("profile")
+        console.log(settingState)
         if (!settingState.setting._id) {
             const set = await settingState.getSetting()
             if (set && set._id) {
@@ -415,6 +452,11 @@ export default class Profile extends Vue {
 
     logout() {
         userState.logout()
+    }
+
+    deleteEverything() {
+        this.showDeleteDialog = false
+        userState.deleteEverything()
     }
 }
 </script>
