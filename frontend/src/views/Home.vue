@@ -93,34 +93,30 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import { getModule } from "vuex-module-decorators"
-import UserModule from "@/store/modules/user.module"
-import CallModule, { Call } from "@/store/modules/call.module"
+import userModule from "@/store/modules/user.module"
+import callModule, { Call } from "@/store/modules/call.module"
 import moment from "moment"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
 import BonfireIcon from "../components/BonfireIcon.vue"
 import Layout from "../components/Layout.vue"
 
-const userState = getModule(UserModule)
-const callState = getModule(CallModule)
-
 @Component({ components: { BottomNav, AppBar, BonfireIcon, Layout } })
 export default class Home extends Vue {
     phone() {
-        return userState.user?.phone
+        return userModule.user?.phone
     }
     calls() {
-        return callState.calls
+        return callModule.calls
     }
     userSparks() {
-        return userState.user?.points
+        return userModule.user?.points
     }
     userLoading() {
-        return userState.loading
+        return userModule.loading
     }
     callsLoading() {
-        return callState.loading
+        return callModule.loading
     }
 
     goToDetail(call: Call) {
@@ -145,20 +141,16 @@ export default class Home extends Vue {
     }
 
     created() {
-        console.log("home")
-        console.log(userState)
-        if (!userState.user._id) {
-            userState.getUser()
+        if (!userModule.user._id) {
+            userModule.getUser()
         }
-        console.log("home")
-        console.log(callState)
-        if (callState.calls.length === 0) {
-            callState.getCalls()
+        if (callModule.calls.length === 0) {
+            callModule.getCalls()
         }
     }
 
     logout() {
-        userState.logout()
+        userModule.logout()
     }
 }
 </script>

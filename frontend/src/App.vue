@@ -35,9 +35,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
 import store from "./store"
-import { getModule } from "vuex-module-decorators"
-import UiModule from "./store/modules/ui.module"
-const uiState = getModule(UiModule)
+import uiModule from "./store/modules/ui.module"
 
 @Component
 export default class App extends Vue {
@@ -83,13 +81,13 @@ export default class App extends Vue {
     }
 
     showSnackbar() {
-        return uiState.showSnackbar
+        return uiModule.showSnackbar
     }
     snackbarMessage() {
-        return uiState.snackbarMessage
+        return uiModule.snackbarMessage
     }
     updateSnackbar(value: boolean) {
-        uiState.setShowSnackbar(value)
+        uiModule.setShowSnackbar(value)
     }
 }
 </script>

@@ -113,16 +113,13 @@ strong {
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
-import { getModule } from "vuex-module-decorators"
-import CallModule, { Call } from "@/store/modules/call.module"
+import callModule, { Call } from "@/store/modules/call.module"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
 import Layout from "../components/Layout.vue"
 import BottomNav from "../components/BottomNav.vue"
 import AppBar from "../components/AppBar.vue"
 import moment from "moment"
-
-const callState = getModule(CallModule)
 
 const validations = {
     guesses: {
@@ -135,7 +132,7 @@ export default class CallDetail extends Vue {
     guesses: string[] = []
     rating = 0
     stateLoading() {
-        return callState.loading
+        return callModule.loading
     }
     callCreation(call: Call) {
         return moment(call.createdAt).format("HH:MM ⌚ D. MMMM YYYY")
@@ -153,7 +150,7 @@ export default class CallDetail extends Vue {
 
     async created() {
         this.loading = true
-        const call = (await callState.getCall(this.$route.params.id)) as Call
+        const call = (await callModule.getCall(this.$route.params.id)) as Call
         if (call) {
             this.call = call
             this.guesses = call.guessedInterests
@@ -171,7 +168,7 @@ export default class CallDetail extends Vue {
     async submit() {
         this.$v.$touch()
         if (!this.$v.$invalid && this.guesses.length <= this.maxGuesses) {
-            const result = await callState.submitGuesses({
+            const result = await callModule.submitGuesses({
                 callId: this.$route.params.id,
                 guesses: this.guesses,
             })
@@ -182,7 +179,7 @@ export default class CallDetail extends Vue {
     }
 
     async rateCall(event: number) {
-        await callState.submitRating({ callId: this.call._id, rating: event })
+        await callModule.submitRating({ callId: this.call._id, rating: event })
         this.rating = event
         console.log("thanks")
     }
@@ -190,7 +187,7 @@ export default class CallDetail extends Vue {
     async showSubmitResult() {
         this.loading = true
         this.allowEdit = false
-        const call = (await callState.getCall(this.$route.params.id)) as Call
+        const call = (await callModule.getCall(this.$route.params.id)) as Call
         if (call) {
             this.call = call
             this.guesses = call.guessedInterests

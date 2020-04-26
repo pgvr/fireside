@@ -57,14 +57,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
-import CallModule from "@/store/modules/call.module"
-import { getModule } from "vuex-module-decorators"
-const callState = getModule(CallModule)
+import callModule from "@/store/modules/call.module"
 
 @Component
 export default class BottomNav extends Vue {
     callStatus() {
-        return callState.callStatus
+        return callModule.callStatus
     }
     goToCall() {
         this.$router.push("/call")

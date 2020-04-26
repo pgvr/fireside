@@ -1,9 +1,7 @@
 import store from "@/store"
 import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
-import UiModule from "./ui.module"
-
-const uiState = getModule(UiModule)
+import uiModule from "./ui.module"
 
 export interface Setting {
     _id: string
@@ -15,7 +13,7 @@ export interface Setting {
 }
 
 @Module({ name: "Setting", store, dynamic: true, namespaced: true })
-export default class SettingModule extends VuexModule {
+class SettingModule extends VuexModule {
     loading = false
     setting: Setting = {
         _id: "",
@@ -95,7 +93,7 @@ export default class SettingModule extends VuexModule {
             this.setEndTime(response.data.data.endTime)
             this.setNumPerDay(response.data.data.numPerDay)
 
-            uiState.showSnackbarMessage("Schedule Updated")
+            uiModule.showSnackbarMessage("Schedule Updated")
         } catch (error) {
             console.log(error)
         }
@@ -112,10 +110,12 @@ export default class SettingModule extends VuexModule {
             this.setStartTime("")
             this.setEndTime("")
             this.setNumPerDay(1)
-            uiState.showSnackbarMessage("Schedule Deleted")
+            uiModule.showSnackbarMessage("Schedule Deleted")
         } catch (error) {
             console.log(error)
         }
         this.setLoading(false)
     }
 }
+
+export default getModule(SettingModule)

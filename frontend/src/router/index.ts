@@ -1,7 +1,6 @@
-import UserModule from "@/store/modules/user.module"
+import userModule from "@/store/modules/user.module"
 import Vue from "vue"
 import VueRouter, { RouteConfig } from "vue-router"
-import { getModule } from "vuex-module-decorators"
 import Call from "../views/Call.vue"
 import CallDetail from "../views/CallDetail.vue"
 import Home from "../views/Home.vue"
@@ -12,7 +11,6 @@ import Profile from "../views/Profile.vue"
 import Start from "../views/Start.vue"
 import VerifyPhone from "../views/VerifyPhone.vue"
 
-const userState = getModule(UserModule)
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
@@ -119,7 +117,7 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title || "Fireside"
     if (to.matched.some(record => record.meta.requiresAuth)) {
         console.log("This route requires auth.")
-        if (userState.isLoggedIn) {
+        if (userModule.isLoggedIn) {
             console.log("User logged in, allowing navigation.")
             next()
             return
@@ -128,7 +126,7 @@ router.beforeEach((to, from, next) => {
         next("/login")
     } else if (to.matched.some(record => record.meta.requiresAuth === false)) {
         console.log("This route is for logged out users.")
-        if (userState.isLoggedIn) {
+        if (userModule.isLoggedIn) {
             console.log("User logged in, redirect to home.")
             next("/home")
             return

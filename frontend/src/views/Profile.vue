@@ -18,7 +18,7 @@
                             hint="Please prepend your country code. E.g. +49157..."
                             required
                             :error-messages="phoneErrors()"
-                            :loading="userStateLoading()"
+                            :loading="userModuleLoading()"
                             @input="$v.phone.$touch()"
                             @blur="$v.phone.$touch()"
                         ></v-text-field>
@@ -28,7 +28,7 @@
                             @input="$v.city.$touch()"
                             @blur="$v.city.$touch()"
                             :error-messages="cityErrors()"
-                            :loading="userStateLoading()"
+                            :loading="userModuleLoading()"
                             label="City"
                             type="text"
                             required
@@ -41,7 +41,7 @@
                             clearable
                             @blur="$v.interests.$touch()"
                             :error-messages="interestErrors()"
-                            :loading="userStateLoading()"
+                            :loading="userModuleLoading()"
                             label="Your favorite hobbies or interests"
                             multiple
                             prepend-icon="mdi-table-tennis"
@@ -54,7 +54,7 @@
                             @input="$v.job.$touch()"
                             @blur="$v.job.$touch()"
                             :error-messages="jobErrors()"
-                            :loading="userStateLoading()"
+                            :loading="userModuleLoading()"
                             type="text"
                             required
                         ></v-text-field>
@@ -80,7 +80,7 @@
                 </v-card>
             </v-form>
 
-            <v-card :loading="settingStateLoading()" class="mx-auto mt-8" max-width="500" width="100%">
+            <v-card :loading="settingModuleLoading()" class="mx-auto mt-8" max-width="500" width="100%">
                 <v-card-title>Scheduled Calls</v-card-title>
                 <v-card-text>
                     <p>
@@ -180,7 +180,7 @@
                         >Set up scheduled calls</v-btn
                     >
                     <v-btn
-                        :loading="settingStateLoading()"
+                        :loading="settingModuleLoading()"
                         large
                         v-if="settingExists && !settingCreated"
                         @click="updateScheduleSetting"
@@ -188,12 +188,12 @@
                         >Set up scheduled calls</v-btn
                     >
 
-                    <v-btn :loading="settingStateLoading()" small v-if="settingCreated" @click="deleteScheduleSetting"
+                    <v-btn :loading="settingModuleLoading()" small v-if="settingCreated" @click="deleteScheduleSetting"
                         >Disable<v-icon small>mdi-delete</v-icon></v-btn
                     >
                     <v-spacer></v-spacer>
                     <v-btn
-                        :loading="settingStateLoading()"
+                        :loading="settingModuleLoading()"
                         large
                         v-if="settingCreated"
                         @click="updateScheduleSetting"
@@ -202,7 +202,7 @@
                     >
                 </v-card-actions>
             </v-card>
-            <v-btn :loading="userStateLoading()" class="mt-12" @click="logout"
+            <v-btn :loading="userModuleLoading()" class="mt-12" @click="logout"
                 >Logout<v-icon>mdi-account</v-icon></v-btn
             >
 
@@ -210,7 +210,7 @@
                 <template v-slot:activator="{ on }">
                     <v-btn
                         v-on="on"
-                        :loading="userStateLoading()"
+                        :loading="userModuleLoading()"
                         color="error"
                         class="mt-12"
                         @click="showDeleteDialog = true"
@@ -244,12 +244,11 @@
 import { Vue, Component } from "vue-property-decorator"
 import { required } from "vuelidate/lib/validators"
 import { validationMixin } from "vuelidate"
-import { getModule } from "vuex-module-decorators"
 import BottomNav from "../components/BottomNav.vue"
 import Layout from "../components/Layout.vue"
 import AppBar from "../components/AppBar.vue"
-import UserModule from "@/store/modules/user.module"
-import SettingModule, { Setting } from "@/store/modules/setting.module"
+import userModule from "@/store/modules/user.module"
+import settingModule, { Setting } from "@/store/modules/setting.module"
 
 const validations = {
     phone: { required },
@@ -261,26 +260,23 @@ const validations = {
     job: { required },
 }
 
-const userState = getModule(UserModule)
-const settingState = getModule(SettingModule)
-
 @Component({ mixins: [validationMixin], validations, components: { BottomNav, AppBar, Layout } })
 export default class Profile extends Vue {
     // User
-    phone = userState.user.phone
-    city = userState.user.city
-    interests = userState.user.interests
-    job = userState.user.job
-    language = userState.user.language
+    phone = userModule.user.phone
+    city = userModule.user.city
+    interests = userModule.user.interests
+    job = userModule.user.job
+    language = userModule.user.language
     languages = ["English"]
 
     showDeleteDialog = false
 
-    userStateLoading() {
-        return userState.loading
+    userModuleLoading() {
+        return userModule.loading
     }
-    settingStateLoading() {
-        return settingState.loading
+    settingModuleLoading() {
+        return settingModule.loading
     }
 
     // Settings
@@ -301,27 +297,23 @@ export default class Profile extends Vue {
     daysErrors: string[] = []
 
     async created() {
-        console.log("profile")
-        console.log(userState)
-        if (!userState.user._id) {
-            await userState.getUser()
-            this.phone = userState.user.phone
-            this.city = userState.user.city
-            this.interests = userState.user.interests
-            this.job = userState.user.job
-            this.language = userState.user.language
+        if (!userModule.user._id) {
+            await userModule.getUser()
+            this.phone = userModule.user.phone
+            this.city = userModule.user.city
+            this.interests = userModule.user.interests
+            this.job = userModule.user.job
+            this.language = userModule.user.language
         }
-        console.log("profile")
-        console.log(settingState)
-        if (!settingState.setting._id) {
-            const set = await settingState.getSetting()
+        if (!settingModule.setting._id) {
+            const set = await settingModule.getSetting()
             if (set && set._id) {
                 this.updateLocalSetting(set)
                 this.settingExists = true
                 this.settingCreated = true
             }
         } else {
-            this.updateLocalSetting(settingState.setting)
+            this.updateLocalSetting(settingModule.setting)
             this.settingExists = true
             this.settingCreated = true
         }
@@ -389,7 +381,7 @@ export default class Profile extends Vue {
 
         this.$v.$touch()
         if (!this.$v.$invalid) {
-            await userState.updateUser({ city: this.city, interests: this.interests, job: this.job })
+            await userModule.updateUser({ city: this.city, interests: this.interests, job: this.job })
         }
     }
 
@@ -428,7 +420,7 @@ export default class Profile extends Vue {
         const startTimeUTC = `${parseInt(startTimes[0]) + localOffsetHours}:${startTimes[1]}`
         const endTimeUTC = `${parseInt(endTimes[0]) + localOffsetHours}:${endTimes[1]}`
 
-        await settingState.updateSetting({
+        await settingModule.updateSetting({
             days: this.days,
             startTime: startTimeUTC,
             endTime: endTimeUTC,
@@ -447,16 +439,16 @@ export default class Profile extends Vue {
         this.startTime = ""
         this.endTime = ""
         this.numPerDay = 1
-        await settingState.deleteSetting()
+        await settingModule.deleteSetting()
     }
 
     logout() {
-        userState.logout()
+        userModule.logout()
     }
 
     deleteEverything() {
         this.showDeleteDialog = false
-        userState.deleteEverything()
+        userModule.deleteEverything()
     }
 }
 </script>

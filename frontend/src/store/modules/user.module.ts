@@ -2,8 +2,7 @@ import router from "@/router"
 import store from "@/store"
 import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
-import UiModule from "./ui.module"
-const uiState = getModule(UiModule)
+import uiModule from "./ui.module"
 
 export interface User {
     _id: string
@@ -21,7 +20,7 @@ export interface Tokens {
 }
 
 @Module({ name: "User", store, dynamic: true, namespaced: true })
-export default class UserModule extends VuexModule {
+class UserModule extends VuexModule {
     status: "loading" | "success" | "error" | "" = ""
     accessToken = localStorage.getItem("token") || ""
     refreshToken = localStorage.getItem("refreshToken") || ""
@@ -92,6 +91,15 @@ export default class UserModule extends VuexModule {
         this.status = ""
         this.accessToken = ""
         this.refreshToken = ""
+        this.user = {
+            _id: "",
+            phone: "",
+            city: "",
+            interests: [],
+            job: "",
+            language: "English",
+            points: 0,
+        }
     }
 
     @Mutation
@@ -102,7 +110,7 @@ export default class UserModule extends VuexModule {
         delete axios.defaults.headers.common["Authorization"]
         localStorage.removeItem("token")
         localStorage.removeItem("refreshToken")
-        uiState.showSnackbarMessage("Please log in again")
+        uiModule.showSnackbarMessage("Please log in again")
         router.push("/login")
     }
 
@@ -171,7 +179,7 @@ export default class UserModule extends VuexModule {
             this.setInterests(response.data.data.interests)
             this.setJob(response.data.data.job)
 
-            uiState.showSnackbarMessage("Profile Updated")
+            uiModule.showSnackbarMessage("Profile Updated")
         } catch (error) {
             console.log(error)
         }
@@ -195,3 +203,5 @@ export default class UserModule extends VuexModule {
         this.setLoading(false)
     }
 }
+
+export default getModule(UserModule)

@@ -1,8 +1,8 @@
 import store from "@/store"
-import { Action, Module, Mutation, VuexModule } from "vuex-module-decorators"
+import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
 
 @Module({ name: "Ui", store, dynamic: true, namespaced: true })
-export default class UiModule extends VuexModule {
+class UiModule extends VuexModule {
     showSnackbar = false
     snackbarMessage = ""
 
@@ -21,3 +21,5 @@ export default class UiModule extends VuexModule {
         this.setShowSnackbar(true)
     }
 }
+
+export default getModule(UiModule)
