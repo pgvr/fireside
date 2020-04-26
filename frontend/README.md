@@ -1,4 +1,4 @@
-# frontend
+# Fireside Frontend Vue App
 
 ## Project setup
 ```
