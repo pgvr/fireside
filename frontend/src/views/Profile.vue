@@ -88,94 +88,110 @@
                         schedule-wizard 🧙‍♂️ will automagically initiate calls for you in your selected time frame. Set
                         it, forget it and get matched with friendly strangers. 😊
                     </p>
-                    <template v-if="settingExists">
-                        <h1 class="body-2 ">Selected days</h1>
-                        <v-row justify="center" class="mb-4">
-                            <v-btn-toggle v-model="days" dense color="secondary" background-color="gray" multiple>
-                                <v-btn small :value="1">Mon</v-btn>
-                                <v-btn small :value="2">Tue</v-btn>
-                                <v-btn small :value="3">Wed</v-btn>
-                                <v-btn small :value="4">Thu</v-btn>
-                                <v-btn small :value="5">Fri</v-btn>
-                                <v-btn small :value="6">Sat</v-btn>
-                                <v-btn small :value="0">Sun</v-btn>
-                            </v-btn-toggle>
-                        </v-row>
-                        <v-row v-if="daysErrors[0]" justify="center">
-                            <h1 class="caption error--text">{{ daysErrors[0] }}</h1></v-row
-                        >
-                        <v-row no-gutters>
-                            <v-col cols="6" class="pr-2">
-                                <v-dialog
-                                    ref="startDialog"
-                                    v-model="settingStartModal"
-                                    :return-value.sync="startTime"
-                                    persistent
-                                    width="290px"
-                                >
-                                    <template v-slot:activator="{ on }">
-                                        <v-text-field
-                                            v-model="startTime"
-                                            label="Start Time"
-                                            prepend-icon="mdi-clock-outline"
-                                            readonly
-                                            :error-messages="startTimeErrors"
-                                            v-on="on"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-time-picker v-if="settingStartModal" v-model="startTime" format="24hr">
-                                        <v-spacer></v-spacer>
-                                        <v-btn text color="primary" @click="settingStartModal = false">Cancel</v-btn>
-                                        <v-btn text color="primary" @click="$refs.startDialog.save(startTime)"
-                                            >OK</v-btn
-                                        >
-                                    </v-time-picker>
-                                </v-dialog>
-                            </v-col>
-                            <v-col cols="6" class="pl-2">
-                                <v-dialog
-                                    ref="endDialog"
-                                    v-model="settingEndModal"
-                                    :return-value.sync="endTime"
-                                    persistent
-                                    width="290px"
-                                >
-                                    <template v-slot:activator="{ on }">
-                                        <v-text-field
-                                            v-model="endTime"
-                                            label="End Time"
-                                            prepend-icon="mdi-clock-outline"
-                                            readonly
-                                            :error-messages="endTimeErrors"
-                                            v-on="on"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-time-picker v-if="settingEndModal" v-model="endTime" format="24hr">
-                                        <v-spacer></v-spacer>
-                                        <v-btn text color="primary" @click="settingEndModal = false">Cancel</v-btn>
-                                        <v-btn text color="primary" @click="$refs.endDialog.save(endTime)">OK</v-btn>
-                                    </v-time-picker>
-                                </v-dialog>
-                            </v-col>
-                        </v-row>
-                        <h1 class="body-2">Maximum calls per day</h1>
-                        <v-slider
-                            v-model="numPerDay"
-                            min="1"
-                            max="10"
-                            ticks="always"
-                            tick-size="2"
-                            thumb-label="always"
-                            track-color="orange lighten-5"
-                            track-fill-color="secondary"
-                            thumb-color="secondary"
-                            thumb-size="24"
-                            hide-details="true"
-                        ></v-slider>
-                    </template>
+                    <transition name="slide">
+                        <div v-if="settingExists">
+                            <h1 class="body-2 ">Selected days</h1>
+                            <v-row justify="center" class="mb-4">
+                                <v-btn-toggle v-model="days" dense color="secondary" background-color="gray" multiple>
+                                    <v-btn small :value="1">Mon</v-btn>
+                                    <v-btn small :value="2">Tue</v-btn>
+                                    <v-btn small :value="3">Wed</v-btn>
+                                    <v-btn small :value="4">Thu</v-btn>
+                                    <v-btn small :value="5">Fri</v-btn>
+                                    <v-btn small :value="6">Sat</v-btn>
+                                    <v-btn small :value="0">Sun</v-btn>
+                                </v-btn-toggle>
+                            </v-row>
+                            <v-row v-if="daysErrors[0]" justify="center">
+                                <h1 class="caption error--text">{{ daysErrors[0] }}</h1></v-row
+                            >
+                            <v-row no-gutters>
+                                <v-col cols="6" class="pr-2">
+                                    <v-dialog
+                                        ref="startDialog"
+                                        v-model="settingStartModal"
+                                        :return-value.sync="startTime"
+                                        persistent
+                                        width="290px"
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field
+                                                v-model="startTime"
+                                                label="Start Time"
+                                                prepend-icon="mdi-clock-outline"
+                                                readonly
+                                                :error-messages="startTimeErrors"
+                                                v-on="on"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-time-picker v-if="settingStartModal" v-model="startTime" format="24hr">
+                                            <v-spacer></v-spacer>
+                                            <v-btn text color="primary" @click="settingStartModal = false"
+                                                >Cancel</v-btn
+                                            >
+                                            <v-btn text color="primary" @click="$refs.startDialog.save(startTime)"
+                                                >OK</v-btn
+                                            >
+                                        </v-time-picker>
+                                    </v-dialog>
+                                </v-col>
+                                <v-col cols="6" class="pl-2">
+                                    <v-dialog
+                                        ref="endDialog"
+                                        v-model="settingEndModal"
+                                        :return-value.sync="endTime"
+                                        persistent
+                                        width="290px"
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field
+                                                v-model="endTime"
+                                                label="End Time"
+                                                prepend-icon="mdi-clock-outline"
+                                                readonly
+                                                :error-messages="endTimeErrors"
+                                                v-on="on"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-time-picker v-if="settingEndModal" v-model="endTime" format="24hr">
+                                            <v-spacer></v-spacer>
+                                            <v-btn text color="primary" @click="settingEndModal = false">Cancel</v-btn>
+                                            <v-btn text color="primary" @click="$refs.endDialog.save(endTime)"
+                                                >OK</v-btn
+                                            >
+                                        </v-time-picker>
+                                    </v-dialog>
+                                </v-col>
+                            </v-row>
+                            <h1 class="body-2">Maximum calls per day</h1>
+                            <v-slider
+                                class="mt-8"
+                                v-model="numPerDay"
+                                min="1"
+                                max="10"
+                                ticks="always"
+                                tick-size="2"
+                                thumb-label="always"
+                                track-color="orange lighten-5"
+                                track-fill-color="secondary"
+                                thumb-color="secondary"
+                                thumb-size="24"
+                                hide-details="true"
+                            ></v-slider>
+                        </div>
+                    </transition>
                 </v-card-text>
 
                 <v-card-actions>
+                    <v-btn
+                        :loading="settingModuleLoading()"
+                        text
+                        large
+                        v-if="settingCreated"
+                        @click="deleteScheduleSetting"
+                        >Disable<v-icon small>mdi-delete</v-icon></v-btn
+                    >
+                    <v-spacer></v-spacer>
                     <v-btn v-if="!settingExists && !settingCreated" @click="settingExists = true"
                         >Set up scheduled calls</v-btn
                     >
@@ -188,10 +204,6 @@
                         >Set up scheduled calls</v-btn
                     >
 
-                    <v-btn :loading="settingModuleLoading()" small v-if="settingCreated" @click="deleteScheduleSetting"
-                        >Disable<v-icon small>mdi-delete</v-icon></v-btn
-                    >
-                    <v-spacer></v-spacer>
                     <v-btn
                         :loading="settingModuleLoading()"
                         large
@@ -202,43 +214,53 @@
                     >
                 </v-card-actions>
             </v-card>
-            <v-btn :loading="userModuleLoading()" class="mt-12" @click="logout"
-                >Logout<v-icon>mdi-account</v-icon></v-btn
-            >
+            <v-row no-gutters style="width:100%;max-width:500px;" class="mt-8" justify="space-between">
+                <v-dialog v-model="showDeleteDialog" width="500">
+                    <template v-slot:activator="{ on }">
+                        <v-btn v-on="on" :loading="userModuleLoading()" color="error" @click="showDeleteDialog = true"
+                            >Delete account</v-btn
+                        >
+                    </template>
 
-            <v-dialog v-model="showDeleteDialog" width="500">
-                <template v-slot:activator="{ on }">
-                    <v-btn
-                        v-on="on"
-                        :loading="userModuleLoading()"
-                        color="error"
-                        class="mt-12"
-                        @click="showDeleteDialog = true"
-                        >Delete account<v-icon>mdi-delete</v-icon></v-btn
-                    >
-                </template>
+                    <v-card>
+                        <v-card-title>
+                            Are you sure?
+                        </v-card-title>
 
-                <v-card>
-                    <v-card-title>
-                        Are you sure?
-                    </v-card-title>
+                        <v-card-text>
+                            You are about to delete your account. This erases everything and cannot be undone.
+                        </v-card-text>
 
-                    <v-card-text>
-                        You are about to delete your account. This erases everything and cannot be undone.
-                    </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="primary" text @click="deleteEverything">
+                                Delete Me
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
 
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="primary" text @click="deleteEverything">
-                            Delete Me
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
+                <v-btn :loading="userModuleLoading()" @click="logout">Logout<v-icon>mdi-logout</v-icon></v-btn>
+            </v-row>
         </v-layout>
         <BottomNav />
     </Layout>
 </template>
+
+<style scoped>
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.3s ease-out;
+    /* just bigger than the container */
+    max-height: 300px;
+}
+
+.slide-enter,
+.slide-leave-to {
+    opacity: 0;
+    max-height: 0px;
+}
+</style>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator"
@@ -431,6 +453,7 @@ export default class Profile extends Vue {
 
     async deleteScheduleSetting() {
         console.log("delete scheduled call setting")
+        await settingModule.deleteSetting()
         this.settingExists = false
         this.settingCreated = false
 
@@ -439,7 +462,6 @@ export default class Profile extends Vue {
         this.startTime = ""
         this.endTime = ""
         this.numPerDay = 1
-        await settingModule.deleteSetting()
     }
 
     logout() {
