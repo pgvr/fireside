@@ -1,5 +1,6 @@
 import router from "@/router"
 import store from "@/store"
+import { fbAuth } from "@/utils/firebase"
 import axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
 import uiModule from "./ui.module"
@@ -142,8 +143,6 @@ class UserModule extends VuexModule {
             const response = await axios.get(`${process.env.VUE_APP_API_URL}/user/me`)
             const { data } = response.data
             this.setUser(data.user)
-            console.log(data.user._id)
-            store.dispatch("init", { userId: data.user._id })
         } catch (error) {
             console.log(error)
         }
@@ -157,6 +156,7 @@ class UserModule extends VuexModule {
             const response = await axios.delete(`${process.env.VUE_APP_API_URL}/logout`)
             const { data } = response.data
             console.log(data)
+            await fbAuth.signOut()
             localStorage.removeItem("token")
             localStorage.removeItem("refreshToken")
             this.resetAuth()

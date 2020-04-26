@@ -17,8 +17,6 @@ export async function createCustomToken(uid: string) {
         const token = await admin.auth().createCustomToken(uid)
         return token
     } catch (error) {
-        console.log("custom token creation failed")
-        console.log(error)
         return ""
     }
 }

@@ -147,9 +147,6 @@ export default class Home extends Vue {
     }
 
     created() {
-        if (!userModule.user._id) {
-            userModule.getUser()
-        }
         if (callModule.calls.length === 0) {
             callModule.getCalls()
         }

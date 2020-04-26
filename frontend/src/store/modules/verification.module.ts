@@ -1,5 +1,6 @@
 import router from "@/router"
 import store from "@/store"
+import { fbAuth } from "@/utils/firebase"
 import Axios from "axios"
 import { Action, getModule, Module, Mutation, VuexModule } from "vuex-module-decorators"
 import uiModule from "./ui.module"
@@ -49,10 +50,12 @@ class VerificationModule extends VuexModule {
             const { data } = response.data
             const tokens = data.tokens
             const user = data.user
+            await fbAuth.signInWithCustomToken(data.firebaseToken)
             localStorage.setItem("token", tokens.accessToken)
             localStorage.setItem("refreshToken", tokens.refreshToken)
             Axios.defaults.headers.common["Authorization"] = "Bearer " + tokens.accessToken
             userModule.authSuccess({ tokens, user })
+            store.dispatch("init", { userId: user._id })
             router.push("/home")
 
             // if not 200 it will go into catch

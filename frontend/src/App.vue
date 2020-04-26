@@ -36,6 +36,7 @@
 import { Vue, Component } from "vue-property-decorator"
 import store from "./store"
 import uiModule from "./store/modules/ui.module"
+import userModule from "./store/modules/user.module"
 
 @Component
 export default class App extends Vue {
@@ -44,12 +45,15 @@ export default class App extends Vue {
     registration: any
     snackWithButtons = false
 
-    created() {
+    async created() {
         // fetch initial data
         // module import doesnt work for some reason
-        // if (UserModule.isLoggedIn) {
-        //     CallModule.checkQueueStatus()
-        // }
+        if (userModule.isLoggedIn) {
+            if (!userModule.user._id) {
+                await userModule.getUser()
+            }
+            store.dispatch("init", { userId: userModule.user._id })
+        }
 
         // Listen for swUpdated event and display refresh snackbar as required.
         document.addEventListener("swUpdated", this.showRefreshUI, { once: true })
