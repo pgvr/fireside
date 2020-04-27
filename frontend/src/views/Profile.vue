@@ -309,8 +309,8 @@ export default class Profile extends Vue {
 
     userId = ""
     days: number[] = []
-    startTime = ""
-    endTime = ""
+    startTime = "16:00"
+    endTime = "18:00"
     numPerDay = 1
 
     // Setting validation
@@ -426,7 +426,7 @@ export default class Profile extends Vue {
 
         if (sT > eT) this.endTimeErrors.push("End time must be after start time")
 
-        if (this.startTimeErrors[0] || this.endTimeErrors[0]) return false
+        if (this.startTimeErrors[0] || this.endTimeErrors[0] || this.daysErrors[0]) return false
         return true
     }
 
