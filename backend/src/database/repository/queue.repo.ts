@@ -8,7 +8,7 @@ export default class QueueRepo {
         return QueueModel.find({ phone: { $ne: user.phone } })
             .sort({ date: "ascending" })
             .findOneAndRemove({
-                $or: [{ city: user.city }, { interests: { $in: user.interests } }],
+                $or: [{ city: user.city }, { job: user.job }, { interests: { $in: user.interests } }],
             })
             .exec()
     }

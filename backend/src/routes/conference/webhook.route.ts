@@ -17,14 +17,12 @@ router.post(
     asyncHandler(async (req, res) => {
         const confUpdate = req.body as ConferenceUpdate
         if (confUpdate.StatusCallbackEvent === "conference-start") {
-            // create call for participants in db
             Logger.info("Conference Started")
             // update conference with a callStartedAt Date
             const conference = await getConference(confUpdate.ConferenceSid)
             const participants = await conference.participants().list()
             await ConferenceRepo.updateStart(participants, confUpdate.ConferenceSid)
         } else if (confUpdate.StatusCallbackEvent === "conference-end") {
-            // update call with length and status
             Logger.info("Conference Ended")
             const conference = await ConferenceRepo.removeConference(confUpdate.ConferenceSid)
             await CallRepo.create(conference)

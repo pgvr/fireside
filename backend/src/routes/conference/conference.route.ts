@@ -42,15 +42,6 @@ router.post(
         if (foundMatch) {
             // connect with match
             Logger.info("Match found, initiating...")
-
-            // found match is coming from queue db collection, create a new object of it to remove _id, etc.
-            // foundMatch = <QueueUser>{
-            //     phone: foundMatch.phone,
-            //     city: foundMatch.city,
-            //     interests: foundMatch.interests,
-            //     job: foundMatch.job,
-            //     language: foundMatch.language,
-            // }
             // Call being initiated, create conference in db to keep track
             // for this route the incoming participant is never scheduled
             await ConferenceRepo.create(
