@@ -63,27 +63,27 @@ After the above requirements have been met:
 
 1. Clone this repository and `cd` into it
 
-```bash
-git clone git@github.com:patrickgoeler/fireside.git
-cd fireside
-```
+    ```bash
+    git clone git@github.com:patrickgoeler/fireside.git
+    cd fireside
+    ```
 
 2. Install dependencies
 
-In both `frontend` and `backend` run
+    In both `frontend` and `backend` run
 
-```bash
-npm install
-```
+    ```bash
+    npm install
+    ```
 
 3. Set your environment variables
 
-Create a `backend/.env` file and fill it out with the setup above.
+    Create a `backend/.env` file and fill it out with the setup above.
 
 4. Run the application
 
-Start Ngrok and point it at your backend port, adjust `frontend/.env.development` and `backend/.env` with the new Ngrok Url. Run `npm run serve` in `frontend` and `npm run watch` in `backend`. (You need concurrently for the watch command. `npm i -g concurrently`) 
+    Start Ngrok and point it at your backend port, adjust `frontend/.env.development` and `backend/.env` with the new Ngrok Url. Run `npm run serve` in `frontend` and `npm run watch` in `backend`. (You need concurrently for the watch command. `npm i -g concurrently`) 
 
 5. Navigate to [http://localhost:8080](http://localhost:8080)
 
-You should see the Vue App running and that's it!
+    You should see the Vue App running and that's it!
