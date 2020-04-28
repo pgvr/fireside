@@ -86,14 +86,7 @@
                     </v-card-text>
                 </v-card>
                 <v-layout row wrap>
-                    <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                            <span v-on="on"
-                                ><v-btn class="mt-4" text color="secondary">Set up scheduled calls</v-btn></span
-                            >
-                        </template>
-                        <span>Coming Soon</span>
-                    </v-tooltip>
+                    <v-btn to="/profile" class="mt-4" text color="secondary">Set up scheduled calls</v-btn>
                 </v-layout>
             </v-layout>
         </v-layout>
