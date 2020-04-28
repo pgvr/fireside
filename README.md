@@ -64,7 +64,7 @@ After the above requirements have been met:
 1. Clone this repository and `cd` into it
 
     ```bash
-    git clone git@github.com:patrickgoeler/fireside.git
+    git clone https://github.com/patrickgoeler/fireside.git
     cd fireside
     ```
 
