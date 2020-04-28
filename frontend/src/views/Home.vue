@@ -7,20 +7,21 @@
             </v-row>
             <v-row no-gutters class="mb-8">
                 <v-col cols="12" sm="6" class="mt-4 pr-sm-2">
-                    <v-card class="grow mx-auto" max-width="500" color="primary">
+                    <v-card class="grow mx-auto d-flex flex-column" style="height: 100%;" max-width="500">
                         <v-card-title>Ready to have a chat?</v-card-title>
-                        <v-card-text>
+                        <v-card-text class="text--primary">
                             Pass the time by talking to someone you have never talked to before. Be kind, be curious and
                             make the best out of the current situation. 😊
                         </v-card-text>
+                        <v-spacer></v-spacer>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn text outlined to="/call">Find Call</v-btn>
+                            <v-btn depressed color="primary" to="/call">Find Call</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
                 <v-col cols="12" sm="6" class="mt-4 pl-sm-2">
-                    <v-card class="grow mx-auto" max-width="500" color="secondary">
+                    <v-card class="grow mx-auto d-flex flex-column" style="height: 100%;" max-width="500">
                         <v-card-title
                             ><span class="mr-2">Current Sparks:</span>
                             <v-progress-circular v-if="userLoading()" indeterminate></v-progress-circular>
@@ -29,18 +30,19 @@
                                 <v-icon style="margin-bottom: 6px" color="secondary">mdi-fire</v-icon>
                             </span>
                         </v-card-title>
-                        <v-card-text>
+                        <v-card-text class="text--primary">
                             Gather sparks by finding out what you have in common with your call. This can guide your
                             conversation if you don't know what you can talk about or when it feels awkward (and it
                             probably will).
                         </v-card-text>
+                        <v-spacer></v-spacer>
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-tooltip bottom>
                                 <template v-slot:activator="{ on }">
-                                    <v-btn text outlined v-on="on">Show off your sparks</v-btn>
+                                    <v-btn color="primary" depressed v-on="on">Show off your sparks</v-btn>
                                 </template>
-                                <span>You didn't guess any common interests</span>
+                                <span>Coming Soon</span>
                             </v-tooltip>
                         </v-card-actions>
                     </v-card>
@@ -86,6 +88,11 @@
                     </tbody>
                 </template>
             </v-simple-table>
+            <v-row no-gutters class="mt-4 text-center" v-if="!callsLoading() && calls().length === 0">
+                <v-col>
+                    You don't have any calls yet.
+                </v-col>
+            </v-row>
         </v-layout>
         <BottomNav />
     </Layout>

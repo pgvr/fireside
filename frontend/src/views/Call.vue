@@ -21,8 +21,9 @@
 
             <v-layout column>
                 <p v-if="callStatus() === 'idle'" class="body-1" style="text-align:center;width:100%;max-width:500px;">
-                    Please be aware that a phone number from the USA will facilitate the call and that this does NOT
-                    cost you anything.
+                    Please be aware that a phone number from the USA will facilitate the call (+13133951008). For our
+                    fellows with a German contract in Germany, this service is free. For everyone else charges may
+                    apply, so please check with your provider first.
                 </p>
                 <p v-if="callStatus() === 'queue'" class="body-1" style="text-align:center;width:100%;max-width:500px;">
                     Your phone will ring as soon as we find a likeminded person.<br />
