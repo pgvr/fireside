@@ -1,4 +1,4 @@
-# frontend
+# Fireside Frontend
 
 ## Project setup
 ```
