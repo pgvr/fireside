@@ -30,8 +30,8 @@ This application requires you to have a Twilio Account to get the necessary Acco
 | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Account&nbsp;Sid  | Your primary Twilio account identifier - find this [in the Console](https://www.twilio.com/console).                                                         |
 | Auth&nbsp;Token   | Used to authenticate - [just like the above, you'll find this here](https://www.twilio.com/console).                                                         |
-| Phone&nbsp;number | A Twilio phone number in [E.164 format](https://en.wikipedia.org/wiki/E.164) - you can [get one here](https://www.twilio.com/console/phone-numbers/incoming) |
-| Verify&nbsp;ID | The ID of the service that is used to verify phone numbers via SMS. Set it up [here](https://www.twilio.com/console/verify/services) |
+| Phone&nbsp;number | A Twilio phone number in [E.164 format](https://en.wikipedia.org/wiki/E.164) - you can [get one here](https://www.twilio.com/console/phone-numbers/incoming). |
+| Verify&nbsp;ID | The ID of the service that is used to verify phone numbers via SMS. Set it up [here](https://www.twilio.com/console/verify/services). |
 
 ### Ngrok
 
