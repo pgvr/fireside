@@ -30,8 +30,8 @@ This application requires you to have a Twilio Account to get the necessary Acco
 | :---------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Account&nbsp;Sid  | Your primary Twilio account identifier - find this [in the Console](https://www.twilio.com/console).                                                         |
 | Auth&nbsp;Token   | Used to authenticate - [just like the above, you'll find this here](https://www.twilio.com/console).                                                         |
-| Phone&nbsp;number | A Twilio phone number in [E.164 format](https://en.wikipedia.org/wiki/E.164) - you can [get one here](https://www.twilio.com/console/phone-numbers/incoming) |
-| Verify&nbsp;ID | The ID of the service that is used to verify phone numbers via SMS. Set it up [here](https://www.twilio.com/console/verify/services) |
+| Phone&nbsp;number | A Twilio phone number in [E.164 format](https://en.wikipedia.org/wiki/E.164) - you can [get one here](https://www.twilio.com/console/phone-numbers/incoming). |
+| Verify&nbsp;ID | The ID of the service that is used to verify phone numbers via SMS. Set it up [here](https://www.twilio.com/console/verify/services). |
 
 ### Ngrok
 
@@ -63,27 +63,27 @@ After the above requirements have been met:
 
 1. Clone this repository and `cd` into it
 
-```bash
-git clone git@github.com:patrickgoeler/fireside.git
-cd fireside
-```
+    ```bash
+    git clone git@github.com:patrickgoeler/fireside.git
+    cd fireside
+    ```
 
 2. Install dependencies
 
-In both `frontend` and `backend` run
+    In both `frontend` and `backend` run
 
-```bash
-npm install
-```
+    ```bash
+    npm install
+    ```
 
 3. Set your environment variables
 
-Create a `backend/.env` file and fill it out with the setup above.
+    Create a `backend/.env` file and fill it out with the setup above.
 
 4. Run the application
 
-Start Ngrok and point it at your backend port, adjust `frontend/.env.development` and `backend/.env` with the new Ngrok Url. Run `npm run serve` in `frontend` and `npm run watch` in `backend`. (You need concurrently for the watch command. `npm i -g concurrently`) 
+    Start Ngrok and point it at your backend port, adjust `frontend/.env.development` and `backend/.env` with the new Ngrok Url. Run `npm run serve` in `frontend` and `npm run watch` in `backend`. (You need concurrently for the watch command. `npm i -g concurrently`) 
 
 5. Navigate to [http://localhost:8080](http://localhost:8080)
 
-You should see the Vue App running and that's it!
+    You should see the Vue App running and that's it!
