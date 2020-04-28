@@ -35,6 +35,9 @@
                     style="text-align:center;width:100%;max-width:500px;"
                 >
                     Try to find out what you have in common and have fun 👍
+                    <br />
+                    Note that only calls that exceed 2 minutes will be added to your profile to encourage meaningful
+                    conversations.
                 </p>
                 <v-btn
                     v-if="callStatus() === 'idle'"

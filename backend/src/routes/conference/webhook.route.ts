@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import bodyParser from "body-parser"
 import express from "express"
-import { SuccessResponse } from "../../core/ApiResponse"
+import { SuccessMsgResponse, SuccessResponse } from "../../core/ApiResponse"
 import Logger from "../../core/Logger"
 import CallRepo from "../../database/repository/call.repo"
 import ConferenceRepo from "../../database/repository/conference.repo"
@@ -25,9 +25,16 @@ router.post(
         } else if (confUpdate.StatusCallbackEvent === "conference-end") {
             Logger.info("Conference Ended")
             const conference = await ConferenceRepo.removeConference(confUpdate.ConferenceSid)
-            await CallRepo.create(conference)
+            const now = new Date()
+            const callDuration = now.getTime() - conference.callStartedAt.getTime()
+            if (callDuration > 120000) {
+                Logger.info("Call longer than 2 mins, so add it to DB")
+                await CallRepo.create(conference)
+            } else {
+                Logger.info("Call NOT longer than 2 mins, not adding to DB")
+            }
         }
-        return new SuccessResponse("Success", null).send(res)
+        return new SuccessMsgResponse("Success").send(res)
     }),
 )
 
