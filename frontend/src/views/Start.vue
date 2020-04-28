@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-layout column align-center>
-            <BonfireIcon class="mt-12" :width="200" :height="200" />
+            <BonfireIcon route="/" class="mt-12" :width="200" :height="200" />
             <h1 class="display-3 mt-4 mb-8">Fireside</h1>
             <v-form style="width: 100%;" @submit.prevent="meet()">
                 <v-card class="mx-auto" max-width="500">

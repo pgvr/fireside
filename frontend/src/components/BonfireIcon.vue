@@ -1,11 +1,13 @@
 <template>
     <svg
+        @click="navigate"
         xmlns="http://www.w3.org/2000/svg"
         :width="width"
         :height="height"
         viewBox="0 0 18 18"
         aria-labelledby="bonfire"
         role="presentation"
+        style="cursor:pointer;"
         v-bind:class="{ gray: gray, glowing: loading }"
     >
         <defs>
@@ -81,6 +83,13 @@ export default class Home extends Vue {
     @Prop({ default: 50 }) height!: number
     @Prop({ default: false }) gray!: boolean
     @Prop({ default: false }) loading!: boolean
+    @Prop({ default: false }) route!: string
+
+    navigate() {
+        if (this.route) {
+            this.$router.push(this.route)
+        }
+    }
 }
 </script>
 
