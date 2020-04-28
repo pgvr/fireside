@@ -87,3 +87,7 @@ After the above requirements have been met:
 5. Navigate to [http://localhost:8080](http://localhost:8080)
 
     You should see the Vue App running and that's it!
+    
+## Attributions
+
+Icons made by [Freepik](https://www.flaticon.com/authors/freepik) from [www.flaticon.com](https://www.flaticon.com/)
