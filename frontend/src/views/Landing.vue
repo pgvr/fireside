@@ -30,6 +30,7 @@
                     <v-btn large to="/start" color="primary">Meet Now</v-btn>
                 </v-card-actions>
             </v-card>
+            <div centered class="mt-12"><v-btn small outlined to="/privacy" color="gray">Privacy Policy</v-btn></div>
         </v-layout>
     </v-container>
 </template>

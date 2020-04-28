@@ -7,6 +7,7 @@ import Home from "../views/Home.vue"
 import Landing from "../views/Landing.vue"
 import Login from "../views/Login.vue"
 import NotFound from "../views/NotFound.vue"
+import Privacy from "../views/Privacy.vue"
 import Profile from "../views/Profile.vue"
 import Start from "../views/Start.vue"
 import VerifyPhone from "../views/VerifyPhone.vue"
@@ -84,6 +85,14 @@ const routes: Array<RouteConfig> = [
         meta: {
             requiresAuth: true,
             title: "Fireside | Chat Detail",
+        },
+    },
+    {
+        path: "/privacy",
+        name: "Privacy Policy",
+        component: Privacy,
+        meta: {
+            title: "Fireside | Privacy Policy",
         },
     },
     {
